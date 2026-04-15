@@ -17,7 +17,12 @@ export function Demands() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   useEffect(() => {
-    const q = query(collection(db, 'demands'), where('active', '==', true));
+    let q;
+    if (profile?.role === 'ADMIN') {
+      q = query(collection(db, 'demands'));
+    } else {
+      q = query(collection(db, 'demands'), where('active', '==', true));
+    }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const dems: any[] = [];

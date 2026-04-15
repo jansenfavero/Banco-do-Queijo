@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../lib/firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { getFriendlyErrorMessage } from '../lib/errorMapping';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 
+const ADMIN_EMAILS = ['contato@jansenfavero.com', 'casadoqueijo@gmail.com'];
+
 export function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -18,19 +20,46 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const checkAndCreateAdmin = async (user: any) => {
+    const docRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (ADMIN_EMAILS.includes(user.email || '')) {
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          name: user.displayName || 'Super Admin',
+          email: user.email,
+          role: 'ADMIN',
+          kycStatus: 'VALIDADO',
+          cpfCnpj: '00000000000',
+          phone: '00000000000',
+          city: 'Admin City',
+          state: 'AD',
+          createdAt: serverTimestamp()
+        });
+      } else if (docSnap.data().role !== 'ADMIN') {
+        await setDoc(docRef, { role: 'ADMIN', kycStatus: 'VALIDADO' }, { merge: true });
+      }
+      navigate('/dashboard');
+      return true;
+    }
+
+    if (docSnap.exists()) {
+      navigate('/dashboard');
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
-      // Check if user has a profile
-      const docRef = doc(db, 'users', userCredential.user.uid);
-      const docSnap = await getDoc(docRef);
-      
-      if (docSnap.exists()) {
-        navigate('/dashboard');
-      } else {
+      const isHandled = await checkAndCreateAdmin(userCredential.user);
+      if (!isHandled) {
         toast.error('Perfil não encontrado. Por favor, complete seu cadastro.');
         navigate('/register');
       }
@@ -48,12 +77,8 @@ export function Login() {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       
-      const docRef = doc(db, 'users', userCredential.user.uid);
-      const docSnap = await getDoc(docRef);
-      
-      if (docSnap.exists()) {
-        navigate('/dashboard');
-      } else {
+      const isHandled = await checkAndCreateAdmin(userCredential.user);
+      if (!isHandled) {
         navigate('/register');
       }
     } catch (error: any) {

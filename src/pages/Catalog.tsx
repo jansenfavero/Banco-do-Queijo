@@ -19,7 +19,9 @@ export function Catalog() {
 
   useEffect(() => {
     let q;
-    if (profile?.role === 'PRODUTOR') {
+    if (profile?.role === 'ADMIN') {
+      q = query(collection(db, 'products'));
+    } else if (profile?.role === 'PRODUTOR') {
       q = query(collection(db, 'products'), where('produtorId', '==', profile.id));
     } else {
       q = query(collection(db, 'products'), where('active', '==', true));

@@ -13,8 +13,13 @@ export function Orders() {
   useEffect(() => {
     if (!profile) return;
 
-    const field = profile.role === 'PRODUTOR' ? 'produtorId' : 'compradorId';
-    const q = query(collection(db, 'orders'), where(field, '==', profile.id));
+    let q;
+    if (profile.role === 'ADMIN') {
+      q = query(collection(db, 'orders'));
+    } else {
+      const field = profile.role === 'PRODUTOR' ? 'produtorId' : 'compradorId';
+      q = query(collection(db, 'orders'), where(field, '==', profile.id));
+    }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const ords: any[] = [];

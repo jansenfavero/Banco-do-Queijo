@@ -25,7 +25,12 @@ export function AppLayout() {
     navigate('/login');
   };
 
-  const navItems = profile?.role === 'PRODUTOR' ? [
+  const navItems = profile?.role === 'ADMIN' ? [
+    { name: 'Painel Admin', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Catálogo Geral', path: '/catalog', icon: Store },
+    { name: 'Todas as Demandas', path: '/demands', icon: Megaphone },
+    { name: 'Todos os Pedidos', path: '/orders', icon: ShoppingCart },
+  ] : profile?.role === 'PRODUTOR' ? [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Meus Produtos', path: '/catalog', icon: Store },
     { name: 'Pedidos Recebidos', path: '/orders', icon: ShoppingCart },

@@ -16,7 +16,7 @@ export function Dashboard() {
         </p>
       </div>
 
-      {profile.kycStatus === 'PENDENTE' && (
+      {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
           <div className="flex">
             <div className="flex-shrink-0">
@@ -33,7 +33,69 @@ export function Dashboard() {
         </div>
       )}
 
-      {profile.role === 'PRODUTOR' ? <ProducerDashboard /> : <WholesalerDashboard />}
+      {profile.role === 'ADMIN' ? <AdminDashboard /> : profile.role === 'PRODUTOR' ? <ProducerDashboard /> : <WholesalerDashboard />}
+    </div>
+  );
+}
+
+function AdminDashboard() {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <p className="text-xs text-muted-foreground">Produtores e Atacadistas</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Transações Totais</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">R$ 0,00</div>
+            <p className="text-xs text-muted-foreground">Volume transacionado</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Produtos Cadastrados</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <p className="text-xs text-muted-foreground">No catálogo geral</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Demandas Ativas</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <p className="text-xs text-muted-foreground">Aguardando propostas</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-7">
+          <CardHeader>
+            <CardTitle>Painel Administrativo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-10 text-muted-foreground">
+              Você tem acesso total à plataforma. Use o menu lateral para gerenciar o catálogo, demandas e pedidos.
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
