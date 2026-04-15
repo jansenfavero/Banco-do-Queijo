@@ -1,0 +1,275 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId} (matches auth.uid)
+    // Fields:
+    //   - role: string (required, 'PRODUTOR', 'ATACADISTA', 'ADMIN')
+    //   - producerProfile: string (optional, 'SEM_CNPJ', 'COM_CNPJ', '')
+    //   - name: string (required)
+    //   - cpfCnpj: string (required)
+    //   - razaoSocial: string (optional)
+    //   - nomeFantasia: string (optional)
+    //   - titular: string (optional)
+    //   - tempoAbertura: string (optional)
+    //   - cep: string (optional)
+    //   - logradouro: string (optional)
+    //   - numero: string (optional)
+    //   - complemento: string (optional)
+    //   - bairro: string (optional)
+    //   - city: string (required)
+    //   - state: string (required)
+    //   - email: string (required, valid email)
+    //   - phone: string (required)
+    //   - cheeseTypes: list of strings (optional)
+    //   - weeklyVolume: number (optional)
+    //   - chargesFreight: boolean (optional)
+    //   - freightType: string (optional)
+    //   - freightValue: number (optional)
+    //   - images: list of strings (optional)
+    //   - kycStatus: string (required, 'PENDENTE', 'VALIDADO', 'BLOQUEADO')
+    //   - createdAt: timestamp (required)
+    //
+    // Collection: products
+    // Document ID: {productId}
+    // Fields:
+    //   - produtorId: string (required, matches users doc)
+    //   - cheeseType: string (required, < 100 chars)
+    //   - format: string (required, < 100 chars)
+    //   - pricePerKg: number (required, > 0)
+    //   - availableKg: number (required, >= 0)
+    //   - vacuumPacked: boolean (required)
+    //   - labelType: string (required, 'SIMPLES', 'COMPLETO_SIE')
+    //   - sliceable: boolean (required)
+    //   - deliveryType: string (required, < 100 chars)
+    //   - paymentMethods: list of strings (required, size < 10)
+    //   - photos: list of strings (required, size <= 5)
+    //   - active: boolean (required)
+    //   - createdAt: timestamp (required)
+    //
+    // Collection: orders
+    // Document ID: {orderId}
+    // Fields:
+    //   - compradorId: string (required)
+    //   - produtorId: string (required)
+    //   - productId: string (required)
+    //   - quantityKg: number (required, > 0)
+    //   - unitPrice: number (required, > 0)
+    //   - totalAmount: number (required, > 0)
+    //   - platformFee: number (required, >= 0)
+    //   - repasse: number (required, >= 0)
+    //   - paymentMethod: string (required, < 50 chars)
+    //   - status: string (required, 'PENDENTE', 'ACEITO', 'EM_TRANSITO', 'ENTREGUE', 'RECUSADO')
+    //   - notes: string (optional, < 500 chars)
+    //   - createdAt: timestamp (required)
+    //
+    // Collection: reviews
+    // Document ID: {reviewId}
+    // Fields:
+    //   - orderId: string (required)
+    //   - authorId: string (required)
+    //   - targetId: string (required)
+    //   - rating: number (required, 1-5)
+    //   - comment: string (optional, < 1000 chars)
+    //   - createdAt: timestamp (required)
+    //
+    // Collection: demands
+    // Document ID: {demandId}
+    // Fields:
+    //   - compradorId: string (required)
+    //   - cheeseType: string (required, < 100 chars)
+    //   - quantityKg: number (required, > 0)
+    //   - frequency: string (required, < 50 chars)
+    //   - region: string (required, < 100 chars)
+    //   - paymentMethod: string (required, < 50 chars)
+    //   - fachadaPhoto: string (required, < 500 chars)
+    //   - active: boolean (required)
+    //   - createdAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
+          (request.auth.token.email == "contato@jansenfavero.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !('field' in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) &&
+             isValidString(data.name, 1, 100) &&
+             isValidEmail(data.email) &&
+             data.role in ['PRODUTOR', 'ATACADISTA', 'ADMIN'] &&
+             isValidString(data.cpfCnpj, 11, 20) &&
+             isValidString(data.phone, 8, 20) &&
+             isValidString(data.city, 1, 100) &&
+             isValidString(data.state, 2, 50) &&
+             data.kycStatus in ['PENDENTE', 'VALIDADO', 'BLOQUEADO'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidProduct(data) {
+      return hasRequiredFields(['produtorId', 'cheeseType', 'format', 'pricePerKg', 'availableKg', 'vacuumPacked', 'labelType', 'sliceable', 'deliveryType', 'paymentMethods', 'photos', 'active', 'createdAt']) &&
+             data.produtorId == request.auth.uid &&
+             isValidString(data.cheeseType, 1, 100) &&
+             isValidString(data.format, 1, 100) &&
+             data.pricePerKg is number && data.pricePerKg > 0 &&
+             data.availableKg is number && data.availableKg >= 0 &&
+             data.vacuumPacked is bool &&
+             data.labelType in ['SIMPLES', 'COMPLETO_SIE'] &&
+             data.sliceable is bool &&
+             isValidString(data.deliveryType, 1, 100) &&
+             data.paymentMethods is list && data.paymentMethods.size() > 0 && data.paymentMethods.size() <= 10 &&
+             data.photos is list && data.photos.size() <= 5 &&
+             data.active is bool &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidOrder(data) {
+      return hasRequiredFields(['compradorId', 'produtorId', 'productId', 'quantityKg', 'unitPrice', 'totalAmount', 'platformFee', 'repasse', 'paymentMethod', 'status', 'createdAt']) &&
+             data.compradorId == request.auth.uid &&
+             data.produtorId is string &&
+             data.productId is string &&
+             data.quantityKg is number && data.quantityKg > 0 &&
+             data.unitPrice is number && data.unitPrice > 0 &&
+             data.totalAmount is number && data.totalAmount > 0 &&
+             data.platformFee is number && data.platformFee >= 0 &&
+             data.repasse is number && data.repasse >= 0 &&
+             isValidString(data.paymentMethod, 1, 50) &&
+             data.status in ['PENDENTE', 'ACEITO', 'EM_TRANSITO', 'ENTREGUE', 'RECUSADO'] &&
+             (!('notes' in data) || isValidString(data.notes, 0, 500)) &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidReview(data) {
+      return hasRequiredFields(['orderId', 'authorId', 'targetId', 'rating', 'createdAt']) &&
+             data.authorId == request.auth.uid &&
+             data.orderId is string &&
+             data.targetId is string &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             (!('comment' in data) || isValidString(data.comment, 0, 1000)) &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidDemand(data) {
+      return hasRequiredFields(['compradorId', 'cheeseType', 'quantityKg', 'frequency', 'region', 'paymentMethod', 'fachadaPhoto', 'active', 'createdAt']) &&
+             data.compradorId == request.auth.uid &&
+             isValidString(data.cheeseType, 1, 100) &&
+             data.quantityKg is number && data.quantityKg > 0 &&
+             isValidString(data.frequency, 1, 50) &&
+             isValidString(data.region, 1, 100) &&
+             isValidString(data.paymentMethod, 1, 50) &&
+             isValidString(data.fachadaPhoto, 1, 500) &&
+             data.active is bool &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      // Users can read their own profile, admins can read all.
+      // Other users can read basic info if they are interacting, but for simplicity, we allow authenticated users to read profiles to see names/reputation.
+      allow read: if isAuthenticated();
+      
+      // Users can create their own profile. They cannot set themselves as ADMIN.
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE';
+      
+      // Users can update their own profile, but cannot change their role or kycStatus. Admins can update anything.
+      allow update: if (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'kycStatus', 'createdAt', 'email'])) || isAdmin();
+    }
+
+    match /products/{productId} {
+      // Anyone authenticated can read active products. Producers can read their own inactive products. Admins can read all.
+      allow read: if isAuthenticated();
+      
+      // Only validated producers can create products.
+      allow create: if isAuthenticated() && isValidProduct(request.resource.data) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'PRODUTOR' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.kycStatus == 'VALIDADO';
+      
+      // Producers can update their own products.
+      allow update: if isAuthenticated() && isValidProduct(request.resource.data) && resource.data.produtorId == request.auth.uid && areImmutableFieldsUnchanged(['produtorId', 'createdAt']);
+    }
+
+    match /orders/{orderId} {
+      // Buyers and Producers involved in the order can read it. Admins can read all.
+      allow read: if isAuthenticated() && (resource.data.compradorId == request.auth.uid || resource.data.produtorId == request.auth.uid || isAdmin());
+      
+      // Buyers can create orders.
+      allow create: if isAuthenticated() && isValidOrder(request.resource.data) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ATACADISTA';
+      
+      // Both can update status.
+      allow update: if isAuthenticated() && 
+                    (resource.data.compradorId == request.auth.uid || resource.data.produtorId == request.auth.uid || isAdmin()) &&
+                    areImmutableFieldsUnchanged(['compradorId', 'produtorId', 'productId', 'quantityKg', 'unitPrice', 'totalAmount', 'platformFee', 'repasse', 'createdAt']);
+    }
+
+    match /reviews/{reviewId} {
+      // Anyone authenticated can read reviews.
+      allow read: if isAuthenticated();
+      
+      // Users can create reviews if they are the author.
+      allow create: if isAuthenticated() && isValidReview(request.resource.data);
+      
+      // Reviews cannot be updated.
+      allow update: if false;
+    }
+
+    match /demands/{demandId} {
+      // Anyone authenticated can read demands.
+      allow read: if isAuthenticated();
+      
+      // Buyers can create demands.
+      allow create: if isAuthenticated() && isValidDemand(request.resource.data) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ATACADISTA';
+      
+      // Buyers can update their own demands (e.g., set to inactive).
+      allow update: if isAuthenticated() && resource.data.compradorId == request.auth.uid && areImmutableFieldsUnchanged(['compradorId', 'createdAt']);
+    }
+  }
+}

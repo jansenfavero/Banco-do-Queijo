@@ -1,0 +1,130 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the platform (Producer or Wholesaler).",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["PRODUTOR", "ATACADISTA"] },
+        "producerProfile": { "type": "string", "enum": ["SEM_CNPJ", "COM_CNPJ", ""] },
+        "name": { "type": "string", "description": "Full name for Sem CNPJ or Atacadista" },
+        "cpfCnpj": { "type": "string" },
+        "razaoSocial": { "type": "string" },
+        "nomeFantasia": { "type": "string" },
+        "titular": { "type": "string" },
+        "tempoAbertura": { "type": "string" },
+        "cep": { "type": "string" },
+        "logradouro": { "type": "string" },
+        "numero": { "type": "string" },
+        "complemento": { "type": "string" },
+        "bairro": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "cheeseTypes": { "type": "array", "items": { "type": "string" } },
+        "weeklyVolume": { "type": "number" },
+        "chargesFreight": { "type": "string", "enum": ["SIM", "NAO"] },
+        "freightType": { "type": "string" },
+        "freightValue": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["role", "cpfCnpj", "city", "state", "email", "phone", "createdAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "A cheese product listed by a producer.",
+      "type": "object",
+      "properties": {
+        "produtorId": { "type": "string", "description": "ID of the User (Producer)" },
+        "cheeseType": { "type": "string" },
+        "format": { "type": "string" },
+        "pricePerKg": { "type": "number" },
+        "availableKg": { "type": "number" },
+        "vacuumPacked": { "type": "boolean" },
+        "labelType": { "type": "string", "enum": ["SIMPLES", "COMPLETO_SIE"] },
+        "sliceable": { "type": "boolean" },
+        "deliveryType": { "type": "string" },
+        "paymentMethods": { "type": "array", "items": { "type": "string" } },
+        "photos": { "type": "array", "items": { "type": "string" } },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["produtorId", "cheeseType", "format", "pricePerKg", "availableKg", "vacuumPacked", "labelType", "sliceable", "deliveryType", "paymentMethods", "active", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "An order placed by a buyer to a producer.",
+      "type": "object",
+      "properties": {
+        "compradorId": { "type": "string" },
+        "produtorId": { "type": "string" },
+        "productId": { "type": "string" },
+        "quantityKg": { "type": "number" },
+        "unitPrice": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "platformFee": { "type": "number" },
+        "repasse": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDENTE", "ACEITO", "EM_TRANSITO", "ENTREGUE", "RECUSADO"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["compradorId", "produtorId", "productId", "quantityKg", "unitPrice", "totalAmount", "platformFee", "repasse", "paymentMethod", "status", "createdAt"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "A review left by a buyer or producer after an order is delivered.",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "targetId": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "authorId", "targetId", "rating", "createdAt"]
+    },
+    "Demand": {
+      "title": "Demand",
+      "description": "A public demand created by a buyer.",
+      "type": "object",
+      "properties": {
+        "compradorId": { "type": "string" },
+        "cheeseType": { "type": "string" },
+        "quantityKg": { "type": "number" },
+        "frequency": { "type": "string" },
+        "region": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "fachadaPhoto": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["compradorId", "cheeseType", "quantityKg", "frequency", "region", "paymentMethod", "fachadaPhoto", "active", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles."
+    },
+    "products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Stores product listings."
+    },
+    "orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Stores orders."
+    },
+    "reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Stores reviews."
+    },
+    "demands/{demandId}": {
+      "schema": { "$ref": "#/entities/Demand" },
+      "description": "Stores buyer demands."
+    }
+  }
+}
