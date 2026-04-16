@@ -145,16 +145,17 @@ service cloud.firestore {
     // ===============================================================
 
     function isValidUser(data) {
-      return hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) &&
+      return (data.role == 'ADMIN' && hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) && data.createdAt is timestamp) || 
+             (hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) &&
              isValidString(data.name, 1, 100) &&
              isValidEmail(data.email) &&
-             data.role in ['PRODUTOR', 'ATACADISTA', 'ADMIN'] &&
+             data.role in ['PRODUTOR', 'ATACADISTA'] &&
              isValidString(data.cpfCnpj, 11, 20) &&
              isValidString(data.phone, 8, 20) &&
              isValidString(data.city, 1, 100) &&
              isValidString(data.state, 2, 50) &&
              data.kycStatus in ['PENDENTE', 'VALIDADO', 'BLOQUEADO'] &&
-             data.createdAt is timestamp;
+             data.createdAt is timestamp);
     }
 
     function isValidProduct(data) {
@@ -222,11 +223,17 @@ service cloud.firestore {
       // Other users can read basic info if they are interacting, but for simplicity, we allow authenticated users to read profiles to see names/reputation.
       allow read: if isAuthenticated();
       
-      // Users can create their own profile. They cannot set themselves as ADMIN.
-      allow create: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE';
+      // Users can create their own profile. Normally cannot set as ADMIN, but we allow it if the email matches our superadmin list
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && (
+        (request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE') ||
+        (request.resource.data.role == 'ADMIN' && (request.auth.token.email == 'contato@jansenfavero.com' || request.auth.token.email == 'casadoqueijo@gmail.com'))
+      );
       
-      // Users can update their own profile, but cannot change their role or kycStatus. Admins can update anything.
-      allow update: if (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'kycStatus', 'createdAt', 'email'])) || isAdmin();
+      // Users can update their own profile. Admins can update anything.
+      allow update: if 
+        (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'kycStatus', 'createdAt', 'email'])) || 
+        isAdmin() ||
+        (isOwner(userId) && request.resource.data.role == 'ADMIN' && (request.auth.token.email == 'contato@jansenfavero.com' || request.auth.token.email == 'casadoqueijo@gmail.com'));
     }
 
     match /products/{productId} {

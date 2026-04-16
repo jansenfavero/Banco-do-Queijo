@@ -26,17 +26,22 @@ export function Login() {
 
     if (ADMIN_EMAILS.includes(user.email || '')) {
       if (!docSnap.exists()) {
-        await setDoc(docRef, {
-          name: user.displayName || 'Super Admin',
-          email: user.email,
-          role: 'ADMIN',
-          kycStatus: 'VALIDADO',
-          cpfCnpj: '00000000000',
-          phone: '00000000000',
-          city: 'Admin City',
-          state: 'AD',
-          createdAt: serverTimestamp()
-        });
+        try {
+          await setDoc(docRef, {
+            name: user.displayName || 'Super Admin',
+            email: user.email,
+            role: 'ADMIN',
+            kycStatus: 'VALIDADO',
+            cpfCnpj: '00000000000',
+            phone: '00000000000',
+            city: 'Admin City',
+            state: 'AD',
+            createdAt: serverTimestamp()
+          });
+        } catch (e: any) {
+             console.error("Firestore Error in creating admin", e);
+             throw e;
+        }
       } else if (docSnap.data().role !== 'ADMIN') {
         await setDoc(docRef, { role: 'ADMIN', kycStatus: 'VALIDADO' }, { merge: true });
       }
