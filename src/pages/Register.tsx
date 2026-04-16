@@ -192,11 +192,13 @@ export function Register() {
     } else {
       value = formatCNPJ(value);
     }
-    setFormData({ ...formData, cpfCnpj: value });
+    
+    // Always use functional state update for fast typing
+    setFormData(prev => ({ ...prev, cpfCnpj: value }));
 
     // Auto-fill CNPJ
-    if ((formData.role === 'ATACADISTA' || (formData.role === 'PRODUTOR' && formData.producerProfile === 'COM_CNPJ')) && value.replace(/\D/g, '').length === 14) {
-      const cleanCNPJ = value.replace(/\D/g, '');
+    const cleanCNPJ = value.replace(/\D/g, '');
+    if ((formData.role === 'ATACADISTA' || (formData.role === 'PRODUTOR' && formData.producerProfile === 'COM_CNPJ')) && cleanCNPJ.length === 14) {
       if (validateCNPJ(cleanCNPJ)) {
         try {
           const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCNPJ}`);
@@ -220,12 +222,14 @@ export function Register() {
             }
 
             const cepFormatado = data.cep ? `${data.cep.slice(0, 5)}-${data.cep.slice(5)}` : '';
+            const nomeFantasia = data.nome_fantasia || data.razao_social || '';
 
             setFormData(prev => ({
               ...prev,
               cpfCnpj: value,
+              name: nomeFantasia, // Also populate name so the firestore rules pass
               razaoSocial: data.razao_social || '',
-              nomeFantasia: data.nome_fantasia || data.razao_social || '',
+              nomeFantasia: nomeFantasia,
               titular: titularName,
               cep: cepFormatado,
               logradouro: data.descricao_tipo_de_logradouro ? `${data.descricao_tipo_de_logradouro} ${data.logradouro}` : (data.logradouro || ''),
@@ -258,9 +262,12 @@ export function Register() {
                 console.error('Erro ao buscar ViaCEP após CNPJ', error);
               }
             }
+          } else {
+             toast.error('Erro ao buscar CNPJ na base.');
           }
         } catch (error) {
           console.error('Erro ao buscar CNPJ', error);
+          toast.error('Erro de conexão ao buscar CNPJ.');
         }
       } else {
         toast.error('CNPJ inválido');
@@ -378,7 +385,7 @@ export function Register() {
       }
 
       const profileData: any = {
-        name: formData.name,
+        name: formData.name || formData.nomeFantasia || formData.razaoSocial || 'Usuário',
         email: formData.email,
         role: formData.role,
         cpfCnpj: formData.cpfCnpj,
@@ -453,7 +460,7 @@ export function Register() {
       }
 
       const profileData: any = {
-        name: userCredential.user.displayName || formData.name || 'Usuário',
+        name: userCredential.user.displayName || formData.name || formData.nomeFantasia || formData.razaoSocial || 'Usuário',
         email: userCredential.user.email,
         role: formData.role,
         cpfCnpj: formData.cpfCnpj || '00000000000',
