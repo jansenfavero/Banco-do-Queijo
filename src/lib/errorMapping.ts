@@ -28,6 +28,8 @@ export function getFriendlyErrorMessage(error: any): string {
       return 'O login com o Google foi cancelado.';
     case 'auth/operation-not-allowed':
       return 'Este método de login não está habilitado no momento.';
+    case 'auth/unauthorized-domain':
+      return 'Este domínio (vercel.app) não está autorizado no Firebase. É necessário usar seu próprio projeto Firebase.';
     case 'auth/requires-recent-login':
       return 'Por segurança, você precisa fazer login novamente para realizar esta ação.';
     default:
