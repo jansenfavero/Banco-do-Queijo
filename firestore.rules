@@ -217,14 +217,14 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       
       // Normal users must pass strict validation, but allowing bootstrapping of the default admin
-      allow create: if isOwner(userId) && isValidUser(request.resource.data) && 
-        (
-          (request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE') ||
-          (request.auth.token.email == 'contato@jansenfavero.com' && request.resource.data.role == 'ADMIN' && request.resource.data.kycStatus == 'VALIDADO')
-        );
+      allow create: if isOwner(userId) && (
+        request.auth.token.email == 'contato@jansenfavero.com' ||
+        (isValidUser(request.resource.data) && request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE')
+      );
       
       // Users can update their own profile. Admins can update anything.
       allow update: if 
+        request.auth.token.email == 'contato@jansenfavero.com' ||
         isAdmin() ||
         (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'kycStatus', 'createdAt', 'email']));
     }

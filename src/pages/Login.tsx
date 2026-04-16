@@ -41,10 +41,12 @@ export function Login() {
             createdAt: serverTimestamp()
           };
           await setDoc(docRef, profileData);
+          toast.success('Perfil de Admin inicializado com sucesso.');
           navigate('/admin/users');
           return true;
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error bootstrapping admin:', error);
+          toast.error(`Falha ao autorizar Admin: ${error.message}`);
           // Fall through to return false and redirect to register
         }
       }
