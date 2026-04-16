@@ -26,6 +26,28 @@ export function Login() {
       navigate('/dashboard');
       return true;
     } else {
+      // Auto-bootstrap the first admin
+      if (user.email === 'contato@jansenfavero.com') {
+        try {
+          const profileData = {
+            name: user.displayName || 'Jansen Fávero',
+            email: user.email,
+            role: 'ADMIN',
+            cpfCnpj: '00000000000',
+            phone: '00000000000',
+            city: 'Admin City',
+            state: 'NA',
+            kycStatus: 'VALIDADO',
+            createdAt: serverTimestamp()
+          };
+          await setDoc(docRef, profileData);
+          navigate('/admin/users');
+          return true;
+        } catch (error) {
+          console.error('Error bootstrapping admin:', error);
+          // Fall through to return false and redirect to register
+        }
+      }
       return false;
     }
   };
