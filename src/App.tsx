@@ -11,6 +11,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Catalog } from './pages/Catalog';
 import { Orders } from './pages/Orders';
 import { Demands } from './pages/Demands';
+import { AdminUsers } from './pages/AdminUsers';
 import { Toaster } from './components/ui/sonner';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) {
@@ -60,6 +61,11 @@ export default function App() {
           <Route path="/demands" element={
             <ProtectedRoute>
               <Demands />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/users" element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminUsers />
             </ProtectedRoute>
           } />
         </Route>

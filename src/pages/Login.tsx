@@ -11,8 +11,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 
-const ADMIN_EMAILS = ['contato@jansenfavero.com', 'casadoqueijo@gmail.com'];
-
 export function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -20,34 +18,9 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const checkAndCreateAdmin = async (user: any) => {
+  const checkRegistration = async (user: any) => {
     const docRef = doc(db, 'users', user.uid);
     const docSnap = await getDoc(docRef);
-
-    if (ADMIN_EMAILS.includes(user.email || '')) {
-      if (!docSnap.exists()) {
-        try {
-          await setDoc(docRef, {
-            name: user.displayName || 'Super Admin',
-            email: user.email,
-            role: 'ADMIN',
-            kycStatus: 'VALIDADO',
-            cpfCnpj: '00000000000',
-            phone: '00000000000',
-            city: 'Admin City',
-            state: 'AD',
-            createdAt: serverTimestamp()
-          });
-        } catch (e: any) {
-             console.error("Firestore Error in creating admin", e);
-             throw e;
-        }
-      } else if (docSnap.data().role !== 'ADMIN') {
-        await setDoc(docRef, { role: 'ADMIN', kycStatus: 'VALIDADO' }, { merge: true });
-      }
-      navigate('/dashboard');
-      return true;
-    }
 
     if (docSnap.exists()) {
       navigate('/dashboard');
@@ -63,7 +36,7 @@ export function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
-      const isHandled = await checkAndCreateAdmin(userCredential.user);
+      const isHandled = await checkRegistration(userCredential.user);
       if (!isHandled) {
         toast.error('Perfil não encontrado. Por favor, complete seu cadastro.');
         navigate('/register');
@@ -82,7 +55,7 @@ export function Login() {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       
-      const isHandled = await checkAndCreateAdmin(userCredential.user);
+      const isHandled = await checkRegistration(userCredential.user);
       if (!isHandled) {
         navigate('/register');
       }

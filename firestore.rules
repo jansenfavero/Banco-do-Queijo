@@ -104,14 +104,8 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    function isSuperAdmin() {
-      return isAuthenticated() && 
-             ("email" in request.auth.token) && 
-             (request.auth.token.email == 'contato@jansenfavero.com' || request.auth.token.email == 'casadoqueijo@gmail.com');
-    }
-
     function isAdmin() {
-      return isSuperAdmin() || (isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN');
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN';
     }
 
     function isValidEmail(email) {
@@ -146,17 +140,16 @@ service cloud.firestore {
     // ===============================================================
 
     function isValidUser(data) {
-      return (data.role == 'ADMIN' && hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) && data.createdAt is timestamp) || 
-             (hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) &&
+      return hasRequiredFields(['name', 'email', 'role', 'cpfCnpj', 'phone', 'city', 'state', 'kycStatus', 'createdAt']) &&
              isValidString(data.name, 1, 100) &&
              isValidEmail(data.email) &&
-             data.role in ['PRODUTOR', 'ATACADISTA'] &&
+             data.role in ['PRODUTOR', 'ATACADISTA', 'ADMIN'] && // ADMIN is allowed in the schema for when admins update
              isValidString(data.cpfCnpj, 11, 20) &&
              isValidString(data.phone, 8, 20) &&
              isValidString(data.city, 1, 100) &&
              isValidString(data.state, 2, 50) &&
              data.kycStatus in ['PENDENTE', 'VALIDADO', 'BLOQUEADO'] &&
-             data.createdAt is timestamp);
+             data.createdAt is timestamp;
     }
 
     function isValidProduct(data) {
@@ -221,19 +214,13 @@ service cloud.firestore {
 
     match /users/{userId} {
       // Users can read their own profile, admins can read all.
-      // Other users can read basic info if they are interacting, but for simplicity, we allow authenticated users to read profiles to see names/reputation.
       allow read: if isAuthenticated();
       
-      // Super admins can create their profile without any strict validation logic, saving immediately
       // Normal users must pass strict validation
-      allow create: if isOwner(userId) && (
-        isSuperAdmin() || 
-        (isValidUser(request.resource.data) && request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE')
-      );
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role != 'ADMIN' && request.resource.data.kycStatus == 'PENDENTE';
       
       // Users can update their own profile. Admins can update anything.
       allow update: if 
-        isSuperAdmin() ||
         isAdmin() ||
         (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'kycStatus', 'createdAt', 'email']));
     }

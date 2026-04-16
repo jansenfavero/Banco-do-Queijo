@@ -10,7 +10,8 @@ import {
   Megaphone, 
   LogOut,
   Menu,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -27,6 +28,7 @@ export function AppLayout() {
 
   const navItems = profile?.role === 'ADMIN' ? [
     { name: 'Painel Admin', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Perfis e Permissões', path: '/admin/users', icon: Shield },
     { name: 'Catálogo Geral', path: '/catalog', icon: Store },
     { name: 'Todas as Demandas', path: '/demands', icon: Megaphone },
     { name: 'Todos os Pedidos', path: '/orders', icon: ShoppingCart },
