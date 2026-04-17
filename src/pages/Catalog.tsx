@@ -10,7 +10,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Store } from 'lucide-react';
+import { Store, Slice } from 'lucide-react';
 
 export function Catalog() {
   const { profile } = useAuth();
@@ -49,11 +49,11 @@ export function Catalog() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-            <Store className="h-8 w-8 text-primary" />
+            {profile?.role === 'PRODUTOR' ? <Slice className="h-8 w-8 text-primary" /> : <Store className="h-8 w-8 text-primary" />}
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
-              {profile?.role === 'PRODUTOR' ? 'Meus Queijos' : 'Catálogo Geral'}
+              {profile?.role === 'PRODUTOR' ? 'Publicar Queijo' : 'Catálogo Geral'}
             </h1>
             <p className="text-muted-foreground text-sm md:text-base">
               {profile?.role === 'PRODUTOR' ? 'Gerencie sua produção e publicação.' : 'Encontre os melhores queijos artesanais.'}
@@ -69,8 +69,8 @@ export function Catalog() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
               <DialogHeader>
-                <DialogTitle>Criar Novo Anúncio</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-2xl">Publicar Queijo</DialogTitle>
+                <DialogDescription className="text-white/80">
                   Preencha os detalhes do seu produto para listá-lo no catálogo.
                 </DialogDescription>
               </DialogHeader>
@@ -151,9 +151,18 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
   );
 }
 
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { Camera, Image as ImageIcon, Check, CheckCircle2, Save, Upload, X } from 'lucide-react';
+import { useRef } from 'react';
+
 function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
   const { profile } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [savingAsDraft, setSavingAsDraft] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     cheeseType: '',
     format: '',
@@ -165,16 +174,60 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
     deliveryType: 'entrego'
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!profile) return;
-    
-    if (profile.kycStatus !== 'VALIDADO') {
-      toast.error('Você precisa ter o cadastro validado para criar anúncios.');
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    if (images.length + files.length > 5) {
+      toast.error('Você pode enviar no máximo 5 imagens.');
       return;
     }
 
-    setLoading(true);
+    setUploading(true);
+    const storage = getStorage();
+    const newImages = [...images];
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const imageRef = storageRef(storage, `products/${profile?.id}/${Date.now()}_${file.name}`);
+        await uploadBytes(imageRef, file);
+        const url = await getDownloadURL(imageRef);
+        newImages.push(url);
+      }
+      setImages(newImages);
+      toast.success('Imagens enviadas com sucesso!');
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro ao enviar imagens.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
+
+  const submitAction = async (isDraft: boolean) => {
+    if (!profile) return;
+    
+    // allow draft if not validated? Let's say yes for now, but not active.
+    if (!isDraft && profile.kycStatus !== 'VALIDADO') {
+      toast.error('Você precisa ter o cadastro validado para publicar anúncios. Tente salvar sem publicar.');
+      return;
+    }
+
+    if (images.length === 0 && !isDraft) {
+      toast.error('Adicione pelo menos 1 imagem para publicar.');
+      return;
+    }
+
+    if (isDraft) setSavingAsDraft(true);
+    else setLoading(true);
+
     try {
       await addDoc(collection(db, 'products'), {
         produtorId: profile.id,
@@ -186,23 +239,24 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
         labelType: formData.labelType,
         sliceable: formData.sliceable === 'true',
         deliveryType: formData.deliveryType,
-        paymentMethods: ['PIX', 'BOLETO'], // Default for MVP
-        photos: [], // Empty for now, would need Storage upload
-        active: true,
+        paymentMethods: ['PIX', 'BOLETO'],
+        photos: images,
+        active: !isDraft, // false if draft
         createdAt: serverTimestamp()
       });
-      toast.success('Anúncio criado com sucesso!');
+      toast.success(isDraft ? 'Salvo em rascunhos!' : 'Queijo publicado com sucesso!');
       onSuccess();
     } catch (error: any) {
       console.error(error);
-      toast.error('Erro ao criar anúncio: ' + error.message);
+      toast.error('Erro ao salvar anúncio: ' + error.message);
     } finally {
       setLoading(false);
+      setSavingAsDraft(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="cheeseType" className="text-white">Tipo de Queijo</Label>
@@ -248,10 +302,77 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
         </div>
       </div>
 
-      <DialogFooter className="pt-4">
-        <Button type="button" variant="outline" className="border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full font-bold" onClick={onSuccess}>Cancelar</Button>
-        <Button type="submit" className="bg-[#ffcb05] text-[#4a2000] hover:bg-[#ffb000] rounded-full font-bold" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Anúncio'}</Button>
+      <div className="space-y-2">
+        <Label className="text-white">Fotos do Queijo (Até 5)</Label>
+        <div className="grid grid-cols-5 gap-2">
+          {images.map((img, index) => (
+            <div key={index} className="relative aspect-square rounded-md overflow-hidden bg-black/20 border border-white/20">
+              <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                title="Remover"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+          {images.length < 5 && (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="aspect-square rounded-md border border-dashed border-white/30 flex flex-col items-center justify-center text-white/50 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-50"
+            >
+              <Camera className="w-5 h-5 mb-1" />
+              <span className="text-[10px] leading-tight text-center px-1">
+                {uploading ? 'Enviando...' : 'Add Foto'}
+              </span>
+            </button>
+          )}
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleImageUpload}
+        />
+      </div>
+
+      <DialogFooter className="pt-4 flex flex-col sm:flex-row gap-2 sm:gap-0 mt-4">
+        <Button 
+          type="button" 
+          variant="outline" 
+          className="border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full font-bold mr-auto" 
+          onClick={onSuccess}
+        >
+          Cancelar
+        </Button>
+        <div className="flex gap-2">
+          <Button 
+            type="button" 
+            variant="outline"
+            className="border-white/20 bg-black/20 text-white hover:bg-black/40 hover:text-white rounded-full font-bold" 
+            onClick={() => submitAction(true)}
+            disabled={loading || savingAsDraft}
+          >
+            <Save className="w-4 h-4 mr-2" />
+            {savingAsDraft ? 'Salvando...' : 'Salvar Sem Publicar'}
+          </Button>
+          <Button 
+            type="button"
+            className="bg-[#ffcb05] text-[#4a2000] hover:bg-[#ffb000] rounded-full font-bold" 
+            onClick={() => submitAction(false)}
+            disabled={loading || savingAsDraft}
+          >
+            <CheckCircle2 className="w-4 h-4 mr-2" />
+            {loading ? 'Publicando...' : 'Publicar Agora'}
+          </Button>
+        </div>
       </DialogFooter>
-    </form>
+    </div>
   );
 }

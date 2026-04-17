@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { Checkbox } from '../components/ui/checkbox';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { toast } from 'sonner';
@@ -190,9 +190,6 @@ function ProducerDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-1">
-        <ProducerProfileCard />
-      </div>
     </div>
   );
 }
