@@ -52,18 +52,22 @@ export function Catalog() {
             <Store className="h-8 w-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">Catálogo Geral</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
+              {profile?.role === 'PRODUTOR' ? 'Meus Queijos' : 'Catálogo Geral'}
+            </h1>
             <p className="text-muted-foreground text-sm md:text-base">
-              {profile?.role === 'PRODUTOR' ? 'Gerencie seus anúncios.' : 'Encontre os melhores queijos artesanais.'}
+              {profile?.role === 'PRODUTOR' ? 'Gerencie sua produção e publicação.' : 'Encontre os melhores queijos artesanais.'}
             </p>
           </div>
         </div>
         {profile?.role === 'PRODUTOR' && (
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button>Novo Anúncio</Button>
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-full">
+                Publicar Queijo
+              </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
               <DialogHeader>
                 <DialogTitle>Criar Novo Anúncio</DialogTitle>
                 <DialogDescription>
@@ -201,42 +205,42 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="cheeseType">Tipo de Queijo</Label>
-          <Input id="cheeseType" value={formData.cheeseType} onChange={(e) => setFormData({...formData, cheeseType: e.target.value})} required placeholder="Ex: Canastra, Coalho..." />
+          <Label htmlFor="cheeseType" className="text-white">Tipo de Queijo</Label>
+          <Input id="cheeseType" value={formData.cheeseType} onChange={(e) => setFormData({...formData, cheeseType: e.target.value})} required placeholder="Ex: Canastra, Coalho..." className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="format">Formato</Label>
-          <Input id="format" value={formData.format} onChange={(e) => setFormData({...formData, format: e.target.value})} required placeholder="Ex: Barra 1kg, Redondo 500g..." />
+          <Label htmlFor="format" className="text-white">Formato</Label>
+          <Input id="format" value={formData.format} onChange={(e) => setFormData({...formData, format: e.target.value})} required placeholder="Ex: Barra 1kg..." className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
         </div>
       </div>
       
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="pricePerKg">Preço por Kg (R$)</Label>
-          <Input id="pricePerKg" type="number" step="0.01" min="0" value={formData.pricePerKg} onChange={(e) => setFormData({...formData, pricePerKg: e.target.value})} required />
+          <Label htmlFor="pricePerKg" className="text-white">Preço por Kg (R$)</Label>
+          <Input id="pricePerKg" type="number" step="0.01" min="0" value={formData.pricePerKg} onChange={(e) => setFormData({...formData, pricePerKg: e.target.value})} required className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="availableKg">Quantidade Disponível (Kg)</Label>
-          <Input id="availableKg" type="number" step="0.1" min="0" value={formData.availableKg} onChange={(e) => setFormData({...formData, availableKg: e.target.value})} required />
+          <Label htmlFor="availableKg" className="text-white">Qtd Disponível (Kg)</Label>
+          <Input id="availableKg" type="number" step="0.1" min="0" value={formData.availableKg} onChange={(e) => setFormData({...formData, availableKg: e.target.value})} required className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="vacuumPacked">Embalagem a Vácuo?</Label>
+          <Label htmlFor="vacuumPacked" className="text-white">Embalagem a Vácuo?</Label>
           <Select value={formData.vacuumPacked} onValueChange={(v) => setFormData({...formData, vacuumPacked: v})}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
+            <SelectTrigger className="bg-black/20 border-white/10 text-white focus:ring-white/20 hover:bg-black/30"><SelectValue /></SelectTrigger>
+            <SelectContent className="bg-[#4a2000] border-white/10 text-white">
               <SelectItem value="true">Sim</SelectItem>
               <SelectItem value="false">Não</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="labelType">Rótulo SIE?</Label>
+          <Label htmlFor="labelType" className="text-white">Rótulo SIE?</Label>
           <Select value={formData.labelType} onValueChange={(v) => setFormData({...formData, labelType: v})}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
+            <SelectTrigger className="bg-black/20 border-white/10 text-white focus:ring-white/20 hover:bg-black/30"><SelectValue /></SelectTrigger>
+            <SelectContent className="bg-[#4a2000] border-white/10 text-white">
               <SelectItem value="COMPLETO_SIE">Sim (SIE)</SelectItem>
               <SelectItem value="SIMPLES">Não (Simples)</SelectItem>
             </SelectContent>
@@ -245,8 +249,8 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <DialogFooter className="pt-4">
-        <Button type="button" variant="outline" onClick={onSuccess}>Cancelar</Button>
-        <Button type="submit" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Anúncio'}</Button>
+        <Button type="button" variant="outline" className="border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full font-bold" onClick={onSuccess}>Cancelar</Button>
+        <Button type="submit" className="bg-[#ffcb05] text-[#4a2000] hover:bg-[#ffb000] rounded-full font-bold" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Anúncio'}</Button>
       </DialogFooter>
     </form>
   );

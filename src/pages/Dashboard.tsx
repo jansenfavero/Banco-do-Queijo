@@ -1,6 +1,20 @@
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Package, Users, DollarSign, TrendingUp, ShoppingBag, LayoutDashboard } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Checkbox } from '../components/ui/checkbox';
+import { useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { toast } from 'sonner';
+
+const CHEESE_TYPES = [
+  'Qualho', 'Mussarela', 'Frescal', 'Canastra', 'Parmesão', 'Prato', 'Provolone', 'Gorgonzola', 'Ricota', 'Meia Cura'
+];
 
 export function Dashboard() {
   const { profile } = useAuth();
@@ -165,17 +179,196 @@ function ProducerDashboard() {
           </CardContent>
         </Card>
         <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Meus Produtos</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Meus Queijos</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-10 text-muted-foreground">
-              Nenhum produto cadastrado.
+            <div className="text-center py-10 text-muted-foreground flex flex-col items-center gap-4">
+              <p>Seu Perfil e Produtos ainda não estão publicados, publique para que fique disponivel aos Atacadistas Compradores.</p>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <div className="grid gap-4 md:grid-cols-1">
+        <ProducerProfileCard />
+      </div>
     </div>
+  );
+}
+
+function ProducerProfileCard() {
+  const { profile } = useAuth();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    weeklyVolume: profile?.weeklyVolume || '',
+    chargesFreight: profile?.chargesFreight ? 'SIM' : 'NAO',
+    freightType: profile?.freightType || 'FIXO',
+    freightValue: profile?.freightValue || '',
+    cheeseTypes: profile?.cheeseTypes || []
+  });
+
+  if (!profile) return null;
+
+  const handleCheckboxChange = (type: string, checked: boolean) => {
+    if (checked) {
+      setFormData({ ...formData, cheeseTypes: [...formData.cheeseTypes, type] });
+    } else {
+      setFormData({ ...formData, cheeseTypes: formData.cheeseTypes.filter((t: string) => t !== type) });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.cheeseTypes.length === 0) {
+      toast.error('Selecione pelo menos um tipo de queijo.');
+      return;
+    }
+    setLoading(true);
+    try {
+      await updateDoc(doc(db, 'users', profile.id), {
+        weeklyVolume: Number(formData.weeklyVolume),
+        chargesFreight: formData.chargesFreight === 'SIM',
+        freightType: formData.freightType,
+        freightValue: formData.chargesFreight === 'SIM' ? Number(formData.freightValue) : 0,
+        cheeseTypes: formData.cheeseTypes
+      });
+      toast.success('Dados atualizados com sucesso!');
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro ao atualizar dados.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Dados de Cadastro e Comercialização</CardTitle>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">Editar Detalhes</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
+            <DialogHeader>
+              <DialogTitle>Editar Dados do Produtor</DialogTitle>
+              <DialogDescription className="text-white/80">
+                Atualize as informações de produção e frete.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-white">Volume Semanal (Kg)</Label>
+                <Input type="number" min="0" value={formData.weeklyVolume} onChange={e => setFormData({...formData, weeklyVolume: e.target.value})} className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20" required />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-white">Tipos Produzidos</Label>
+                <div className="grid grid-cols-2 gap-2 bg-[#4a2000] p-4 rounded-lg">
+                  {CHEESE_TYPES.map(type => (
+                    <div key={type} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={`edit-cheese-${type}`} 
+                        checked={formData.cheeseTypes.includes(type)}
+                        onCheckedChange={(checked) => handleCheckboxChange(type, checked as boolean)}
+                        className="border-white/50 data-[state=checked]:bg-app-accent data-[state=checked]:text-app-bgDark"
+                      />
+                      <label htmlFor={`edit-cheese-${type}`} className="text-sm font-medium leading-none text-white cursor-pointer">
+                        {type}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-white">Cobra frete?</Label>
+                <RadioGroup 
+                  value={formData.chargesFreight} 
+                  onValueChange={(v) => setFormData({...formData, chargesFreight: v})}
+                  className="flex space-x-4 bg-[#4a2000] p-4 rounded-lg"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="SIM" id="edit-f1" className="border-white/50 text-app-accent" />
+                    <Label htmlFor="edit-f1" className="text-white cursor-pointer">Sim</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="NAO" id="edit-f2" className="border-white/50 text-app-accent" />
+                    <Label htmlFor="edit-f2" className="text-white cursor-pointer">Não</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {formData.chargesFreight === 'SIM' && (
+                <div className="grid grid-cols-2 gap-4 bg-[#4a2000]/50 p-4 rounded-lg">
+                  <div className="space-y-2">
+                    <Label className="text-white">Tipo de Cobrança</Label>
+                    <RadioGroup 
+                      value={formData.freightType} 
+                      onValueChange={(v) => setFormData({...formData, freightType: v})}
+                      className="flex flex-col space-y-2"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="FIXO" id="edit-ft1" className="border-white/50 text-app-accent" />
+                        <Label htmlFor="edit-ft1" className="text-white cursor-pointer">Fixo</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="POR_KM" id="edit-ft2" className="border-white/50 text-app-accent" />
+                        <Label htmlFor="edit-ft2" className="text-white cursor-pointer">Por KM</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white">Valor (R$)</Label>
+                    <Input 
+                      type="number" 
+                      step="0.01"
+                      min="0"
+                      value={formData.freightValue} 
+                      onChange={e => setFormData({...formData, freightValue: e.target.value})} 
+                      className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20" 
+                      required 
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <DialogFooter className="pt-4">
+                <Button type="button" variant="outline" className="border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full font-bold" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
+                <Button type="submit" className="bg-[#ffcb05] text-[#4a2000] hover:bg-[#ffb000] rounded-full font-bold" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Alterações'}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Localidade</p>
+            <p>{profile.city} - {profile.state}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Volume Semanal</p>
+            <p>{profile.weeklyVolume} kg</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">Frete</p>
+            <p>
+              {profile.chargesFreight ? `Sim (${profile.freightType === 'FIXO' ? 'Fixo: R$ ' + profile.freightValue : 'Por KM: R$ ' + profile.freightValue})` : 'Não cobrar frete'}
+            </p>
+          </div>
+          <div className="space-y-1 md:col-span-2 lg:col-span-3">
+            <p className="text-sm font-medium text-muted-foreground">Tipos Produzidos</p>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {profile.cheeseTypes?.map((c: string) => (
+                <span key={c} className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">{c}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

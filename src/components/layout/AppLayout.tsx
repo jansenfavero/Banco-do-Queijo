@@ -36,7 +36,7 @@ export function AppLayout() {
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : profile?.role === 'PRODUTOR' ? [
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
-    { name: 'Meus Produtos', path: '/catalogo', icon: Store },
+    { name: 'Meus Queijos', path: '/catalogo', icon: Store },
     { name: 'Pedidos Recebidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Painel de Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
