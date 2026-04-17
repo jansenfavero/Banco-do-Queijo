@@ -48,7 +48,7 @@ export function AppLayout() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border shadow-sm z-50 sticky top-0">
-        <div className="flex items-center gap-3 font-bold text-white text-2xl whitespace-nowrap">
+        <div className="flex items-center gap-3 font-bold text-primary text-2xl whitespace-nowrap">
           <div className="w-14 h-14 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
@@ -67,7 +67,7 @@ export function AppLayout() {
         ${isMobileMenuOpen ? 'flex absolute top-[85px] bottom-0 left-0 right-0' : 'hidden'} 
         md:flex md:sticky md:top-0 md:h-screen w-full md:w-[280px] bg-card border-r border-border shadow-sm flex-shrink-0 flex-col z-40
       `}>
-        <div className="hidden md:flex p-6 items-center gap-3 font-bold text-white text-2xl whitespace-nowrap">
+        <div className="hidden md:flex p-6 items-center gap-3 font-bold text-primary text-2xl whitespace-nowrap">
           <div className="w-12 h-12 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
@@ -105,7 +105,7 @@ export function AppLayout() {
             </div>
           </div>
           <button 
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-[25px] bg-[#dc2626] hover:bg-[#b91c1c] text-white transition-all font-bold text-sm shadow-sm border border-[#b91c1c]" 
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-[25px] bg-[#4a2000]/50 hover:bg-[#4a2000] text-primary transition-all font-bold text-sm shadow-sm" 
             onClick={handleLogout}
           >
             <LogOut className="h-4 w-4" />

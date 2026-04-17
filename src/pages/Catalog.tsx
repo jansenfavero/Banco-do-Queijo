@@ -52,7 +52,7 @@ export function Catalog() {
             <Store className="h-8 w-8 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">Catálogo Geral</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">Catálogo Geral</h1>
             <p className="text-muted-foreground text-sm md:text-base">
               {profile?.role === 'PRODUTOR' ? 'Gerencie seus anúncios.' : 'Encontre os melhores queijos artesanais.'}
             </p>
