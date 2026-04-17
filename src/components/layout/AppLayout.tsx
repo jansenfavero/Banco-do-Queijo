@@ -47,8 +47,8 @@ export function AppLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border shadow-sm">
-        <div className="flex items-center gap-3 font-bold text-primary text-3xl">
+      <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border shadow-sm z-50 sticky top-0">
+        <div className="flex items-center gap-3 font-bold text-primary text-2xl whitespace-nowrap">
           <div className="w-14 h-14 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
@@ -61,17 +61,17 @@ export function AppLayout() {
 
       {/* Sidebar */}
       <aside className={`
-        ${isMobileMenuOpen ? 'block' : 'hidden'} 
-        md:block w-full md:w-64 bg-card border-r border-border shadow-sm flex-shrink-0 flex flex-col z-10
+        ${isMobileMenuOpen ? 'flex absolute top-[85px] bottom-0 left-0 right-0' : 'hidden'} 
+        md:flex md:sticky md:top-0 md:h-screen w-full md:w-[280px] bg-card border-r border-border shadow-sm flex-shrink-0 flex-col z-40
       `}>
-        <div className="hidden md:flex p-6 items-center gap-2 font-bold text-primary text-2xl">
+        <div className="hidden md:flex p-6 items-center gap-3 font-bold text-primary text-2xl whitespace-nowrap">
           <div className="w-12 h-12 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
           Banco do Queijo
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-1.5">
+        <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5 scrollbar-thin">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -93,18 +93,21 @@ export function AppLayout() {
           })}
         </nav>
 
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-border/50 mt-auto bg-card">
           <div className="mb-4 px-4">
-            <p className="text-sm font-medium truncate">{profile?.name}</p>
+            <p className="text-sm font-bold text-white truncate">{profile?.name}</p>
             <p className="text-xs text-muted-foreground truncate">{profile?.email}</p>
-            <div className="mt-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary/20 text-secondary-foreground">
+            <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary">
               {profile?.role}
             </div>
           </div>
-          <Button variant="outline" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
+          <button 
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-[25px] border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white transition-all font-bold text-sm shadow-sm" 
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
             Sair
-          </Button>
+          </button>
         </div>
       </aside>
 

@@ -60,7 +60,7 @@
     --secondary: #703200;
     --secondary-foreground: #F9FAFB;
     --muted: #703200;
-    --muted-foreground: #fcd34d;
+    --muted-foreground: #eaddcf;
     --accent: #703200;
     --accent-foreground: #F9FAFB;
     --destructive: #ef4444;
@@ -68,7 +68,7 @@
     --border: #703200;
     --input: #703200;
     --ring: #f4d763;
-    --radius: 1.5rem;
+    --radius: 25px;
 }
 
 .dark {
@@ -83,7 +83,7 @@
     --secondary: #703200;
     --secondary-foreground: #F9FAFB;
     --muted: #703200;
-    --muted-foreground: #9ca3af;
+    --muted-foreground: #eaddcf;
     --accent: #703200;
     --accent-foreground: #F9FAFB;
     --destructive: #ef4444;

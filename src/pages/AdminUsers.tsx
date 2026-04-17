@@ -81,7 +81,7 @@ export function AdminUsers() {
           </div>
         ) : (
           users.map((user) => (
-            <Card key={user.id} className={`transition-all hover:shadow-md ${user.role === 'ADMIN' ? 'border-primary shadow-sm bg-primary/5' : 'bg-card'}`}>
+            <Card key={user.id} className={`transition-all hover:shadow-md bg-card ${user.role === 'ADMIN' ? 'border-primary shadow-[0_0_15px_rgba(244,215,99,0.15)]' : 'border-border/50'}`}>
               <CardHeader className="pb-3 border-b border-border/40">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                   <div className="flex items-start gap-3">
@@ -108,7 +108,7 @@ export function AdminUsers() {
                     <div className="flex flex-wrap gap-2">
                       <Button
                         variant={user.role === 'ADMIN' ? 'default' : 'outline'}
-                        className={user.role === 'ADMIN' ? 'bg-primary hover:bg-primary/90' : 'hover:bg-primary/10 border-border'}
+                        className={user.role === 'ADMIN' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'hover:bg-primary/10 border-border/50 hover:border-primary/50 hover:text-primary'}
                         onClick={() => updateUserRole(user.id, 'ADMIN')}
                         size="sm"
                       >
@@ -116,7 +116,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.role === 'PRODUTOR' ? 'default' : 'outline'}
-                        className={user.role === 'PRODUTOR' ? 'bg-primary hover:bg-primary/90' : 'hover:bg-primary/10 border-border'}
+                        className={user.role === 'PRODUTOR' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'hover:bg-primary/10 border-border/50 hover:border-primary/50 hover:text-primary'}
                         onClick={() => updateUserRole(user.id, 'PRODUTOR')}
                         size="sm"
                       >
@@ -124,7 +124,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.role === 'ATACADISTA' ? 'default' : 'outline'}
-                        className={user.role === 'ATACADISTA' ? 'bg-primary hover:bg-primary/90' : 'hover:bg-primary/10 border-border'}
+                        className={user.role === 'ATACADISTA' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'hover:bg-primary/10 border-border/50 hover:border-primary/50 hover:text-primary'}
                         onClick={() => updateUserRole(user.id, 'ATACADISTA')}
                         size="sm"
                       >
@@ -138,7 +138,7 @@ export function AdminUsers() {
                     <div className="flex flex-wrap gap-2">
                       <Button
                         variant={user.kycStatus === 'VALIDADO' ? 'default' : 'outline'}
-                        className={user.kycStatus === 'VALIDADO' ? 'bg-green-600 hover:bg-green-700 text-white border-transparent' : 'hover:bg-green-50 border-border hover:text-green-700'}
+                        className={user.kycStatus === 'VALIDADO' ? 'bg-green-600 hover:bg-green-700 text-white border-transparent' : 'hover:bg-green-500/20 border-border/50 hover:text-green-400 hover:border-green-500/50'}
                         onClick={() => updateUserStatus(user.id, 'VALIDADO')}
                         size="sm"
                       >
@@ -146,7 +146,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.kycStatus === 'PENDENTE' ? 'default' : 'outline'}
-                        className={user.kycStatus === 'PENDENTE' ? 'bg-yellow-500 hover:bg-yellow-600 text-white border-transparent' : 'hover:bg-yellow-50 border-border hover:text-yellow-600'}
+                        className={user.kycStatus === 'PENDENTE' ? 'bg-yellow-500 hover:bg-yellow-600 text-white border-transparent' : 'hover:bg-yellow-500/20 border-border/50 hover:text-yellow-400 hover:border-yellow-500/50'}
                         onClick={() => updateUserStatus(user.id, 'PENDENTE')}
                         size="sm"
                       >
@@ -154,7 +154,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.kycStatus === 'BLOQUEADO' ? 'default' : 'outline'}
-                        className={user.kycStatus === 'BLOQUEADO' ? 'bg-red-600 hover:bg-red-700 text-white border-transparent' : 'hover:bg-red-50 border-border hover:text-red-700'}
+                        className={user.kycStatus === 'BLOQUEADO' ? 'bg-red-600 hover:bg-red-700 text-white border-transparent' : 'hover:bg-red-500/20 border-border/50 hover:text-red-400 hover:border-red-500/50'}
                         onClick={() => updateUserStatus(user.id, 'BLOQUEADO')}
                         size="sm"
                       >
