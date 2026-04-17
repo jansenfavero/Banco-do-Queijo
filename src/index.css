@@ -49,6 +49,31 @@
 }
 
 :root {
+    --background: #f8fafc; /* Slate 50 for a clean, very light dashboard bg */
+    --foreground: #0f172a; /* Slate 900 for high-contrast legible text */
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #d36101; /* Orange from the brand */
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9; /* Slate 100 */
+    --secondary-foreground: #1e293b;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #fef08a; /* Yellow/Cheese accent from the brand */
+    --accent-foreground: #422006; /* Dark brown for contrast on yellow */
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #d36101;
+    --radius: 0.75rem; /* Slightly softer borders for elegance */
+}
+
+.dark {
+    /* Optional dark mode mapped to the heavy brand colors if needed, 
+       but for now we focus on standard light mode for the admin panel */
     --background: #d36101;
     --foreground: #F9FAFB;
     --card: #4a2000;
@@ -68,7 +93,6 @@
     --border: #2d3748;
     --input: #2d3748;
     --ring: #f4d763;
-    --radius: 1.5rem;
 }
 
 @layer base {
@@ -81,10 +105,10 @@
   
   /* Premium Scrollbar Global */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #d36101; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb { background: #f4d763; border-radius: 10px; }
-  ::-webkit-scrollbar-thumb:hover { background: #e3c54b; }
-  * { scrollbar-width: thin; scrollbar-color: #f4d763 #d36101; }
+  ::-webkit-scrollbar-track { background: var(--secondary); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; opacity: 0.8; }
+  ::-webkit-scrollbar-thumb:hover { background: #b05000; }
+  * { scrollbar-width: thin; scrollbar-color: var(--primary) var(--secondary); }
 
   /* Force Sonner Toast Colors */
   [data-sonner-toast][data-type="success"] {

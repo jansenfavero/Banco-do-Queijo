@@ -47,8 +47,8 @@ export function AppLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b">
-        <div className="flex items-center gap-3 font-bold text-app-accent text-3xl">
+      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-border shadow-sm">
+        <div className="flex items-center gap-3 font-bold text-primary text-3xl">
           <div className="w-14 h-14 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
@@ -62,16 +62,16 @@ export function AppLayout() {
       {/* Sidebar */}
       <aside className={`
         ${isMobileMenuOpen ? 'block' : 'hidden'} 
-        md:block w-full md:w-64 bg-white border-r flex-shrink-0 flex flex-col
+        md:block w-full md:w-64 bg-white border-r border-border shadow-sm flex-shrink-0 flex flex-col z-10
       `}>
-        <div className="hidden md:flex p-6 items-center gap-2 font-bold text-app-accent text-2xl">
+        <div className="hidden md:flex p-6 items-center gap-2 font-bold text-primary text-2xl">
           <div className="w-12 h-12 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
           Banco do Queijo
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-2">
+        <nav className="flex-1 px-4 py-4 space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -80,13 +80,13 @@ export function AppLayout() {
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   isActive 
-                    ? 'bg-primary/10 text-primary font-medium' 
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-sm' 
+                    : 'text-muted-foreground hover:bg-secondary hover:text-secondary-foreground'
                 }`}
               >
-                <Icon size={20} />
+                <Icon size={20} className={isActive ? "text-primary-foreground" : "opacity-70"} />
                 {item.name}
               </Link>
             );
