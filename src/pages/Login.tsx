@@ -23,7 +23,7 @@ export function Login() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      navigate('/dashboard');
+      navigate('/painel');
       return true;
     } else {
       // Auto-bootstrap the first admin
@@ -42,7 +42,7 @@ export function Login() {
           };
           await setDoc(docRef, profileData);
           toast.success('Perfil de Admin inicializado com sucesso.');
-          navigate('/admin/users');
+          navigate('/admin/usuarios');
           return true;
         } catch (error: any) {
           console.error('Error bootstrapping admin:', error);
@@ -63,7 +63,7 @@ export function Login() {
       const isHandled = await checkRegistration(userCredential.user);
       if (!isHandled) {
         toast.error('Perfil não encontrado. Por favor, complete seu cadastro.');
-        navigate('/register');
+        navigate('/cadastro');
       }
     } catch (error: any) {
       console.error(error);
@@ -81,7 +81,7 @@ export function Login() {
       
       const isHandled = await checkRegistration(userCredential.user);
       if (!isHandled) {
-        navigate('/register');
+        navigate('/cadastro');
       }
     } catch (error: any) {
       console.error(error);
@@ -194,7 +194,7 @@ export function Login() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-white/80">
             Não tem uma conta?{' '}
-            <Link to="/register" className="text-white hover:underline font-bold">
+            <Link to="/cadastro" className="text-white hover:underline font-bold">
               Abra Sua Conta Grátis
             </Link>
           </p>

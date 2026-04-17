@@ -27,21 +27,21 @@ export function AppLayout() {
   };
 
   const navItems = profile?.role === 'ADMIN' ? [
-    { name: 'Painel Admin', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Perfis e Permissões', path: '/admin/users', icon: Shield },
-    { name: 'Catálogo Geral', path: '/catalog', icon: Store },
-    { name: 'Todas as Demandas', path: '/demands', icon: Megaphone },
-    { name: 'Todos os Pedidos', path: '/orders', icon: ShoppingCart },
+    { name: 'Painel Admin', path: '/painel', icon: LayoutDashboard },
+    { name: 'Perfis e Permissões', path: '/admin/usuarios', icon: Shield },
+    { name: 'Catálogo Geral', path: '/catalogo', icon: Store },
+    { name: 'Todas as Demandas', path: '/demandas', icon: Megaphone },
+    { name: 'Todos os Pedidos', path: '/pedidos', icon: ShoppingCart },
   ] : profile?.role === 'PRODUTOR' ? [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Meus Produtos', path: '/catalog', icon: Store },
-    { name: 'Pedidos Recebidos', path: '/orders', icon: ShoppingCart },
-    { name: 'Painel de Demandas', path: '/demands', icon: Megaphone },
+    { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
+    { name: 'Meus Produtos', path: '/catalogo', icon: Store },
+    { name: 'Pedidos Recebidos', path: '/pedidos', icon: ShoppingCart },
+    { name: 'Painel de Demandas', path: '/demandas', icon: Megaphone },
   ] : [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Catálogo de Queijos', path: '/catalog', icon: Store },
-    { name: 'Meus Pedidos', path: '/orders', icon: ShoppingCart },
-    { name: 'Minhas Demandas', path: '/demands', icon: Megaphone },
+    { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
+    { name: 'Catálogo de Queijos', path: '/catalogo', icon: Store },
+    { name: 'Meus Pedidos', path: '/pedidos', icon: ShoppingCart },
+    { name: 'Minhas Demandas', path: '/demandas', icon: Megaphone },
   ];
 
   return (

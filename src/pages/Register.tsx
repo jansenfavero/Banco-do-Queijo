@@ -423,7 +423,7 @@ export function Register() {
       await setDoc(doc(db, 'users', userCredential.user.uid), profileData);
 
       toast.success('Conta criada com sucesso!');
-      navigate('/dashboard');
+      navigate('/painel');
     } catch (error: any) {
       console.error(error);
       toast.error(getFriendlyErrorMessage(error));
@@ -498,7 +498,7 @@ export function Register() {
       await setDoc(doc(db, 'users', userCredential.user.uid), profileData, { merge: true });
 
       toast.success('Conta criada com sucesso!');
-      navigate('/dashboard');
+      navigate('/painel');
     } catch (error: any) {
       console.error(error);
       toast.error(getFriendlyErrorMessage(error));

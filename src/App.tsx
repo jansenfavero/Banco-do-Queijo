@@ -26,7 +26,7 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode,
   }
 
   if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/painel" replace />;
   }
 
   return <>{children}</>;
@@ -40,30 +40,30 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/explorar" element={<CatalogPublic />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/cadastro" element={<Register />} />
         
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={
+          <Route path="/painel" element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           } />
-          <Route path="/catalog" element={
+          <Route path="/catalogo" element={
             <ProtectedRoute>
               <Catalog />
             </ProtectedRoute>
           } />
-          <Route path="/orders" element={
+          <Route path="/pedidos" element={
             <ProtectedRoute>
               <Orders />
             </ProtectedRoute>
           } />
-          <Route path="/demands" element={
+          <Route path="/demandas" element={
             <ProtectedRoute>
               <Demands />
             </ProtectedRoute>
           } />
-          <Route path="/admin/users" element={
+          <Route path="/admin/usuarios" element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <AdminUsers />
             </ProtectedRoute>

@@ -203,7 +203,7 @@ export function CatalogPublic() {
           <p className="text-white mt-5 mb-8 max-w-3xl text-lg md:text-xl font-medium drop-shadow-md">
             Conectamos Produtores Artesanais a Compradores Atacadistas. Elimine Intermediários, Reduza Custos e Garanta Sempre o Melhor Queijo, com o Melhor Preço, com Cotação em Tempo Real.
           </p>
-          <Link to="/register" className="inline-flex px-8 py-4 rounded-full bg-app-accent shadow-[0_0_20px_rgba(244,215,99,0.4)] items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-all active:scale-95 glow-hover text-base md:text-lg font-bold whitespace-nowrap animate-float">
+          <Link to="/cadastro" className="inline-flex px-8 py-4 rounded-full bg-app-accent shadow-[0_0_20px_rgba(244,215,99,0.4)] items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-all active:scale-95 glow-hover text-base md:text-lg font-bold whitespace-nowrap animate-float">
             Abra Sua Conta Grátis
           </Link>
         </div>
