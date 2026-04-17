@@ -69,7 +69,7 @@ export function Demands() {
       {loading ? (
         <div className="flex justify-center py-10">Carregando demandas...</div>
       ) : demands.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-lg border border-dashed">
+        <div className="text-center py-20 bg-card rounded-lg border border-dashed border-border/50">
           <h3 className="text-lg font-medium">Nenhuma demanda ativa</h3>
           <p className="text-muted-foreground mt-1">
             Não há compradores buscando produtos no momento.

@@ -73,7 +73,7 @@ export function Catalog() {
       {loading ? (
         <div className="flex justify-center py-10">Carregando catálogo...</div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-lg border border-dashed">
+        <div className="text-center py-20 bg-card rounded-lg border border-dashed border-border/50">
           <h3 className="text-lg font-medium">Nenhum produto encontrado</h3>
           <p className="text-muted-foreground mt-1">
             {profile?.role === 'PRODUTOR' ? 'Você ainda não possui anúncios ativos.' : 'Não há produtos disponíveis no momento.'}

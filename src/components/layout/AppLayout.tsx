@@ -47,7 +47,7 @@ export function AppLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-border shadow-sm">
+      <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border shadow-sm">
         <div className="flex items-center gap-3 font-bold text-primary text-3xl">
           <div className="w-14 h-14 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
@@ -62,7 +62,7 @@ export function AppLayout() {
       {/* Sidebar */}
       <aside className={`
         ${isMobileMenuOpen ? 'block' : 'hidden'} 
-        md:block w-full md:w-64 bg-white border-r border-border shadow-sm flex-shrink-0 flex flex-col z-10
+        md:block w-full md:w-64 bg-card border-r border-border shadow-sm flex-shrink-0 flex flex-col z-10
       `}>
         <div className="hidden md:flex p-6 items-center gap-2 font-bold text-primary text-2xl">
           <div className="w-12 h-12 flex items-center justify-center">

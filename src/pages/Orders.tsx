@@ -61,7 +61,7 @@ export function Orders() {
       {loading ? (
         <div className="flex justify-center py-10">Carregando pedidos...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-lg border border-dashed">
+        <div className="text-center py-20 bg-card rounded-lg border border-dashed border-border/50">
           <h3 className="text-lg font-medium">Nenhum pedido encontrado</h3>
           <p className="text-muted-foreground mt-1">
             Você ainda não possui histórico de pedidos.

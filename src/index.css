@@ -49,31 +49,6 @@
 }
 
 :root {
-    --background: #f8fafc; /* Slate 50 for a clean, very light dashboard bg */
-    --foreground: #0f172a; /* Slate 900 for high-contrast legible text */
-    --card: #ffffff;
-    --card-foreground: #0f172a;
-    --popover: #ffffff;
-    --popover-foreground: #0f172a;
-    --primary: #d36101; /* Orange from the brand */
-    --primary-foreground: #ffffff;
-    --secondary: #f1f5f9; /* Slate 100 */
-    --secondary-foreground: #1e293b;
-    --muted: #f1f5f9;
-    --muted-foreground: #64748b;
-    --accent: #fef08a; /* Yellow/Cheese accent from the brand */
-    --accent-foreground: #422006; /* Dark brown for contrast on yellow */
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-    --border: #e2e8f0;
-    --input: #e2e8f0;
-    --ring: #d36101;
-    --radius: 0.75rem; /* Slightly softer borders for elegance */
-}
-
-.dark {
-    /* Optional dark mode mapped to the heavy brand colors if needed, 
-       but for now we focus on standard light mode for the admin panel */
     --background: #d36101;
     --foreground: #F9FAFB;
     --card: #4a2000;
@@ -82,16 +57,39 @@
     --popover-foreground: #F9FAFB;
     --primary: #f4d763;
     --primary-foreground: #11151F;
-    --secondary: #2d3748;
+    --secondary: #703200;
     --secondary-foreground: #F9FAFB;
-    --muted: #2d3748;
-    --muted-foreground: #9ca3af;
-    --accent: #2d3748;
+    --muted: #703200;
+    --muted-foreground: #fcd34d;
+    --accent: #703200;
     --accent-foreground: #F9FAFB;
     --destructive: #ef4444;
     --destructive-foreground: #F9FAFB;
-    --border: #2d3748;
-    --input: #2d3748;
+    --border: #703200;
+    --input: #703200;
+    --ring: #f4d763;
+    --radius: 1.5rem;
+}
+
+.dark {
+    --background: #d36101;
+    --foreground: #F9FAFB;
+    --card: #4a2000;
+    --card-foreground: #F9FAFB;
+    --popover: #4a2000;
+    --popover-foreground: #F9FAFB;
+    --primary: #f4d763;
+    --primary-foreground: #11151F;
+    --secondary: #703200;
+    --secondary-foreground: #F9FAFB;
+    --muted: #703200;
+    --muted-foreground: #9ca3af;
+    --accent: #703200;
+    --accent-foreground: #F9FAFB;
+    --destructive: #ef4444;
+    --destructive-foreground: #F9FAFB;
+    --border: #703200;
+    --input: #703200;
     --ring: #f4d763;
 }
 

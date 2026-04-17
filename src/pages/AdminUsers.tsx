@@ -81,11 +81,11 @@ export function AdminUsers() {
           </div>
         ) : (
           users.map((user) => (
-            <Card key={user.id} className={`transition-all hover:shadow-md ${user.role === 'ADMIN' ? 'border-primary shadow-sm bg-primary/5' : 'bg-white'}`}>
+            <Card key={user.id} className={`transition-all hover:shadow-md ${user.role === 'ADMIN' ? 'border-primary shadow-sm bg-primary/5' : 'bg-card'}`}>
               <CardHeader className="pb-3 border-b border-border/40">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                   <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-full ${user.role === 'ADMIN' ? 'bg-primary/20 text-primary' : 'bg-secondary text-secondary-foreground'}`}>
+                    <div className={`p-2 rounded-full ${user.role === 'ADMIN' ? 'bg-primary/20 text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                       {user.role === 'ADMIN' ? <ShieldCheck className="h-6 w-6" /> : <Shield className="h-6 w-6" />}
                     </div>
                     <div>
