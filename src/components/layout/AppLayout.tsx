@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  Shield
+  Shield,
+  Settings
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -32,16 +33,19 @@ export function AppLayout() {
     { name: 'Catálogo Geral', path: '/catalogo', icon: Store },
     { name: 'Todas as Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Todos os Pedidos', path: '/pedidos', icon: ShoppingCart },
+    { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : profile?.role === 'PRODUTOR' ? [
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meus Produtos', path: '/catalogo', icon: Store },
     { name: 'Pedidos Recebidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Painel de Demandas', path: '/demandas', icon: Megaphone },
+    { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : [
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Catálogo de Queijos', path: '/catalogo', icon: Store },
     { name: 'Meus Pedidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Minhas Demandas', path: '/demandas', icon: Megaphone },
+    { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ];
 
   return (

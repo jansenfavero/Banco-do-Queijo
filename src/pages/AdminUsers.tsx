@@ -97,16 +97,18 @@ export function AdminUsers() {
                       <CardDescription className="text-muted-foreground mt-1 text-sm">{user.email}</CardDescription>
                     </div>
                   </div>
-                  <div className="text-left md:text-right">
-                    <p className="text-sm font-medium text-foreground">CNPJ/CPF: <span className="font-mono text-muted-foreground">{user.cpfCnpj}</span></p>
-                    <p className="text-sm text-muted-foreground">{user.city} - {user.state}</p>
-                  </div>
+                  {user.role !== 'ADMIN' && (
+                    <div className="text-left md:text-right">
+                      <p className="text-sm font-medium text-foreground">CNPJ/CPF: <span className="font-mono text-muted-foreground">{user.cpfCnpj}</span></p>
+                      <p className="text-sm text-muted-foreground">{user.city} - {user.state}</p>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="flex flex-col md:flex-row gap-8">
                   <div className="flex-1 space-y-4">
-                    <label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Perfil de Acesso (Role):</label>
+                    <label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Perfil de Acesso:</label>
                     <div className="flex flex-wrap gap-2">
                       <Button
                         variant={user.role === 'ADMIN' ? 'default' : 'outline'}
