@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { auth, db } from '../lib/firebase';
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
 import { getFriendlyErrorMessage } from '../lib/errorMapping';
@@ -14,6 +14,7 @@ import { Checkbox } from '../components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { toast } from 'sonner';
 import { ShieldCheck, ArrowRight, ArrowLeft, Upload, X, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 const CHEESE_TYPES = [
   'Qualho', 'Mussarela', 'Frescal', 'Canastra', 'Parmesão', 'Prato', 'Provolone', 'Gorgonzola', 'Ricota', 'Meia Cura'
@@ -72,6 +73,7 @@ const validateCNPJ = (cnpj: string) => {
 
 export function Register() {
   const navigate = useNavigate();
+  const { user: authUser } = useAuth();
   const [searchParams] = useSearchParams();
   const defaultRole = searchParams.get('role') || 'PRODUTOR';
 
@@ -106,6 +108,27 @@ export function Register() {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      if (currentUser) {
+        // If they already have a full profile, navigate to dashboard
+        const docRef = doc(db, 'users', currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          navigate('/painel');
+        } else {
+          // They have a google auth but lack firestore doc -> prefill form.
+          setFormData(prev => ({
+            ...prev,
+            email: currentUser.email || prev.email,
+            name: currentUser.displayName || prev.name
+          }));
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
   const formatPhone = (value: string) => {
     const numbers = value.replace(/\D/g, '');
@@ -338,8 +361,8 @@ export function Register() {
       return;
     }
 
-    // Password validation (min 6 chars, alphanumeric/special)
-    if (formData.password.length < 6) {
+    // Password validation (only if not using Google Auth)
+    if (!authUser && formData.password.length < 6) {
       toast.error('A senha deve ter no mínimo 6 caracteres.');
       return;
     }
@@ -374,11 +397,17 @@ export function Register() {
 
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      let uid = '';
+      if (authUser) {
+        uid = authUser.uid;
+      } else {
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        uid = userCredential.user.uid;
+      }
       
       const uploadedImageUrls = [];
       for (const file of images) {
-        const imageRef = ref(storage, `users/${userCredential.user.uid}/images/${file.name}-${Date.now()}`);
+        const imageRef = ref(storage, `users/${uid}/images/${file.name}-${Date.now()}`);
         await uploadBytes(imageRef, file);
         const url = await getDownloadURL(imageRef);
         uploadedImageUrls.push(url);
@@ -420,7 +449,7 @@ export function Register() {
         }
       }
 
-      await setDoc(doc(db, 'users', userCredential.user.uid), profileData);
+      await setDoc(doc(db, 'users', uid), profileData, { merge: true });
 
       toast.success('Conta criada com sucesso!');
       navigate('/painel');
@@ -433,72 +462,15 @@ export function Register() {
   };
 
   const handleGoogleRegister = async () => {
-    if (!formData.weeklyVolume || formData.weeklyVolume < 100) {
-      toast.error('O volume semanal mínimo é de 100 kg.');
-      return;
-    }
-    if (formData.cheeseTypes.length === 0) {
-      toast.error('Selecione pelo menos um tipo de queijo.');
-      return;
-    }
-    if (images.length === 0) {
-      toast.error('Envie pelo menos uma imagem.');
-      return;
-    }
-
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
-      
-      const uploadedImageUrls = [];
-      for (const file of images) {
-        const imageRef = ref(storage, `users/${userCredential.user.uid}/images/${file.name}-${Date.now()}`);
-        await uploadBytes(imageRef, file);
-        const url = await getDownloadURL(imageRef);
-        uploadedImageUrls.push(url);
+      // Let the onAuthStateChanged (added below) handle the redirection 
+      // or pre-fill form logic
+      if (userCredential.user) {
+        toast.info("Conta Google vinculada! Por favor, complete o formulário para concluir o cadastro.");
       }
-
-      const profileData: any = {
-        name: userCredential.user.displayName || formData.name || formData.nomeFantasia || formData.razaoSocial || 'Usuário',
-        email: userCredential.user.email,
-        role: formData.role,
-        cpfCnpj: formData.cpfCnpj || '00000000000',
-        phone: formData.phone || '00000000000',
-        city: formData.city || 'Cidade',
-        state: formData.state || 'UF',
-        weeklyVolume: Number(formData.weeklyVolume),
-        labelPreference: formData.labelPreference,
-        cheeseTypes: formData.cheeseTypes,
-        images: uploadedImageUrls,
-        kycStatus: 'PENDENTE',
-        createdAt: serverTimestamp()
-      };
-
-      if (formData.role === 'PRODUTOR') {
-        profileData.producerProfile = formData.producerProfile;
-        if (formData.producerProfile === 'COM_CNPJ') {
-          profileData.razaoSocial = formData.razaoSocial;
-          profileData.nomeFantasia = formData.nomeFantasia;
-          profileData.titular = formData.titular;
-          profileData.tempoAbertura = formData.tempoAbertura;
-          profileData.cep = formData.cep;
-          profileData.logradouro = formData.logradouro;
-          profileData.numero = formData.numero;
-          profileData.complemento = formData.complemento;
-          profileData.bairro = formData.bairro;
-        }
-        profileData.chargesFreight = formData.chargesFreight === 'SIM';
-        if (profileData.chargesFreight) {
-          profileData.freightType = formData.freightType;
-          profileData.freightValue = Number(formData.freightValue);
-        }
-      }
-
-      await setDoc(doc(db, 'users', userCredential.user.uid), profileData, { merge: true });
-
-      toast.success('Conta criada com sucesso!');
-      navigate('/painel');
     } catch (error: any) {
       console.error(error);
       toast.error(getFriendlyErrorMessage(error));
@@ -806,7 +778,7 @@ export function Register() {
 
           <div className="space-y-1">
             <Label htmlFor="email" className={labelClass}>E-mail <span className="text-app-accent">*</span></Label>
-            <Input id="email" type="email" value={formData.email} onChange={handleChange} required className={inputClass} />
+            <Input id="email" type="email" value={formData.email} onChange={handleChange} required disabled={!!authUser} className={`${inputClass} ${authUser ? 'opacity-80' : ''}`} />
           </div>
           
           <div className="space-y-1">
@@ -814,27 +786,29 @@ export function Register() {
             <Input id="phone" value={formData.phone} onChange={handleChange} maxLength={15} placeholder="(00) 00000-0000" required className={inputClass} />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="password" className={labelClass}>Senha <span className="text-app-accent">*</span></Label>
-            <div className="relative">
-              <Input 
-                id="password" 
-                type={showPassword ? "text" : "password"} 
-                value={formData.password} 
-                onChange={handleChange} 
-                required 
-                minLength={6} 
-                className={inputClass} 
-              />
-              <button 
-                type="button" 
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+          {!authUser && (
+            <div className="space-y-1">
+              <Label htmlFor="password" className={labelClass}>Senha <span className="text-app-accent">*</span></Label>
+              <div className="relative">
+                <Input 
+                  id="password" 
+                  type={showPassword ? "text" : "password"} 
+                  value={formData.password} 
+                  onChange={handleChange} 
+                  required 
+                  minLength={6} 
+                  className={inputClass} 
+                />
+                <button 
+                  type="button" 
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
 
@@ -918,18 +892,22 @@ export function Register() {
               )}
             </form>
 
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#d36101] px-2 text-white/70">Ou continue com</span>
-              </div>
-            </div>
+            {!authUser && (
+              <>
+                <div className="relative my-8">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-white/20" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-[#d36101] px-2 text-white/70">Ou continue com</span>
+                  </div>
+                </div>
 
-            <Button variant="outline" type="button" className="w-full border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full py-6" onClick={handleGoogleRegister} disabled={loading}>
-              Google (Preencha os dados acima primeiro)
-            </Button>
+                <Button variant="outline" type="button" className="w-full border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full py-6" onClick={handleGoogleRegister} disabled={loading}>
+                  Google (Pressione para vincular conta)
+                </Button>
+              </>
+            )}
           </CardContent>
         </div>
         <CardFooter className="bg-[#4a2000] py-6 flex justify-center rounded-b-3xl mt-auto">
