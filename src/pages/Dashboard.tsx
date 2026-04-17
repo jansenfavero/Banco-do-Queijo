@@ -1,6 +1,6 @@
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Package, Users, DollarSign, TrendingUp, ShoppingBag } from 'lucide-react';
+import { Package, Users, DollarSign, TrendingUp, ShoppingBag, LayoutDashboard } from 'lucide-react';
 
 export function Dashboard() {
   const { profile } = useAuth();
@@ -9,11 +9,18 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Bem-vindo de volta, {profile.name}. Aqui está o resumo da sua conta.
-        </p>
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
+          <LayoutDashboard className="h-8 w-8 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+            Dashboard
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base">
+            Bem-vindo de volta, {profile.name}. Aqui está o resumo da sua conta.
+          </p>
+        </div>
       </div>
 
       {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (

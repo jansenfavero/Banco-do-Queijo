@@ -4,6 +4,7 @@ import { db } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { ShoppingCart } from 'lucide-react';
 
 export function Orders() {
   const { profile } = useAuth();
@@ -51,11 +52,18 @@ export function Orders() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
-        <p className="text-muted-foreground">
-          Acompanhe o status e histórico das suas transações.
-        </p>
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
+          <ShoppingCart className="h-8 w-8 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+            Todos os Pedidos
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base">
+            Acompanhe o status e histórico das transações.
+          </p>
+        </div>
       </div>
 
       {loading ? (

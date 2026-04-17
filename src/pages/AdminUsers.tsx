@@ -62,13 +62,15 @@ export function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
+          <Shield className="h-8 w-8 text-primary" />
+        </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Shield className="h-8 w-8 text-orange-600" />
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
             Configurações e Permissões
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base">
             Gerencie o nível de acesso e o status de todos os usuários da plataforma.
           </p>
         </div>

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
+import { Megaphone } from 'lucide-react';
 
 export function Demands() {
   const { profile } = useAuth();
@@ -41,12 +42,17 @@ export function Demands() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Demandas</h1>
-          <p className="text-muted-foreground">
-            {profile?.role === 'ATACADISTA' ? 'Publique o que você precisa e receba propostas.' : 'Encontre compradores buscando fornecedores.'}
-          </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
+            <Megaphone className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">Todas as Demandas</h1>
+            <p className="text-muted-foreground text-sm md:text-base">
+              {profile?.role === 'ATACADISTA' ? 'Publique o que você precisa e receba propostas.' : 'Encontre compradores buscando fornecedores.'}
+            </p>
+          </div>
         </div>
         {profile?.role === 'ATACADISTA' && (
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>

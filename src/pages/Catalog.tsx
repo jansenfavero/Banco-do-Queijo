@@ -10,6 +10,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
+import { Store } from 'lucide-react';
 
 export function Catalog() {
   const { profile } = useAuth();
@@ -45,12 +46,17 @@ export function Catalog() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Catálogo de Queijos</h1>
-          <p className="text-muted-foreground">
-            {profile?.role === 'PRODUTOR' ? 'Gerencie seus anúncios.' : 'Encontre os melhores queijos artesanais.'}
-          </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
+            <Store className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">Catálogo Geral</h1>
+            <p className="text-muted-foreground text-sm md:text-base">
+              {profile?.role === 'PRODUTOR' ? 'Gerencie seus anúncios.' : 'Encontre os melhores queijos artesanais.'}
+            </p>
+          </div>
         </div>
         {profile?.role === 'PRODUTOR' && (
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
