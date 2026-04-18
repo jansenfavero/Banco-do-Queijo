@@ -41,8 +41,8 @@ export function Demands() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
             <Megaphone className="h-8 w-8 text-primary" />
@@ -85,12 +85,12 @@ export function Demands() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {demands.map((demand) => (
             <Card key={demand.id} className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
-              <CardHeader className="bg-black/10 border-b border-white/10 pb-4">
+              <CardHeader className="bg-[#d36101] border-b border-white/10 pb-4">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl text-app-accent">{demand.cheeseType}</CardTitle>
+                  <CardTitle className="text-xl text-white">{demand.cheeseType}</CardTitle>
                   <Badge variant="secondary" className="bg-[#4a2000] text-white hover:bg-[#4a2000]/80 border-none">{demand.quantityKg} kg</Badge>
                 </div>
-                <CardDescription className="text-white/70">{demand.region}</CardDescription>
+                <CardDescription className="text-white/80">{demand.region}</CardDescription>
               </CardHeader>
               <CardContent className="pt-6 flex-1">
                 <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[20px] shadow-sm border border-white/10">

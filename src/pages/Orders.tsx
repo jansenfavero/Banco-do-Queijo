@@ -51,8 +51,8 @@ export function Orders() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4 mb-8">
+    <div className="space-y-8">
+      <div className="flex items-center gap-4">
         <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
           <ShoppingCart className="h-8 w-8 text-primary" />
         </div>

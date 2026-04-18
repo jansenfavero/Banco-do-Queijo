@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Switch } from '../components/ui/switch';
 import { toast } from 'sonner';
 import { Settings as SettingsIcon, Save } from 'lucide-react';
 import { getFriendlyErrorMessage } from '../lib/errorMapping';
@@ -16,6 +17,7 @@ export function Settings() {
   
   // Profile settings state
   const [name, setName] = useState(profile?.name || '');
+  const [isActive, setIsActive] = useState(profile?.active !== false); // default true unless explicitly false
   const [savingProfile, setSavingProfile] = useState(false);
 
   // Security settings state
@@ -31,7 +33,8 @@ export function Settings() {
     setSavingProfile(true);
     try {
       await updateDoc(doc(db, 'users', user.uid), {
-        name
+        name,
+        active: isActive
       });
       toast.success('Perfil atualizado com sucesso.');
     } catch (error: any) {
@@ -82,8 +85,8 @@ export function Settings() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4 mb-8">
+    <div className="space-y-8">
+      <div className="flex items-center gap-4">
         <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
           <SettingsIcon className="h-8 w-8 text-primary" />
         </div>
@@ -99,9 +102,9 @@ export function Settings() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
-          <CardHeader className="bg-black/10 border-b border-white/10 pb-6 pt-8 px-8">
-            <CardTitle className="text-xl text-app-accent">Dados do Perfil</CardTitle>
-            <CardDescription className="text-white/70">
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px]">
+            <CardTitle className="text-xl text-white">Dados do Perfil</CardTitle>
+            <CardDescription className="text-white/80">
               Atualize as configurações básicas.
             </CardDescription>
           </CardHeader>
@@ -128,9 +131,20 @@ export function Settings() {
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label className="text-white/90 font-semibold">Perfil Ativo</Label>
-                <Input value={profile?.role} disabled className="bg-black/20 border-white/10 text-white/50 uppercase font-bold" />
+              <div className="space-y-4 pt-2">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-white/90 font-semibold text-base">Perfil Ativo</Label>
+                    <p className="text-sm text-white/70">
+                      Quando inativo, seu perfil e produtos/demandas ficarão ocultos na plataforma.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isActive}
+                    onCheckedChange={setIsActive}
+                    className="data-[state=checked]:bg-app-accent"
+                  />
+                </div>
               </div>
 
               <Button type="submit" disabled={savingProfile} className="w-full mt-6 bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">
@@ -143,9 +157,9 @@ export function Settings() {
 
         {isPasswordProvider ? (
           <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
-            <CardHeader className="bg-black/10 border-b border-white/10 pb-6 pt-8 px-8">
-              <CardTitle className="text-xl text-app-accent">Segurança</CardTitle>
-              <CardDescription className="text-white/70">
+            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px]">
+              <CardTitle className="text-xl text-white">Segurança</CardTitle>
+              <CardDescription className="text-white/80">
                 Atualize sua senha de acesso.
               </CardDescription>
             </CardHeader>

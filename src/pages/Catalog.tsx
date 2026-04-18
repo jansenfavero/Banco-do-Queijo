@@ -47,8 +47,8 @@ export function Catalog() {
   }, [profile]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
             <Store className="h-8 w-8 text-primary" />
@@ -98,38 +98,38 @@ export function Catalog() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-10">Carregando catálogo...</div>
+        <div className="flex justify-center py-10 text-white">Carregando catálogo...</div>
       ) : activeTab === 'produtores' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} role={profile?.role} />
           ))}
           {MOCK_PRODUCTS.map((prod) => (
-            <div key={prod.id} className="group bg-card rounded-2xl border border-border/50 hover:border-primary/50 overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col">
+            <div key={prod.id} className="group rounded-[24px] bg-[#703200] border-none text-white overflow-hidden shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={prod.imagem} alt={prod.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="px-2 py-1 bg-background/90 backdrop-blur-sm rounded-md text-xs font-bold text-primary shadow-sm capitalize border border-border">
+                  <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-white/10">
                     {prod.categoria}
                   </span>
                 </div>
-                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-[#ffcb05] rounded-md text-xs font-bold text-[#4a2000] shadow-sm">
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
                   <Star className="w-3 h-3 fill-current" /> {prod.avaliacao}
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-bold text-lg text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">{prod.nome}</h3>
-                <p className="text-sm text-muted-foreground mb-4 font-medium flex-1">{prod.produtor}</p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-                  <MapPin className="w-4 h-4 text-primary" />
+              <div className="p-5 flex flex-col flex-1 bg-[#703200]">
+                <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{prod.nome}</h3>
+                <p className="text-sm text-white/70 mb-4 font-medium flex-1">{prod.produtor}</p>
+                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-white/10 w-fit">
+                  <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{prod.local}</span>
                 </div>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-border border-dashed">
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                   <div>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-0.5">R$ / Kg</span>
-                    <span className="font-bold text-xl text-foreground">R$ {prod.preco.toFixed(2)}</span>
+                    <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
+                    <span className="font-bold text-xl text-white">R$ {prod.preco.toFixed(2)}</span>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <button className="w-10 h-10 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors">
                     <Store className="w-5 h-5" />
                   </button>
                 </div>
@@ -140,26 +140,26 @@ export function Catalog() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {MOCK_WHOLESALERS.map((wholesaler) => (
-            <div key={wholesaler.id} className="group bg-card rounded-2xl border border-border/50 hover:border-primary/50 overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col">
+            <div key={wholesaler.id} className="group rounded-[24px] bg-[#703200] border-none text-white overflow-hidden shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img src={wholesaler.imagem} alt={wholesaler.empresa} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-[#ffcb05] rounded-md text-xs font-bold text-[#4a2000] shadow-sm">
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
                   <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao}
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-bold text-lg text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">{wholesaler.empresa}</h3>
-                <p className="text-sm text-muted-foreground mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-                  <MapPin className="w-4 h-4 text-primary" />
+              <div className="p-5 flex flex-col flex-1 bg-[#703200]">
+                <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{wholesaler.empresa}</h3>
+                <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
+                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-white/10 w-fit">
+                  <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{wholesaler.local}</span>
                 </div>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-border border-dashed">
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                   <div>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-0.5">Volume Demandado</span>
-                    <span className="font-bold text-lg text-foreground">{wholesaler.quantidade} kg/mês</span>
+                    <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Demandado</span>
+                    <span className="font-bold text-lg text-white">{wholesaler.quantidade} kg/mês</span>
                   </div>
-                  <button className="px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold group-hover:bg-primary group-hover:text-primary-foreground transition-colors text-sm">
+                  <button className="px-4 py-2 rounded-xl bg-app-accent text-app-bgDark font-bold hover:bg-app-accentHover transition-colors text-sm">
                     Fazer Oferta
                   </button>
                 </div>
@@ -174,49 +174,49 @@ export function Catalog() {
 
 function ProductCard({ product, role }: { key?: React.Key, product: any, role?: string }) {
   return (
-    <Card className="overflow-hidden flex flex-col">
-      <div className="aspect-video bg-muted relative">
+    <Card className="overflow-hidden flex flex-col shadow-2xl border-none bg-[#703200] text-white rounded-[24px]">
+      <div className="aspect-video bg-[#4a2000] relative">
         {product.photos && product.photos.length > 0 ? (
           <img src={product.photos[0]} alt={product.cheeseType} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-orange-100 text-orange-300">
+          <div className="w-full h-full flex items-center justify-center bg-[#4a2000] text-app-accent/50">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
         )}
         {!product.active && (
           <div className="absolute top-2 right-2">
-            <Badge variant="destructive">Inativo</Badge>
+            <Badge variant="destructive" className="bg-red-500/90 text-white border-none">Inativo</Badge>
           </div>
         )}
       </div>
-      <CardHeader className="p-4 pb-2">
+      <CardHeader className="bg-[#d36101] border-b border-white/10 p-4">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{product.cheeseType}</CardTitle>
-          <span className="font-bold text-primary">R$ {product.pricePerKg.toFixed(2)}/kg</span>
+          <CardTitle className="text-lg text-white">{product.cheeseType}</CardTitle>
+          <span className="font-bold text-app-accent">R$ {product.pricePerKg.toFixed(2)}/kg</span>
         </div>
-        <CardDescription>{product.format}</CardDescription>
+        <CardDescription className="text-white/80">{product.format}</CardDescription>
       </CardHeader>
-      <CardContent className="p-4 pt-2 flex-1">
-        <div className="space-y-2 text-sm">
+      <CardContent className="p-4 pt-4 flex-1">
+        <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[20px] shadow-sm border border-white/10">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Disponível:</span>
-            <span className="font-medium">{product.availableKg} kg</span>
+            <span className="text-white/70 font-semibold">Disponível:</span>
+            <span className="font-bold text-white">{product.availableKg} kg</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Embalagem:</span>
-            <span>{product.vacuumPacked ? 'Vácuo' : 'Normal'}</span>
+            <span className="text-white/70 font-semibold">Embalagem:</span>
+            <span className="font-bold text-white">{product.vacuumPacked ? 'Vácuo' : 'Normal'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Rótulo:</span>
-            <span>{product.labelType === 'COMPLETO_SIE' ? 'SIE' : 'Simples'}</span>
+            <span className="text-white/70 font-semibold">Rótulo:</span>
+            <span className="font-bold text-white">{product.labelType === 'COMPLETO_SIE' ? 'SIE' : 'Simples'}</span>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0 border-t mt-auto">
+      <CardFooter className="p-4 pt-0 mt-auto">
         {role === 'ATACADISTA' ? (
-          <Button className="w-full mt-4">Fazer Pedido</Button>
+          <Button className="w-full bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl mt-2">Fazer Pedido</Button>
         ) : (
-          <Button variant="outline" className="w-full mt-4">Editar Anúncio</Button>
+          <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10 rounded-xl mt-2">Editar Anúncio</Button>
         )}
       </CardFooter>
     </Card>
