@@ -165,7 +165,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
           <DialogTrigger asChild>
             <Button className="font-bold">Editar Perfil</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#4a2000] border-white/10 text-white shadow-2xl rounded-[24px]" overlayClassName="bg-black/60 backdrop-blur-sm">
+          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#b85200] border-white/10 text-white shadow-2xl rounded-[24px]" overlayClassName="bg-black/60 backdrop-blur-sm">
             <DialogHeader>
               <DialogTitle className="text-2xl text-white font-bold tracking-tight">Editar Perfil</DialogTitle>
             </DialogHeader>
@@ -187,7 +187,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                   {isProdutor ? 'Tipos de Queijo Produzidos' : 'Tipos de Queijo que Compra'}
                 </Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {['mussarela', 'prato', 'provolone', 'parmesao', 'colonial', 'requeijao'].map((type) => (
+                  {['qualho', 'mussarela', 'prato', 'provolone', 'parmesao', 'colonial', 'requeijao'].map((type) => (
                     <div key={type} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`edit-${type}`}
@@ -227,9 +227,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 </div>
               </div>
 
-              <div className="space-y-4 bg-black/20 p-5 rounded-[20px] border border-white/10">
+                <div className="space-y-4 bg-black/20 p-5 rounded-[20px] border border-white/10">
                 <Label className="text-white font-semibold text-lg flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-amber-500" /> Endereço
+                  <MapPin className="w-5 h-5 text-[#f4d763]" /> Endereço
                 </Label>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
@@ -270,7 +270,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
               {isProdutor && (
                 <div className="space-y-4 bg-black/20 p-5 rounded-[20px] border border-white/10">
                   <Label className="text-white font-semibold text-lg flex items-center gap-2">
-                    <Truck className="w-5 h-5 text-amber-500" /> Logística e Frete
+                    <Truck className="w-5 h-5 text-[#f4d763]" /> Logística e Frete
                   </Label>
                   <div className="space-y-3">
                     <Label className="text-white/90">Você cobra frete para entrega?</Label>
