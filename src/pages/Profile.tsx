@@ -163,27 +163,27 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#d36101] hover:bg-[#a64b00] text-white">Editar Perfil</Button>
+            <Button className="font-bold">Editar Perfil</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-[#d36101] border-none text-white shadow-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
+          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-app-cardDark border-border/50 text-white shadow-2xl rounded-2xl" overlayClassName="bg-black/60 backdrop-blur-sm">
             <DialogHeader>
-              <DialogTitle className="text-2xl">Editar Perfil</DialogTitle>
+              <DialogTitle className="text-2xl text-white font-bold tracking-tight">Editar Perfil</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6 pt-4">
               
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-white">Nome / Razão Social</Label>
-                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="bg-black/20 border-white/30 text-white placeholder:text-white/50" />
+                  <Label className="text-white font-semibold">Nome / Razão Social</Label>
+                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-white">Telefone</Label>
-                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="bg-black/20 border-white/30 text-white placeholder:text-white/50" />
+                  <Label className="text-white font-semibold">Telefone</Label>
+                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <Label className="text-white">
+                <Label className="text-white font-semibold">
                   {isProdutor ? 'Tipos de Queijo Produzidos' : 'Tipos de Queijo que Compra'}
                 </Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -193,9 +193,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                         id={`edit-${type}`}
                         checked={formData.cheeseTypes.includes(type)}
                         onCheckedChange={(checked) => handleCheckboxChange(type, checked as boolean)}
-                        className="border-white/50 data-[state=checked]:bg-white data-[state=checked]:text-[#d36101]"
+                        className="border-white/30 data-[state=checked]:bg-app-accent data-[state=checked]:text-app-bgDark rounded"
                       />
-                      <Label htmlFor={`edit-${type}`} className="text-sm font-medium capitalize text-white">{type}</Label>
+                      <Label htmlFor={`edit-${type}`} className="text-sm font-medium capitalize text-white/90">{type}</Label>
                     </div>
                   ))}
                 </div>
@@ -203,74 +203,120 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="weeklyVolume" className="text-white">Volume Semanal (kg)</Label>
+                  <Label htmlFor="weeklyVolume" className="text-white font-semibold">Volume Semanal (kg)</Label>
                   <Input 
                     id="weeklyVolume" 
                     type="number"
                     value={formData.weeklyVolume}
                     onChange={(e) => setFormData({ ...formData, weeklyVolume: e.target.value })}
-                    className="bg-black/20 border-white/30 text-white placeholder:text-white/50"
+                    className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="packaging" className="text-white">Tipo de Embalagem</Label>
-                  <Input 
-                    id="packaging" 
+                  <Label htmlFor="packaging" className="text-white font-semibold">Tipo de Embalagem</Label>
+                  <select
+                    id="packaging"
                     value={formData.packaging}
                     onChange={(e) => setFormData({ ...formData, packaging: e.target.value })}
-                    className="bg-black/20 border-white/30 text-white placeholder:text-white/50"
-                  />
+                    className="flex h-10 w-full bg-black/20 border border-white/20 text-white focus:ring-2 focus:ring-amber-500 rounded-xl px-4 py-2 outline-none appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled className="text-black">Selecione...</option>
+                    <option value="Com Rótulo" className="text-black">Com Rótulo</option>
+                    <option value="Sem Rótulo" className="text-black">Sem Rótulo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-4 bg-black/20 p-5 rounded-2xl border border-white/10">
+                <Label className="text-white font-semibold text-lg flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-amber-500" /> Endereço
+                </Label>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white/90">CEP</Label>
+                    <Input value={formData.address.zipCode} onChange={e => setFormData({...formData, address: {...formData.address, zipCode: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label className="text-white/90">Rua/Logradouro</Label>
+                    <Input value={formData.address.street} onChange={e => setFormData({...formData, address: {...formData.address, street: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white/90">Número</Label>
+                    <Input value={formData.address.number} onChange={e => setFormData({...formData, address: {...formData.address, number: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label className="text-white/90">Complemento</Label>
+                    <Input value={formData.address.complement} onChange={e => setFormData({...formData, address: {...formData.address, complement: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white/90">Bairro</Label>
+                    <Input value={formData.address.neighborhood} onChange={e => setFormData({...formData, address: {...formData.address, neighborhood: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white/90">Cidade</Label>
+                    <Input value={formData.address.city} onChange={e => setFormData({...formData, address: {...formData.address, city: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white/90">Estado (UF)</Label>
+                    <Input value={formData.address.state} maxLength={2} onChange={e => setFormData({...formData, address: {...formData.address, state: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4 uppercase" />
+                  </div>
                 </div>
               </div>
 
               {isProdutor && (
-                <div className="space-y-4 bg-black/10 p-4 rounded-lg border border-white/10">
-                  <Label className="text-white text-lg">Logística e Frete</Label>
-                  <div className="space-y-4">
-                    <Label className="text-white">Você cobra frete para entrega?</Label>
+                <div className="space-y-4 bg-black/20 p-5 rounded-2xl border border-white/10">
+                  <Label className="text-white font-semibold text-lg flex items-center gap-2">
+                    <Truck className="w-5 h-5 text-amber-500" /> Logística e Frete
+                  </Label>
+                  <div className="space-y-3">
+                    <Label className="text-white/90">Você cobra frete para entrega?</Label>
                     <RadioGroup 
                       value={formData.chargesFreight}
                       onValueChange={(value) => setFormData({ ...formData, chargesFreight: value })}
-                      className="flex gap-4"
+                      className="flex flex-col sm:flex-row gap-4"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="SIM" id="freight-yes" className="border-white text-white fill-white" />
+                        <RadioGroupItem value="SIM" id="freight-yes" className="border-white/50 text-amber-500 data-[state=checked]:border-amber-500" />
                         <Label htmlFor="freight-yes" className="text-white">Sim</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="NAO" id="freight-no" className="border-white text-white fill-white" />
+                        <RadioGroupItem value="NAO" id="freight-no" className="border-white/50 text-amber-500 data-[state=checked]:border-amber-500" />
                         <Label htmlFor="freight-no" className="text-white">Não (Incluso no valor)</Label>
                       </div>
                     </RadioGroup>
                   </div>
 
                   {formData.chargesFreight === 'SIM' && (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 mt-4">
                       <div className="space-y-2">
-                        <Label className="text-white">Tipo de Cobrança</Label>
+                        <Label className="text-white/90">Tipo de Cobrança</Label>
                         <RadioGroup 
                           value={formData.freightType}
                           onValueChange={(value) => setFormData({ ...formData, freightType: value })}
                           className="space-y-2"
                         >
                           <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="FIXO" id="type-fixed" className="border-white text-white fill-white" />
+                            <RadioGroupItem value="FIXO" id="type-fixed" className="border-white/50 text-amber-500 data-[state=checked]:border-amber-500" />
                             <Label htmlFor="type-fixed" className="text-white">Valor Fixo por kg</Label>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="PERCENTUAL" id="type-percent" className="border-white text-white fill-white" />
+                            <RadioGroupItem value="PERCENTUAL" id="type-percent" className="border-white/50 text-amber-500 data-[state=checked]:border-amber-500" />
                             <Label htmlFor="type-percent" className="text-white">Percentual do pedido</Label>
                           </div>
                         </RadioGroup>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="freightValue" className="text-white">Valor/Percentual do Frete</Label>
+                        <Label htmlFor="freightValue" className="text-white/90">Valor/Percentual do Frete</Label>
                         <Input 
                           id="freightValue" 
                           type="number"
                           value={formData.freightValue}
                           onChange={(e) => setFormData({ ...formData, freightValue: e.target.value })}
-                          className="bg-black/20 border-white/30 text-white placeholder:text-white/50"
+                          className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4"
                         />
                       </div>
                     </div>
@@ -317,11 +363,11 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/20">
-                <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-white hover:bg-white/10">
+              <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-white/10">
+                <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-white hover:bg-white/10 font-medium">
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={loading} className="bg-[#facc15] text-[#854d0e] hover:bg-[#eab308] font-bold">
+                <Button type="submit" disabled={loading} className="bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold px-6">
                   {loading ? 'Salvando...' : 'Salvar Alterações'}
                 </Button>
               </div>
@@ -332,35 +378,41 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       
       <CardContent className="p-6">
         <div className="grid gap-8 md:grid-cols-2 font-medium">
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Informações Básicas</h3>
-              <p className="text-xl text-primary font-bold">{profile.name}</p>
-              <p className="text-muted-foreground">{profile.email}</p>
-              <p className="text-muted-foreground">{profile.phone}</p>
-              <p className="text-muted-foreground">{profile.cpf || profile.cnpj}</p>
+          <div className="space-y-6">
+            <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                <User className="w-4 h-4" /> Informações Básicas
+              </h3>
+              <div className="space-y-1">
+                <p className="text-xl text-primary font-bold">{profile.name}</p>
+                <p className="text-muted-foreground">{profile.email}</p>
+                <p className="text-muted-foreground">{profile.phone}</p>
+                <p className="text-muted-foreground">{profile.cpf || profile.cnpj}</p>
+              </div>
             </div>
 
-            <div>
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+            <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                 <MapPin className="w-4 h-4" /> Endereço
               </h3>
-              <p className="text-foreground">
-                {profile.address?.street}, {profile.address?.number} {profile.address?.complement && `- ${profile.address.complement}`}
-              </p>
-              <p className="text-muted-foreground">
-                {profile.address?.neighborhood} - {profile.address?.city}/{profile.address?.state}
-              </p>
-              <p className="text-muted-foreground">CEP: {profile.address?.zipCode}</p>
+              <div className="space-y-1">
+                <p className="text-foreground">
+                  {profile.address?.street}, {profile.address?.number} {profile.address?.complement && `- ${profile.address.complement}`}
+                </p>
+                <p className="text-muted-foreground">
+                  {profile.address?.neighborhood} - {profile.address?.city}/{profile.address?.state}
+                </p>
+                <p className="text-muted-foreground">CEP: {profile.address?.zipCode}</p>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
-                <Package className="w-4 h-4" /> Produção / Capacidade
+          <div className="space-y-6">
+            <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Package className="w-4 h-4" /> Secao de Comercialização
               </h3>
-              <div className="bg-muted/50 rounded-lg p-4 grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-muted-foreground uppercase">Volume Semanal</p>
                   <p className="text-lg font-bold text-foreground">{profile.weeklyVolume} kg</p>
@@ -373,7 +425,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                    <p className="text-xs text-muted-foreground uppercase mb-2">Tipos de Queijo</p>
                    <div className="flex flex-wrap gap-2">
                      {profile.cheeseTypes?.map((c: string) => (
-                       <span key={c} className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md font-semibold capitalize shadow-sm">
+                       <span key={c} className="bg-primary/10 border border-primary/20 text-primary text-xs px-3 py-1 rounded-full font-bold capitalize shadow-sm">
                          {c}
                        </span>
                      ))}
@@ -383,30 +435,28 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
             </div>
 
             {isProdutor && (
-              <div>
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+              <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
                   <Truck className="w-4 h-4" /> Logística
                 </h3>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <p className="text-lg font-bold text-foreground">
-                    {profile.chargesFreight 
-                      ? `${profile.freightType === 'FIXO' ? 'Valor Fixo: R$' : 'Percentual:'} ${profile.freightValue}${profile.freightType === 'PERCENTUAL' ? '%' : ' por kg'}` 
-                      : 'Frete Incluso / Retirada'}
-                  </p>
-                </div>
+                <p className="text-lg font-bold text-foreground">
+                  {profile.chargesFreight 
+                    ? `${profile.freightType === 'FIXO' ? 'Valor Fixo: R$' : 'Percentual:'} ${profile.freightValue}${profile.freightType === 'PERCENTUAL' ? '%' : ' por kg'}` 
+                    : 'Frete Incluso / Retirada'}
+                </p>
               </div>
             )}
           </div>
         </div>
 
         {profile.images && profile.images.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-8 bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
               <ImageIcon className="w-4 h-4" /> {isProdutor ? 'Galeria de Produção' : 'Fachada/Interior'}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {profile.images.map((img: string, idx: number) => (
-                <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-md border border-border hover:shadow-lg transition-shadow">
+                <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow">
                   <img src={img} alt={`Imagem ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
               ))}
