@@ -69,39 +69,39 @@ export function Orders() {
       {loading ? (
         <div className="flex justify-center py-10">Carregando pedidos...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-card rounded-lg border border-dashed border-border/50">
-          <h3 className="text-lg font-medium">Nenhum pedido encontrado</h3>
-          <p className="text-muted-foreground mt-1">
+        <div className="text-center py-20 bg-[#703200] text-white rounded-[24px] border-none shadow-2xl">
+          <h3 className="text-lg font-bold">Nenhum pedido encontrado</h3>
+          <p className="text-white/70 mt-1">
             Você ainda não possui histórico de pedidos.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
-            <Card key={order.id}>
-              <CardHeader className="pb-2 flex flex-row items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    Pedido #{order.id.slice(0, 8).toUpperCase()}
-                    {getStatusBadge(order.status)}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {order.createdAt?.toDate().toLocaleDateString('pt-BR')}
-                  </p>
+          <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px]">
+            <CardContent className="p-8 space-y-4">
+              {orders.map((order) => (
+                <div key={order.id} className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm flex flex-col md:flex-row justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-app-accent mb-1">
+                      Pedido #{order.id.slice(0, 8).toUpperCase()}
+                      {getStatusBadge(order.status)}
+                    </h3>
+                    <p className="text-sm text-white/70 font-medium">
+                      Efetuado em: {order.createdAt?.toDate().toLocaleDateString('pt-BR')}
+                    </p>
+                    <div className="mt-3 text-sm text-white/80 space-y-1">
+                      <p><strong>Produto ID:</strong> {order.productId}</p>
+                      <p><strong>Pagamento:</strong> {order.paymentMethod}</p>
+                    </div>
+                  </div>
+                  <div className="text-left md:text-right">
+                    <div className="font-bold text-2xl text-white">R$ {order.totalAmount?.toFixed(2)}</div>
+                    <div className="text-sm text-white/70 uppercase tracking-wider">{order.quantityKg} kg</div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <div className="font-bold text-lg">R$ {order.totalAmount.toFixed(2)}</div>
-                  <div className="text-sm text-muted-foreground">{order.quantityKg} kg</div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm">
-                  <p><strong>Produto ID:</strong> {order.productId}</p>
-                  <p><strong>Pagamento:</strong> {order.paymentMethod}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              ))}
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

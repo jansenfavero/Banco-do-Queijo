@@ -98,42 +98,42 @@ export function Settings() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="bg-card shadow-sm border-border/50 h-max">
-          <CardHeader>
-            <CardTitle className="text-foreground">Dados do Perfil</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Atualize como você aparece na plataforma.
+        <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
+          <CardHeader className="bg-black/10 border-b border-white/10 pb-6 pt-8 px-8">
+            <CardTitle className="text-xl text-app-accent">Dados do Perfil</CardTitle>
+            <CardDescription className="text-white/70">
+              Atualize as configurações básicas.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground">E-mail de Login</Label>
+                <Label htmlFor="email" className="text-white/90 font-semibold">E-mail de Login</Label>
                 <Input 
                   id="email" 
                   value={profile?.email || ''} 
                   disabled 
-                  className="bg-secondary text-secondary-foreground"
+                  className="bg-black/20 border-white/10 text-white/50"
                 />
-                <p className="text-xs text-muted-foreground">O e-mail de login não pode ser alterado diretamente.</p>
+                <p className="text-xs text-white/50">O e-mail de login não pode ser alterado diretamente.</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-foreground">Nome Completo / Razão Social</Label>
+                <Label htmlFor="name" className="text-white/90 font-semibold">Nome Completo / Razão Social</Label>
                 <Input 
                   id="name" 
                   value={name} 
                   onChange={(e) => setName(e.target.value)} 
                   required
-                  className="bg-transparent text-foreground"
+                  className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label className="text-foreground">Perfil Ativo</Label>
-                <Input value={profile?.role} disabled className="bg-secondary text-secondary-foreground uppercase font-bold" />
+                <Label className="text-white/90 font-semibold">Perfil Ativo</Label>
+                <Input value={profile?.role} disabled className="bg-black/20 border-white/10 text-white/50 uppercase font-bold" />
               </div>
 
-              <Button type="submit" disabled={savingProfile} className="w-full mt-4">
+              <Button type="submit" disabled={savingProfile} className="w-full mt-6 bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">
                 {savingProfile ? 'Salvando...' : 'Salvar Alterações'}
                 {!savingProfile && <Save className="ml-2 h-4 w-4" />}
               </Button>
@@ -142,28 +142,28 @@ export function Settings() {
         </Card>
 
         {isPasswordProvider ? (
-          <Card className="bg-card shadow-sm border-border/50 h-max">
-            <CardHeader>
-              <CardTitle className="text-foreground">Segurança</CardTitle>
-              <CardDescription className="text-muted-foreground">
+          <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
+            <CardHeader className="bg-black/10 border-b border-white/10 pb-6 pt-8 px-8">
+              <CardTitle className="text-xl text-app-accent">Segurança</CardTitle>
+              <CardDescription className="text-white/70">
                 Atualize sua senha de acesso.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-8">
               <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="currentPassword" className="text-foreground">Senha Atual</Label>
+                  <Label htmlFor="currentPassword" className="text-white/90 font-semibold">Senha Atual</Label>
                   <Input 
                     id="currentPassword" 
                     type="password"
                     value={currentPassword} 
                     onChange={(e) => setCurrentPassword(e.target.value)} 
                     required
-                    className="bg-transparent text-foreground"
+                    className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="newPassword" className="text-foreground">Nova Senha</Label>
+                  <Label htmlFor="newPassword" className="text-white/90 font-semibold">Nova Senha</Label>
                   <Input 
                     id="newPassword" 
                     type="password"
@@ -171,11 +171,11 @@ export function Settings() {
                     onChange={(e) => setNewPassword(e.target.value)} 
                     required
                     minLength={6}
-                    className="bg-transparent text-foreground"
+                    className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-foreground">Confirme a Nova Senha</Label>
+                  <Label htmlFor="confirmPassword" className="text-white/90 font-semibold">Confirme a Nova Senha</Label>
                   <Input 
                     id="confirmPassword" 
                     type="password"
@@ -183,25 +183,25 @@ export function Settings() {
                     onChange={(e) => setConfirmPassword(e.target.value)} 
                     required
                     minLength={6}
-                    className="bg-transparent text-foreground"
+                    className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4"
                   />
                 </div>
-                <Button type="submit" disabled={savingSecurity || !currentPassword || !newPassword} className="w-full mt-4">
+                <Button type="submit" disabled={savingSecurity || !currentPassword || !newPassword} className="w-full mt-6 bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">
                   {savingSecurity ? 'Atualizando...' : 'Atualizar Senha'}
                 </Button>
               </form>
             </CardContent>
           </Card>
         ) : (
-          <Card className="bg-card shadow-sm border-border/50 h-max">
-            <CardHeader>
-              <CardTitle className="text-foreground">Segurança</CardTitle>
-              <CardDescription className="text-muted-foreground">
+          <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
+            <CardHeader className="bg-black/10 border-b border-white/10 pb-6 pt-8 px-8">
+              <CardTitle className="text-xl text-app-accent">Segurança</CardTitle>
+              <CardDescription className="text-white/70">
                 Sua conta é vinculada ao Google.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-foreground">
+            <CardContent className="p-8">
+              <p className="text-base text-white/90">
                 Você faz login utilizando sua conta do Google. A modificação de senhas deve ser feita diretamente nas configurações do próprio Google.
               </p>
             </CardContent>

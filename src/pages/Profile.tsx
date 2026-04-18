@@ -6,6 +6,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { toast } from 'sonner';
 import { db } from '../lib/firebase';
@@ -214,16 +215,15 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="packaging" className="text-white font-semibold">Tipo de Embalagem</Label>
-                  <select
-                    id="packaging"
-                    value={formData.packaging}
-                    onChange={(e) => setFormData({ ...formData, packaging: e.target.value })}
-                    className="flex h-10 w-full bg-black/20 border border-white/20 text-white focus:ring-2 focus:ring-amber-500 rounded-xl px-4 py-2 outline-none appearance-none cursor-pointer"
-                  >
-                    <option value="" disabled className="text-black">Selecione...</option>
-                    <option value="Com Rótulo" className="text-black">Com Rótulo</option>
-                    <option value="Sem Rótulo" className="text-black">Sem Rótulo</option>
-                  </select>
+                  <Select value={formData.packaging} onValueChange={(v) => setFormData({ ...formData, packaging: v })}>
+                    <SelectTrigger id="packaging" className="flex h-10 w-full bg-black/20 border border-white/20 text-white focus:ring-amber-500 rounded-xl px-4 py-2 outline-none cursor-pointer">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#b85200] border border-white/20 text-white rounded-xl shadow-xl" position="popper" sideOffset={4}>
+                      <SelectItem value="Com Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-lg">Com Rótulo</SelectItem>
+                      <SelectItem value="Sem Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-lg">Sem Rótulo</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

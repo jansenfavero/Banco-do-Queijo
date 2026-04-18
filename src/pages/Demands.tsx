@@ -75,40 +75,40 @@ export function Demands() {
       {loading ? (
         <div className="flex justify-center py-10">Carregando demandas...</div>
       ) : demands.length === 0 ? (
-        <div className="text-center py-20 bg-card rounded-lg border border-dashed border-border/50">
-          <h3 className="text-lg font-medium">Nenhuma demanda ativa</h3>
-          <p className="text-muted-foreground mt-1">
+        <div className="text-center py-20 bg-[#703200] text-white rounded-[24px] border-none shadow-2xl">
+          <h3 className="text-lg font-bold">Nenhuma demanda ativa</h3>
+          <p className="text-white/70 mt-1">
             Não há compradores buscando produtos no momento.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {demands.map((demand) => (
-            <Card key={demand.id}>
-              <CardHeader>
+            <Card key={demand.id} className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
+              <CardHeader className="bg-black/10 border-b border-white/10 pb-4">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{demand.cheeseType}</CardTitle>
-                  <Badge variant="secondary">{demand.quantityKg} kg</Badge>
+                  <CardTitle className="text-xl text-app-accent">{demand.cheeseType}</CardTitle>
+                  <Badge variant="secondary" className="bg-[#4a2000] text-white hover:bg-[#4a2000]/80 border-none">{demand.quantityKg} kg</Badge>
                 </div>
-                <CardDescription>{demand.region}</CardDescription>
+                <CardDescription className="text-white/70">{demand.region}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
+              <CardContent className="pt-6 flex-1">
+                <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[20px] shadow-sm border border-white/10">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frequência:</span>
-                    <span>{demand.frequency}</span>
+                    <span className="text-white/70 font-semibold">Frequência:</span>
+                    <span className="font-bold text-white">{demand.frequency}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Pagamento:</span>
-                    <span>{demand.paymentMethod}</span>
+                    <span className="text-white/70 font-semibold">Pagamento:</span>
+                    <span className="font-bold text-white">{demand.paymentMethod}</span>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="pb-6">
                 {profile?.role === 'PRODUTOR' ? (
-                  <Button className="w-full">Tenho Interesse</Button>
+                  <Button className="w-full bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">Tenho Interesse</Button>
                 ) : demand.compradorId === profile?.id ? (
-                  <Button variant="outline" className="w-full text-destructive">Encerrar Demanda</Button>
+                  <Button variant="outline" className="w-full border-red-500/50 text-red-300 hover:bg-red-500/20 rounded-xl">Encerrar Demanda</Button>
                 ) : null}
               </CardFooter>
             </Card>
