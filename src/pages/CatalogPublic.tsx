@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, ArrowRight, ShieldCheck, Star, ChevronDown } from 'lucide-react';
 
-const MOCK_PRODUCTS = [
+export const MOCK_PRODUCTS = [
   // Coalho
   { id: 1, nome: "Queijo Coalho Artesanal", produtor: "Laticínio Nordeste", local: "Quixadá, CE", preco: 45.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.7 },
   { id: 2, nome: "Queijo Coalho com Orégano", produtor: "Sítio do Sol", local: "Jaguaribe, CE", preco: 48.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.8 },
@@ -46,7 +46,7 @@ const MOCK_PRODUCTS = [
   { id: 28, nome: "Minas Frescal Light", produtor: "Queijaria Saudável", local: "Juiz de Fora, MG", preco: 48.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.6 },
 ];
 
-const MOCK_WHOLESALERS = [
+export const MOCK_WHOLESALERS = [
   // São Paulo / SP
   { id: 101, empresa: "Atacadista Leiteira", comprador: "Carlos Santos", local: "São Paulo, SP", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.9 },
   { id: 102, empresa: "Empório Paulista", comprador: "Roberto Almeida", local: "São Paulo, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.8 },
@@ -108,7 +108,7 @@ const MOCK_WHOLESALERS = [
   { id: 140, empresa: "Laticínios SC", comprador: "Mariana Lima", local: "Joinville, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.9 },
 ];
 
-const WHOLESALER_CATEGORIES = [
+export const WHOLESALER_CATEGORIES = [
   { id: 'todos', title: 'Todos' },
   { id: 'sao_paulo', title: 'São Paulo / SP' },
   { id: 'belo_horizonte', title: 'Belo Horizonte / MG' },
@@ -122,7 +122,7 @@ const WHOLESALER_CATEGORIES = [
   { id: 'joinville', title: 'Joinville / SC' },
 ];
 
-const CATEGORIES = [
+export const CATEGORIES = [
   { id: 'todos', title: 'Todos' },
   { id: 'coalho', title: 'Coalho' },
   { id: 'mussarela', title: 'Mussarela' },

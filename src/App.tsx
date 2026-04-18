@@ -55,7 +55,7 @@ export default function App() {
               <Profile />
             </ProtectedRoute>
           } />
-          <Route path="/catalogo" element={
+          <Route path="/vitrine" element={
             <ProtectedRoute>
               <Catalog />
             </ProtectedRoute>

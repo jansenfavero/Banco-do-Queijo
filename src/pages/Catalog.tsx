@@ -12,18 +12,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner';
 import { Store, Slice } from 'lucide-react';
 
+import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
+import { Star, MapPin } from 'lucide-react';
+
 export function Catalog() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'produtores' | 'atacadistas'>('produtores');
 
   useEffect(() => {
     let q;
     if (profile?.role === 'ADMIN') {
       q = query(collection(db, 'products'));
-    } else if (profile?.role === 'PRODUTOR') {
-      q = query(collection(db, 'products'), where('produtorId', '==', profile.id));
     } else {
       q = query(collection(db, 'products'), where('active', '==', true));
     }
@@ -37,7 +39,7 @@ export function Catalog() {
       setLoading(false);
     }, (error) => {
       console.error("Error fetching products:", error);
-      toast.error("Erro ao carregar catálogo.");
+      toast.error("Erro ao carregar vitrine.");
       setLoading(false);
     });
 
@@ -49,14 +51,14 @@ export function Catalog() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-            {profile?.role === 'PRODUTOR' ? <Slice className="h-8 w-8 text-primary" /> : <Store className="h-8 w-8 text-primary" />}
+            <Store className="h-8 w-8 text-primary" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
-              {profile?.role === 'PRODUTOR' ? 'Publicar Queijo' : 'Catálogo Geral'}
+              Vitrine
             </h1>
             <p className="text-muted-foreground text-sm md:text-base">
-              {profile?.role === 'PRODUTOR' ? 'Gerencie sua produção e publicação.' : 'Encontre os melhores queijos artesanais.'}
+              Explore o catálogo geral de queijos da plataforma.
             </p>
           </div>
         </div>
@@ -67,7 +69,7 @@ export function Catalog() {
                 Publicar Queijo
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
+            <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl rounded-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
               <DialogHeader>
                 <DialogTitle className="text-2xl">Publicar Queijo</DialogTitle>
                 <DialogDescription className="text-white/80">
@@ -80,19 +82,89 @@ export function Catalog() {
         )}
       </div>
 
+      <div className="flex bg-muted/50 p-1.5 rounded-2xl border border-border/50 w-fit">
+        <button
+          onClick={() => setActiveTab('produtores')}
+          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          Produtores
+        </button>
+        <button
+          onClick={() => setActiveTab('atacadistas')}
+          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          Atacadistas
+        </button>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-10">Carregando catálogo...</div>
-      ) : products.length === 0 ? (
-        <div className="text-center py-20 bg-card rounded-lg border border-dashed border-border/50">
-          <h3 className="text-lg font-medium">Nenhum produto encontrado</h3>
-          <p className="text-muted-foreground mt-1">
-            {profile?.role === 'PRODUTOR' ? 'Você ainda não possui anúncios ativos.' : 'Não há produtos disponíveis no momento.'}
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      ) : activeTab === 'produtores' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} role={profile?.role} />
+          ))}
+          {MOCK_PRODUCTS.map((prod) => (
+            <div key={prod.id} className="group bg-card rounded-2xl border border-border/50 hover:border-primary/50 overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={prod.imagem} alt={prod.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="px-2 py-1 bg-background/90 backdrop-blur-sm rounded-md text-xs font-bold text-primary shadow-sm capitalize border border-border">
+                    {prod.categoria}
+                  </span>
+                </div>
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-[#ffcb05] rounded-md text-xs font-bold text-[#4a2000] shadow-sm">
+                  <Star className="w-3 h-3 fill-current" /> {prod.avaliacao}
+                </div>
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <h3 className="font-bold text-lg text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">{prod.nome}</h3>
+                <p className="text-sm text-muted-foreground mb-4 font-medium flex-1">{prod.produtor}</p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <span>{prod.local}</span>
+                </div>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-border border-dashed">
+                  <div>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-0.5">R$ / Kg</span>
+                    <span className="font-bold text-xl text-foreground">R$ {prod.preco.toFixed(2)}</span>
+                  </div>
+                  <button className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <Store className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {MOCK_WHOLESALERS.map((wholesaler) => (
+            <div key={wholesaler.id} className="group bg-card rounded-2xl border border-border/50 hover:border-primary/50 overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={wholesaler.imagem} alt={wholesaler.empresa} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-[#ffcb05] rounded-md text-xs font-bold text-[#4a2000] shadow-sm">
+                  <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao}
+                </div>
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <h3 className="font-bold text-lg text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">{wholesaler.empresa}</h3>
+                <p className="text-sm text-muted-foreground mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <span>{wholesaler.local}</span>
+                </div>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-border border-dashed">
+                  <div>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider block mb-0.5">Volume Demandado</span>
+                    <span className="font-bold text-lg text-foreground">{wholesaler.quantidade} kg/mês</span>
+                  </div>
+                  <button className="px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold group-hover:bg-primary group-hover:text-primary-foreground transition-colors text-sm">
+                    Fazer Oferta
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       )}
@@ -168,11 +240,29 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
     format: '',
     pricePerKg: '',
     availableKg: '',
-    vacuumPacked: 'false',
-    labelType: 'SIMPLES',
+    packagingType: 'sem-rotulo',
+    paymentMethods: [] as string[],
     sliceable: 'false',
     deliveryType: 'entrego'
   });
+
+  const togglePaymentMethod = (method: string) => {
+    if (method === 'Todos') {
+      if (formData.paymentMethods.length === 4) {
+        setFormData({ ...formData, paymentMethods: [] });
+      } else {
+        setFormData({ ...formData, paymentMethods: ['PIX', 'Dinheiro', 'Cartão', 'Boleto'] });
+      }
+      return;
+    }
+
+    const current = formData.paymentMethods;
+    if (current.includes(method)) {
+      setFormData({ ...formData, paymentMethods: current.filter(m => m !== method) });
+    } else {
+      setFormData({ ...formData, paymentMethods: [...current, method] });
+    }
+  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -235,11 +325,8 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
         format: formData.format,
         pricePerKg: parseFloat(formData.pricePerKg),
         availableKg: parseFloat(formData.availableKg),
-        vacuumPacked: formData.vacuumPacked === 'true',
-        labelType: formData.labelType,
-        sliceable: formData.sliceable === 'true',
-        deliveryType: formData.deliveryType,
-        paymentMethods: ['PIX', 'BOLETO'],
+        packagingType: formData.packagingType,
+        paymentMethods: formData.paymentMethods,
         photos: images,
         active: !isDraft, // false if draft
         createdAt: serverTimestamp()
@@ -259,52 +346,66 @@ function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="cheeseType" className="text-white">Tipo de Queijo</Label>
-          <Input id="cheeseType" value={formData.cheeseType} onChange={(e) => setFormData({...formData, cheeseType: e.target.value})} required placeholder="Ex: Canastra, Coalho..." className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
+          <Label htmlFor="cheeseType" className="text-white font-semibold">Tipo de Queijo</Label>
+          <Input id="cheeseType" value={formData.cheeseType} onChange={(e) => setFormData({...formData, cheeseType: e.target.value})} required placeholder="Ex: Canastra, Coalho..." className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="format" className="text-white">Formato</Label>
-          <Input id="format" value={formData.format} onChange={(e) => setFormData({...formData, format: e.target.value})} required placeholder="Ex: Barra 1kg..." className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
+          <Label htmlFor="format" className="text-white font-semibold">Formato</Label>
+          <Input id="format" value={formData.format} onChange={(e) => setFormData({...formData, format: e.target.value})} required placeholder="Ex: Barra 1kg..." className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
         </div>
       </div>
       
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="pricePerKg" className="text-white">Preço por Kg (R$)</Label>
-          <Input id="pricePerKg" type="number" step="0.01" min="0" value={formData.pricePerKg} onChange={(e) => setFormData({...formData, pricePerKg: e.target.value})} required className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
+          <Label htmlFor="pricePerKg" className="text-white font-semibold">Preço por Kg (R$)</Label>
+          <Input id="pricePerKg" type="number" step="0.01" min="0" value={formData.pricePerKg} onChange={(e) => setFormData({...formData, pricePerKg: e.target.value})} required className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="availableKg" className="text-white">Qtd Disponível (Kg)</Label>
-          <Input id="availableKg" type="number" step="0.1" min="0" value={formData.availableKg} onChange={(e) => setFormData({...formData, availableKg: e.target.value})} required className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20 hover:bg-black/30" />
+          <Label htmlFor="availableKg" className="text-white font-semibold">Qtd Disponível (Kg)</Label>
+          <Input id="availableKg" type="number" step="0.1" min="0" value={formData.availableKg} onChange={(e) => setFormData({...formData, availableKg: e.target.value})} required className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="vacuumPacked" className="text-white">Embalagem a Vácuo?</Label>
-          <Select value={formData.vacuumPacked} onValueChange={(v) => setFormData({...formData, vacuumPacked: v})}>
-            <SelectTrigger className="bg-black/20 border-white/10 text-white focus:ring-white/20 hover:bg-black/30"><SelectValue /></SelectTrigger>
-            <SelectContent className="bg-[#4a2000] border-white/10 text-white">
-              <SelectItem value="true">Sim</SelectItem>
-              <SelectItem value="false">Não</SelectItem>
+          <Label htmlFor="packagingType" className="text-white font-semibold">Tipo de Embalagem:</Label>
+          <Select value={formData.packagingType} onValueChange={(v) => setFormData({...formData, packagingType: v})}>
+            <SelectTrigger className="bg-black/20 border-white/20 text-white focus:ring-amber-500 rounded-full px-4"><SelectValue /></SelectTrigger>
+            <SelectContent className="bg-[#a64b00] border-white/20 text-white rounded-2xl shadow-xl" position="popper" sideOffset={4}>
+              <SelectItem value="com-rotulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-xl">Com Rótulo</SelectItem>
+              <SelectItem value="sem-rotulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-xl">Sem Rótulo</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="labelType" className="text-white">Rótulo SIE?</Label>
-          <Select value={formData.labelType} onValueChange={(v) => setFormData({...formData, labelType: v})}>
-            <SelectTrigger className="bg-black/20 border-white/10 text-white focus:ring-white/20 hover:bg-black/30"><SelectValue /></SelectTrigger>
-            <SelectContent className="bg-[#4a2000] border-white/10 text-white">
-              <SelectItem value="COMPLETO_SIE">Sim (SIE)</SelectItem>
-              <SelectItem value="SIMPLES">Não (Simples)</SelectItem>
+          <Label className="text-white font-semibold">Tipos de Pagamentos Aceitos</Label>
+          <Select value="" onValueChange={togglePaymentMethod}>
+            <SelectTrigger className="bg-black/20 border-white/20 text-white focus:ring-amber-500 rounded-full px-4">
+              <SelectValue placeholder={formData.paymentMethods.length > 0 ? `${formData.paymentMethods.length} selecionado(s)` : 'Selecione...'} />
+            </SelectTrigger>
+            <SelectContent className="bg-[#a64b00] border-white/20 text-white rounded-2xl shadow-xl" position="popper" sideOffset={4}>
+              {['Todos', 'PIX', 'Dinheiro', 'Cartão', 'Boleto'].map((method) => (
+                <div 
+                  key={method} 
+                  className="relative flex w-full cursor-pointer select-none items-center rounded-xl py-2 pl-8 pr-2 text-sm outline-none hover:bg-white/10 focus:bg-white/10 transition-colors"
+                  onClick={() => togglePaymentMethod(method)}
+                >
+                  <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
+                    {(method === 'Todos' ? formData.paymentMethods.length === 4 : formData.paymentMethods.includes(method)) && (
+                      <Check className="h-4 w-4 text-white" />
+                    )}
+                  </span>
+                  {method}
+                </div>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label className="text-white">Fotos do Queijo (Até 5)</Label>
-        <div className="grid grid-cols-5 gap-2">
+        <Label className="text-white font-semibold">Fotos do Queijo (Até 5)</Label>
+        <div className="grid grid-cols-5 gap-3">
           {images.map((img, index) => (
             <div key={index} className="relative aspect-square rounded-md overflow-hidden bg-black/20 border border-white/20">
               <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />

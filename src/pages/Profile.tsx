@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from 'sonner';
 import { db } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { Upload, X, MapPin, Package, Truck, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, MapPin, Package, Truck, Image as ImageIcon, User } from 'lucide-react';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export function Profile() {
@@ -22,8 +22,18 @@ export function Profile() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Meu Perfil</h1>
+      <div className="flex items-center gap-4 mb-2">
+        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
+          <User className="h-8 w-8 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
+            Meu Perfil
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base">
+            Gerencie suas informações pessoais e de comercialização.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -143,11 +153,11 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
   const isProdutor = profile.role === 'PRODUTOR';
 
   return (
-    <Card className="shadow-lg border-orange-100">
-      <CardHeader className="bg-orange-50 border-b border-orange-100 flex flex-row items-center justify-between pb-4 pt-6">
+    <Card className="shadow-lg border-border">
+      <CardHeader className="bg-card border-b border-border flex flex-row items-center justify-between pb-4 pt-6">
         <div>
-          <CardTitle className="text-2xl text-orange-900">Seus Dados</CardTitle>
-          <p className="text-sm text-orange-700 mt-1">
+          <CardTitle className="text-2xl text-primary">Seus Dados</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
             Mantenha seu perfil atualizado para que {isProdutor ? 'os Atacadistas' : 'os Produtores'} conheçam você.
           </p>
         </div>
@@ -324,46 +334,46 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         <div className="grid gap-8 md:grid-cols-2 font-medium">
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-semibold text-orange-900/60 uppercase tracking-wider mb-1">Informações Básicas</h3>
-              <p className="text-xl text-gray-900 font-bold">{profile.name}</p>
-              <p className="text-gray-600">{profile.email}</p>
-              <p className="text-gray-600">{profile.phone}</p>
-              <p className="text-gray-600">{profile.cpf || profile.cnpj}</p>
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Informações Básicas</h3>
+              <p className="text-xl text-primary font-bold">{profile.name}</p>
+              <p className="text-muted-foreground">{profile.email}</p>
+              <p className="text-muted-foreground">{profile.phone}</p>
+              <p className="text-muted-foreground">{profile.cpf || profile.cnpj}</p>
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-orange-900/60 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
                 <MapPin className="w-4 h-4" /> Endereço
               </h3>
-              <p className="text-gray-900">
+              <p className="text-foreground">
                 {profile.address?.street}, {profile.address?.number} {profile.address?.complement && `- ${profile.address.complement}`}
               </p>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 {profile.address?.neighborhood} - {profile.address?.city}/{profile.address?.state}
               </p>
-              <p className="text-gray-600">CEP: {profile.address?.zipCode}</p>
+              <p className="text-muted-foreground">CEP: {profile.address?.zipCode}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-semibold text-orange-900/60 uppercase tracking-wider mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
                 <Package className="w-4 h-4" /> Produção / Capacidade
               </h3>
-              <div className="bg-orange-50 rounded-lg p-4 grid grid-cols-2 gap-4">
+              <div className="bg-muted/50 rounded-lg p-4 grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-orange-600 uppercase">Volume Semanal</p>
-                  <p className="text-lg font-bold text-orange-900">{profile.weeklyVolume} kg</p>
+                  <p className="text-xs text-muted-foreground uppercase">Volume Semanal</p>
+                  <p className="text-lg font-bold text-foreground">{profile.weeklyVolume} kg</p>
                 </div>
                 <div>
-                  <p className="text-xs text-orange-600 uppercase">Embalagem</p>
-                  <p className="text-lg font-bold text-orange-900">{profile.packaging}</p>
+                  <p className="text-xs text-muted-foreground uppercase">Embalagem</p>
+                  <p className="text-lg font-bold text-foreground">{profile.packaging}</p>
                 </div>
                 <div className="col-span-2">
-                   <p className="text-xs text-orange-600 uppercase mb-2">Tipos de Queijo</p>
+                   <p className="text-xs text-muted-foreground uppercase mb-2">Tipos de Queijo</p>
                    <div className="flex flex-wrap gap-2">
                      {profile.cheeseTypes?.map((c: string) => (
-                       <span key={c} className="bg-orange-200 text-orange-800 text-xs px-2 py-1 rounded-md font-semibold capitalize shadow-sm">
+                       <span key={c} className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md font-semibold capitalize shadow-sm">
                          {c}
                        </span>
                      ))}
@@ -374,11 +384,11 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
             {isProdutor && (
               <div>
-                <h3 className="text-sm font-semibold text-orange-900/60 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
                   <Truck className="w-4 h-4" /> Logística
                 </h3>
-                <div className="bg-orange-50 rounded-lg p-4">
-                  <p className="text-lg font-bold text-orange-900">
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <p className="text-lg font-bold text-foreground">
                     {profile.chargesFreight 
                       ? `${profile.freightType === 'FIXO' ? 'Valor Fixo: R$' : 'Percentual:'} ${profile.freightValue}${profile.freightType === 'PERCENTUAL' ? '%' : ' por kg'}` 
                       : 'Frete Incluso / Retirada'}
@@ -391,12 +401,12 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
         {profile.images && profile.images.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-sm font-semibold text-orange-900/60 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
               <ImageIcon className="w-4 h-4" /> {isProdutor ? 'Galeria de Produção' : 'Fachada/Interior'}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {profile.images.map((img: string, idx: number) => (
-                <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-md border border-orange-100 hover:shadow-lg transition-shadow">
+                <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-md border border-border hover:shadow-lg transition-shadow">
                   <img src={img} alt={`Imagem ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
               ))}
