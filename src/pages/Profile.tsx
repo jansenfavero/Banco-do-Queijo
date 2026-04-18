@@ -153,11 +153,11 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
   const isProdutor = profile.role === 'PRODUTOR';
 
   return (
-    <Card className="shadow-lg border-border">
-      <CardHeader className="bg-card border-b border-border flex flex-row items-center justify-between pb-4 pt-6">
+    <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px]">
+      <CardHeader className="border-b border-white/10 flex flex-row items-center justify-between pb-6 pt-8 px-8">
         <div>
-          <CardTitle className="text-2xl text-primary">Seus Dados</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
+          <CardTitle className="text-3xl text-app-accent font-bold tracking-tight">Seus Dados</CardTitle>
+          <p className="text-base text-white/80 mt-2 font-medium">
             Mantenha seu perfil atualizado para que {isProdutor ? 'os Atacadistas' : 'os Produtores'} conheçam você.
           </p>
         </div>
@@ -165,7 +165,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
           <DialogTrigger asChild>
             <Button className="font-bold">Editar Perfil</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-app-cardDark border-border/50 text-white shadow-2xl rounded-2xl" overlayClassName="bg-black/60 backdrop-blur-sm">
+          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-[#4a2000] border-white/10 text-white shadow-2xl rounded-[24px]" overlayClassName="bg-black/60 backdrop-blur-sm">
             <DialogHeader>
               <DialogTitle className="text-2xl text-white font-bold tracking-tight">Editar Perfil</DialogTitle>
             </DialogHeader>
@@ -227,7 +227,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 </div>
               </div>
 
-              <div className="space-y-4 bg-black/20 p-5 rounded-2xl border border-white/10">
+              <div className="space-y-4 bg-black/20 p-5 rounded-[20px] border border-white/10">
                 <Label className="text-white font-semibold text-lg flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-amber-500" /> Endereço
                 </Label>
@@ -268,7 +268,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
               </div>
 
               {isProdutor && (
-                <div className="space-y-4 bg-black/20 p-5 rounded-2xl border border-white/10">
+                <div className="space-y-4 bg-black/20 p-5 rounded-[20px] border border-white/10">
                   <Label className="text-white font-semibold text-lg flex items-center gap-2">
                     <Truck className="w-5 h-5 text-amber-500" /> Logística e Frete
                   </Label>
@@ -376,56 +376,56 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         </Dialog>
       </CardHeader>
       
-      <CardContent className="p-6">
+      <CardContent className="p-8">
         <div className="grid gap-8 md:grid-cols-2 font-medium">
           <div className="space-y-6">
-            <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                <User className="w-4 h-4" /> Informações Básicas
+            <div className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
+              <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <User className="w-4 h-4 text-app-accent" /> Informações Básicas
               </h3>
               <div className="space-y-1">
-                <p className="text-xl text-primary font-bold">{profile.name}</p>
-                <p className="text-muted-foreground">{profile.email}</p>
-                <p className="text-muted-foreground">{profile.phone}</p>
-                <p className="text-muted-foreground">{profile.cpf || profile.cnpj}</p>
+                <p className="text-xl text-white font-bold">{profile.name}</p>
+                <p className="text-white/70">{profile.email}</p>
+                <p className="text-white/70">{profile.phone}</p>
+                <p className="text-white/70">{profile.cpf || profile.cnpj}</p>
               </div>
             </div>
 
-            <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4" /> Endereço
+            <div className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
+              <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-app-accent" /> Endereço
               </h3>
               <div className="space-y-1">
-                <p className="text-foreground">
+                <p className="text-white">
                   {profile.address?.street}, {profile.address?.number} {profile.address?.complement && `- ${profile.address.complement}`}
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-white/70">
                   {profile.address?.neighborhood} - {profile.address?.city}/{profile.address?.state}
                 </p>
-                <p className="text-muted-foreground">CEP: {profile.address?.zipCode}</p>
+                <p className="text-white/70">CEP: {profile.address?.zipCode}</p>
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                <Package className="w-4 h-4" /> Secao de Comercialização
+            <div className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
+              <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <Package className="w-4 h-4 text-app-accent" /> Secao de Comercialização
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase">Volume Semanal</p>
-                  <p className="text-lg font-bold text-foreground">{profile.weeklyVolume} kg</p>
+                  <p className="text-xs text-white/60 uppercase mb-1">Volume Semanal</p>
+                  <p className="text-lg font-bold text-white">{profile.weeklyVolume} kg</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase">Embalagem</p>
-                  <p className="text-lg font-bold text-foreground">{profile.packaging}</p>
+                  <p className="text-xs text-white/60 uppercase mb-1">Embalagem</p>
+                  <p className="text-lg font-bold text-white">{profile.packaging}</p>
                 </div>
                 <div className="col-span-2">
-                   <p className="text-xs text-muted-foreground uppercase mb-2">Tipos de Queijo</p>
+                   <p className="text-xs text-white/60 uppercase mb-2 mt-2">Tipos de Queijo</p>
                    <div className="flex flex-wrap gap-2">
                      {profile.cheeseTypes?.map((c: string) => (
-                       <span key={c} className="bg-primary/10 border border-primary/20 text-primary text-xs px-3 py-1 rounded-full font-bold capitalize shadow-sm">
+                       <span key={c} className="bg-white/10 border border-white/20 text-white text-xs px-3 py-1.5 rounded-full font-bold capitalize shadow-sm">
                          {c}
                        </span>
                      ))}
@@ -435,11 +435,11 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
             </div>
 
             {isProdutor && (
-              <div className="bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Truck className="w-4 h-4" /> Logística
+              <div className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
+                <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-app-accent" /> Logística
                 </h3>
-                <p className="text-lg font-bold text-foreground">
+                <p className="text-lg font-bold text-white">
                   {profile.chargesFreight 
                     ? `${profile.freightType === 'FIXO' ? 'Valor Fixo: R$' : 'Percentual:'} ${profile.freightValue}${profile.freightType === 'PERCENTUAL' ? '%' : ' por kg'}` 
                     : 'Frete Incluso / Retirada'}
@@ -450,13 +450,13 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         </div>
 
         {profile.images && profile.images.length > 0 && (
-          <div className="mt-8 bg-muted/30 rounded-2xl p-5 border border-border/50 shadow-sm">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4" /> {isProdutor ? 'Galeria de Produção' : 'Fachada/Interior'}
+          <div className="mt-8 bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
+            <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <ImageIcon className="w-4 h-4 text-app-accent" /> {isProdutor ? 'Galeria de Produção' : 'Fachada/Interior'}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {profile.images.map((img: string, idx: number) => (
-                <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow">
+                <div key={idx} className="aspect-square rounded-[16px] overflow-hidden shadow-sm border border-white/10 hover:shadow-md transition-shadow">
                   <img src={img} alt={`Imagem ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
               ))}
