@@ -15,12 +15,24 @@ import { Store, Slice } from 'lucide-react';
 import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
 import { Star, MapPin } from 'lucide-react';
 
+import { CatalogMetrics } from './CatalogMetrics';
+
 export function Catalog() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'produtores' | 'atacadistas'>('produtores');
+
+  useEffect(() => {
+    if (profile) {
+      if (profile.role === 'PRODUTOR') {
+        setActiveTab('atacadistas');
+      } else if (profile.role === 'ATACADISTA') {
+        setActiveTab('produtores');
+      }
+    }
+  }, [profile]);
 
   useEffect(() => {
     let q;
@@ -48,6 +60,7 @@ export function Catalog() {
 
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
+      
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
@@ -82,20 +95,24 @@ export function Catalog() {
         )}
       </div>
 
-      <div className="flex bg-app-cardDark p-1.5 rounded-2xl border border-[#4a2000] w-fit shadow-lg">
-        <button
-          onClick={() => setActiveTab('produtores')}
-          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
-        >
-          Produtores
-        </button>
-        <button
-          onClick={() => setActiveTab('atacadistas')}
-          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
-        >
-          Atacadistas
-        </button>
-      </div>
+      <CatalogMetrics />
+
+      {(!profile || profile.role === 'ADMIN') && (
+        <div className="flex bg-app-cardDark p-1.5 rounded-2xl border border-[#4a2000] w-fit shadow-lg">
+          <button
+            onClick={() => setActiveTab('produtores')}
+            className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
+          >
+            Produtores
+          </button>
+          <button
+            onClick={() => setActiveTab('atacadistas')}
+            className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
+          >
+            Atacadistas
+          </button>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-10 text-white">Carregando catálogo...</div>

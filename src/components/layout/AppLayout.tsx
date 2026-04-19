@@ -30,24 +30,24 @@ export function AppLayout() {
   };
 
   const navItems = profile?.role === 'ADMIN' ? [
+    { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Painel Admin', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
     { name: 'Perfis e Permissões', path: '/admin/usuarios', icon: Shield },
-    { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Todas as Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Todos os Pedidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : profile?.role === 'PRODUTOR' ? [
+    { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
-    { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Pedidos Recebidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Painel de Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : [
+    { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
-    { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Meus Pedidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Minhas Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
