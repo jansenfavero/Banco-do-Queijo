@@ -124,7 +124,7 @@ export function AppLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-app-cardDark">
+      <main className="flex-1 overflow-auto bg-[#2b1400]">
         <Outlet />
       </main>
     </div>

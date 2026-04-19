@@ -85,9 +85,9 @@ export function Settings() {
   );
 
   return (
-    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
+    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-app-card rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+        <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
           <SettingsIcon className="h-8 w-8 text-app-accent" />
         </div>
         <div>
@@ -102,7 +102,7 @@ export function Settings() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
-          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center flex flex-col items-center">
+          <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-center flex flex-col items-center">
             <CardTitle className="text-xl text-white flex items-center gap-2 justify-center">
               <User className="h-5 w-5" />
               Dados do Perfil
@@ -111,7 +111,7 @@ export function Settings() {
               Atualize as configurações básicas.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-8">
+          <CardContent className="p-6">
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-white/90 font-semibold">E-mail de Login</Label>
@@ -160,7 +160,7 @@ export function Settings() {
 
         {isPasswordProvider ? (
           <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
-            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center flex flex-col items-center">
+            <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-center flex flex-col items-center">
               <CardTitle className="text-xl text-white flex items-center gap-2 justify-center">
                 <Shield className="h-5 w-5" />
                 Segurança
@@ -169,7 +169,7 @@ export function Settings() {
                 Atualize sua senha de acesso.
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-6">
               <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentPassword" className="text-white/90 font-semibold">Senha Atual</Label>
@@ -214,7 +214,7 @@ export function Settings() {
           </Card>
         ) : (
           <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
-            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center flex flex-col items-center">
+            <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-center flex flex-col items-center">
               <CardTitle className="text-xl text-white flex items-center gap-2 justify-center">
                 <Shield className="h-5 w-5" />
                 Segurança
@@ -223,7 +223,7 @@ export function Settings() {
                 Sua conta é vinculada ao Google.
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-6">
               <p className="text-base text-white/90">
                 Você faz login utilizando sua conta do Google. A modificação de senhas deve ser feita diretamente nas configurações do próprio Google.
               </p>

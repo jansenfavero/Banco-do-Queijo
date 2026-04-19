@@ -57,13 +57,13 @@ export function AdminUsers() {
   };
 
   if (profile?.role !== 'ADMIN') {
-    return <div className="p-8 text-center text-red-500">Acesso negado. Apenas administradores.</div>;
+    return <div className="p-6 text-center text-red-500">Acesso negado. Apenas administradores.</div>;
   }
 
   return (
-    <div className="space-y-6 bg-app-cardDark min-h-screen p-4 md:p-8">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="p-3 bg-[#4a2000] rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
           <Shield className="h-8 w-8 text-app-accent" />
         </div>
         <div>
@@ -78,13 +78,13 @@ export function AdminUsers() {
 
       <div className="grid gap-6">
         {loading ? (
-          <div className="flex justify-center p-8">
+          <div className="flex justify-center p-6">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
           users.map((user) => (
             <Card key={user.id} className={`p-0 gap-0 shadow-2xl border border-transparent overflow-hidden rounded-[24px] transition-all bg-[#703200] text-white`}>
-              <CardHeader className={`pb-4 pt-6 px-6 border-b border-white/10 ${user.role === 'ADMIN' ? 'bg-[#4a2000]' : 'bg-[#d36101]'}`}>
+              <CardHeader className={`rounded-t-[24px] px-6 py-5 border-b border-white/10 ${user.role === 'ADMIN' ? 'bg-[#4a2000]' : 'bg-[#d36101]'}`}>
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-xl border border-white/10 ${user.role === 'ADMIN' ? 'bg-[#d36101] text-white' : 'bg-[#4a2000] text-app-accent'}`}>
@@ -105,8 +105,8 @@ export function AdminUsers() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="pt-6 px-6 pb-6">
-                <div className="flex flex-col md:flex-row gap-8">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row gap-6">
                   <div className="flex-1 space-y-4">
                     <label className="text-sm font-semibold uppercase tracking-wider text-white/70">Perfil de Acesso:</label>
                     <div className="flex flex-wrap gap-2">

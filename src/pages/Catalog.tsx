@@ -47,10 +47,10 @@ export function Catalog() {
   }, [profile]);
 
   return (
-    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
+    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-card rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+          <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
             <Store className="h-8 w-8 text-app-accent" />
           </div>
           <div>
@@ -105,7 +105,7 @@ export function Catalog() {
             <ProductCard key={product.id} product={product} role={profile?.role} />
           ))}
           {MOCK_PRODUCTS.map((prod) => (
-            <div key={prod.id} className="group rounded-[24px] bg-app-cardDark border shadow-2xl transition-all border-[#4a2000] duration-300 hover:-translate-y-1 flex flex-col">
+            <div key={prod.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div className="relative mx-4 mt-4 aspect-[4/3] rounded-[16px] overflow-hidden">
                 <img src={prod.imagem} alt={prod.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 left-3 flex gap-2">
@@ -117,10 +117,10 @@ export function Catalog() {
                   <Star className="w-3 h-3 fill-current" /> {prod.avaliacao}
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1 bg-app-cardDark rounded-b-[24px]">
+              <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
                 <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{prod.nome}</h3>
                 <p className="text-sm text-white/70 mb-4 font-medium flex-1">{prod.produtor}</p>
-                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-app-accent/10 w-fit">
+                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
                   <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{prod.local}</span>
                 </div>
@@ -140,20 +140,20 @@ export function Catalog() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {MOCK_WHOLESALERS.map((wholesaler) => (
-             <div key={wholesaler.id} className="group rounded-[24px] bg-app-cardDark border shadow-2xl transition-all border-[#4a2000] duration-300 hover:-translate-y-1 flex flex-col">
+             <div key={wholesaler.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div className="relative mx-4 mt-4 aspect-[4/3] rounded-[16px] overflow-hidden">
                 <img src={wholesaler.imagem} alt={wholesaler.empresa} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
                   <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao}
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1 bg-app-cardDark rounded-b-[24px]">
+              <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
                 <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white flex items-center gap-2">
                   <Store className="w-5 h-5 text-app-accent" />
                   {wholesaler.empresa}
                 </h3>
                 <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
-                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-app-accent/10 w-fit">
+                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
                   <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{wholesaler.local}</span>
                 </div>
@@ -177,12 +177,12 @@ export function Catalog() {
 
 function ProductCard({ product, role }: { key?: React.Key, product: any, role?: string }) {
   return (
-    <Card className="p-0 gap-0 overflow-hidden flex flex-col shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
+    <Card className="p-0 gap-0 overflow-hidden flex flex-col shadow-2xl border-none bg-[#d36101] text-white rounded-[24px]">
       <div className="aspect-[4/3] relative rounded-[16px] mx-4 mt-4 overflow-hidden">
         {product.photos && product.photos.length > 0 ? (
           <img src={product.photos[0]} alt={product.cheeseType} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" referrerPolicy="no-referrer" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#4a2000] text-app-accent/50">
+          <div className="w-full h-full flex items-center justify-center bg-[#a64b00] text-app-accent/50">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
         )}
@@ -194,7 +194,7 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
           </div>
         )}
       </div>
-      <CardHeader className="bg-app-cardDark border-none pt-4 px-4 pb-2 text-left">
+      <CardHeader className="bg-[#d36101] border-none pt-4 px-4 pb-2 text-left">
         <div className="flex justify-between items-start w-full">
           <div>
             <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors flex items-center gap-2">
@@ -207,7 +207,7 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-4 flex-1">
-        <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[15px] border border-app-accent/10">
+        <div className="space-y-3 text-sm bg-[#a64b00] p-4 rounded-[15px] border border-white/10">
           <div className="flex justify-between border-b border-white/5 pb-2">
             <span className="text-white/70 font-semibold">Disponível:</span>
             <span className="font-bold text-white">{product.availableKg} kg</span>

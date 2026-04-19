@@ -51,9 +51,9 @@ export function Orders() {
   };
 
   return (
-    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
+    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-[#4a2000] rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+        <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
           <ShoppingCart className="h-8 w-8 text-app-accent" />
         </div>
         <div>
@@ -78,7 +78,7 @@ export function Orders() {
       ) : (
         <div className="space-y-4">
           <Card className="p-0 gap-0 shadow-2xl border border-transparent bg-[#703200] text-white rounded-[24px] overflow-hidden">
-            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-4 pt-6 px-8 text-left">
+            <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-left">
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
                 Lista de Pedidos

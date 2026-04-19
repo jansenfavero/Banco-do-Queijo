@@ -22,9 +22,9 @@ export function Profile() {
   }
 
   return (
-    <div className="space-y-6 bg-app-cardDark min-h-screen p-4 md:p-8">
-      <div className="flex items-center gap-4 mb-2">
-        <div className="p-3 bg-[#4a2000] rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
           <User className="h-8 w-8 text-app-accent" />
         </div>
         <div>
@@ -155,7 +155,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
   return (
     <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-      <CardHeader className="bg-[#d36101] border-b border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between pb-6 pt-8 px-8 gap-4">
+      <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-5 gap-4">
         <div>
           <CardTitle className="text-3xl text-white font-bold tracking-tight flex items-center gap-3">
             <User className="w-6 h-6" />
@@ -379,8 +379,8 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         </Dialog>
       </CardHeader>
       
-      <CardContent className="p-8">
-        <div className="grid gap-8 md:grid-cols-2 font-medium">
+      <CardContent className="p-6">
+        <div className="grid gap-6 md:grid-cols-2 font-medium">
           <div className="space-y-6">
             <div className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
               <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
