@@ -102,7 +102,7 @@ export function Home() {
 
             {/* Card Atacadista */}
             <Link 
-              to="/cadastro?role=COMPRADOR" 
+              to="/cadastro?role=ATACADISTA" 
               className="group relative overflow-hidden rounded-[2rem] bg-app-cardDark/80 backdrop-blur-md border border-[#d36101]/30 p-8 text-left transition-all duration-500 hover:bg-[#703200]/90 hover:border-app-accent hover:shadow-[0_0_30px_rgba(211,97,1,0.4)] hover:-translate-y-2"
             >
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity duration-500">

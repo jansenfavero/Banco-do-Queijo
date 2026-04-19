@@ -74,6 +74,9 @@ export function Register() {
       phone: formData.phone,
       role: formData.role,
       kycStatus: 'PENDENTE',
+      cpfCnpj: '00000000000', // Preenchimento obrigatório para validação inicial (usuário irá alterar no perfil)
+      city: 'A definir',      // Preenchimento obrigatório para validação inicial
+      state: 'NA',            // Preenchimento obrigatório para validação inicial
       createdAt: serverTimestamp()
     });
   };
