@@ -9,7 +9,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { toast } from 'sonner';
-import { Settings as SettingsIcon, Save } from 'lucide-react';
+import { Settings as SettingsIcon, Save, User, Shield } from 'lucide-react';
 import { getFriendlyErrorMessage } from '../lib/errorMapping';
 
 export function Settings() {
@@ -102,8 +102,11 @@ export function Settings() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
-          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
-            <CardTitle className="text-xl text-white">Dados do Perfil</CardTitle>
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center flex flex-col items-center">
+            <CardTitle className="text-xl text-white flex items-center gap-2 justify-center">
+              <User className="h-5 w-5" />
+              Dados do Perfil
+            </CardTitle>
             <CardDescription className="text-white/80">
               Atualize as configurações básicas.
             </CardDescription>
@@ -157,8 +160,11 @@ export function Settings() {
 
         {isPasswordProvider ? (
           <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
-            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
-              <CardTitle className="text-xl text-white">Segurança</CardTitle>
+            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center flex flex-col items-center">
+              <CardTitle className="text-xl text-white flex items-center gap-2 justify-center">
+                <Shield className="h-5 w-5" />
+                Segurança
+              </CardTitle>
               <CardDescription className="text-white/80">
                 Atualize sua senha de acesso.
               </CardDescription>
@@ -208,8 +214,11 @@ export function Settings() {
           </Card>
         ) : (
           <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
-            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
-              <CardTitle className="text-xl text-white">Segurança</CardTitle>
+            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center flex flex-col items-center">
+              <CardTitle className="text-xl text-white flex items-center gap-2 justify-center">
+                <Shield className="h-5 w-5" />
+                Segurança
+              </CardTitle>
               <CardDescription className="text-white/80">
                 Sua conta é vinculada ao Google.
               </CardDescription>

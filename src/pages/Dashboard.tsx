@@ -1,6 +1,6 @@
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Package, Users, DollarSign, TrendingUp, ShoppingBag, LayoutDashboard } from 'lucide-react';
+import { Package, Users, DollarSign, TrendingUp, ShoppingBag, LayoutDashboard, ShieldCheck, ShoppingCart } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
@@ -107,8 +107,11 @@ function AdminDashboard() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-7 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center">
-            <CardTitle className="text-xl">Painel Administrativo</CardTitle>
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 flex flex-col items-center justify-center">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5" />
+              Painel Administrativo
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
@@ -170,7 +173,10 @@ function ProducerDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-left">
-            <CardTitle className="text-xl">Últimos Pedidos</CardTitle>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5 text-white" />
+              Últimos Pedidos
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
@@ -180,7 +186,10 @@ function ProducerDashboard() {
         </Card>
         <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="flex flex-row items-center justify-start bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8">
-            <CardTitle className="text-xl">Meus Queijos</CardTitle>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Package className="w-5 h-5 text-white" />
+              Meus Queijos
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center py-10 text-white/70 flex flex-col items-center gap-4 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10 p-4">
@@ -418,7 +427,10 @@ function WholesalerDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-left">
-            <CardTitle className="text-xl">Histórico de Pedidos</CardTitle>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5 text-white" />
+              Histórico de Pedidos
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
@@ -428,7 +440,10 @@ function WholesalerDashboard() {
         </Card>
         <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-left">
-            <CardTitle className="text-xl">Meus Fornecedores</CardTitle>
+            <CardTitle className="text-xl flex items-center gap-2">
+              <Users className="w-5 h-5 text-white" />
+              Meus Fornecedores
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-8 pb-8 px-8">
             <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">

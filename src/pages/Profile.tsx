@@ -155,9 +155,12 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
   return (
     <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-      <CardHeader className="bg-[#d36101] border-b border-white/10 flex flex-row items-center justify-between pb-6 pt-8 px-8">
+      <CardHeader className="bg-[#d36101] border-b border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between pb-6 pt-8 px-8 gap-4">
         <div>
-          <CardTitle className="text-3xl text-white font-bold tracking-tight">Seus Dados</CardTitle>
+          <CardTitle className="text-3xl text-white font-bold tracking-tight flex items-center gap-3">
+            <User className="w-6 h-6" />
+            Seus Dados
+          </CardTitle>
           <p className="text-base text-white/80 mt-2 font-medium">
             Mantenha seu perfil atualizado para que {isProdutor ? 'os Atacadistas' : 'os Produtores'} conheçam você.
           </p>

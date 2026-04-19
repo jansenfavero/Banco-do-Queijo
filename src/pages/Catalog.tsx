@@ -148,7 +148,10 @@ export function Catalog() {
                 </div>
               </div>
               <div className="p-5 flex flex-col flex-1 bg-app-cardDark rounded-b-[24px]">
-                <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{wholesaler.empresa}</h3>
+                <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white flex items-center gap-2">
+                  <Store className="w-5 h-5 text-app-accent" />
+                  {wholesaler.empresa}
+                </h3>
                 <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
                 <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-app-accent/10 w-fit">
                   <MapPin className="w-4 h-4 text-app-accent" />
@@ -194,7 +197,10 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
       <CardHeader className="bg-app-cardDark border-none pt-4 px-4 pb-2 text-left">
         <div className="flex justify-between items-start w-full">
           <div>
-            <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors">{product.cheeseType}</CardTitle>
+            <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors flex items-center gap-2">
+              <Slice className="w-4 h-4 text-app-accent" />
+              {product.cheeseType}
+            </CardTitle>
             <CardDescription className="text-white/80 font-medium text-sm mt-1">{product.format}</CardDescription>
           </div>
            <span className="font-bold text-xl text-white">R$ {product.pricePerKg.toFixed(2)}<span className="text-xs text-white/50 tracking-wider font-normal"> / Kg</span></span>

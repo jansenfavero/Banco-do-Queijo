@@ -79,7 +79,10 @@ export function Orders() {
         <div className="space-y-4">
           <Card className="p-0 gap-0 shadow-2xl border border-transparent bg-[#703200] text-white rounded-[24px] overflow-hidden">
             <CardHeader className="bg-[#d36101] border-b border-white/10 pb-4 pt-6 px-8 text-left">
-              <CardTitle className="text-xl text-white">Lista de Pedidos</CardTitle>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5" />
+                Lista de Pedidos
+              </CardTitle>
             </CardHeader>
             <CardContent className="pt-8 px-8 pb-8 space-y-4">
               {orders.map((order) => (

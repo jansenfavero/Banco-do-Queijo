@@ -87,7 +87,10 @@ export function Demands() {
             <Card key={demand.id} className="p-0 gap-0 shadow-2xl border border-transparent bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
               <CardHeader className="bg-[#d36101] border-b border-white/10 pb-4 pt-6 px-6 text-left">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl text-white">{demand.cheeseType}</CardTitle>
+                  <CardTitle className="text-xl text-white flex items-center gap-2">
+                    <Megaphone className="w-5 h-5 text-white" />
+                    {demand.cheeseType}
+                  </CardTitle>
                   <Badge variant="secondary" className="bg-white text-[#d36101] border-none font-bold px-3 py-1">{demand.quantityKg} kg</Badge>
                 </div>
                 <CardDescription className="text-white/80 font-medium text-sm mt-1">{demand.region}</CardDescription>

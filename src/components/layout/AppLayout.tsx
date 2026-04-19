@@ -57,9 +57,9 @@ export function AppLayout() {
     <div className="min-h-screen bg-app-cardDark flex flex-col md:flex-row">
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-[#d36101] border-b border-[#a64b00] shadow-2xl z-50 sticky top-0">
-        <div className="flex items-center gap-3 font-bold text-white text-2xl whitespace-nowrap">
+        <div className="flex items-center gap-3 font-bold text-app-accent text-2xl whitespace-nowrap">
           <div className="w-14 h-14 flex items-center justify-center">
-            <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain brightness-0 invert" />
+            <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
           Banco do Queijo
         </div>
@@ -76,9 +76,9 @@ export function AppLayout() {
         ${isMobileMenuOpen ? 'flex absolute top-[85px] bottom-0 left-0 right-0' : 'hidden'} 
         md:flex md:sticky md:top-0 md:h-screen w-full md:w-[280px] bg-[#d36101] shadow-2xl flex-shrink-0 flex-col z-40
       `}>
-        <div className="hidden md:flex p-6 items-center gap-3 font-bold text-white text-2xl whitespace-nowrap border-b border-[#a64b00]">
+        <div className="hidden md:flex p-6 items-center gap-3 font-bold text-app-accent text-2xl whitespace-nowrap border-b border-[#a64b00]">
           <div className="w-12 h-12 flex items-center justify-center">
-            <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain brightness-0 invert" />
+            <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
           </div>
           Banco do Queijo
         </div>

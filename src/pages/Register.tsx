@@ -24,7 +24,7 @@ export function Register() {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
   const [searchParams] = useSearchParams();
-  const defaultRole = searchParams.get('role') || 'PRODUTOR';
+  const defaultRole = (searchParams.get('role') || 'PRODUTOR').toUpperCase();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -67,10 +67,12 @@ export function Register() {
   };
 
   const createProfileDoc = async (uid: string) => {
-    const defaultName = googleUser?.displayName || formData.email.split('@')[0] || '';
+    const defaultName = googleUser?.displayName || formData.email.split('@')[0] || 'Usuário';
+    const finalEmail = formData.email || googleUser?.email || `user-${uid}@bancodoqueijo.com.br`;
+
     await setDoc(doc(db, 'users', uid), {
       name: defaultName,
-      email: formData.email,
+      email: finalEmail,
       phone: formData.phone,
       role: formData.role,
       kycStatus: 'PENDENTE',
