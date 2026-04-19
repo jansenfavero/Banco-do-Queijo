@@ -127,6 +127,10 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       toast.error('Selecione pelo menos um tipo de queijo.');
       return;
     }
+    if (images.length === 0) {
+      toast.error(`Pelo menos uma foto ${isProdutor ? 'do seu queijo' : 'do seu comércio'} é obrigatória.`);
+      return;
+    }
     setLoading(true);
     try {
       await updateDoc(doc(db, 'users', profile.id), {
@@ -207,7 +211,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="weeklyVolume" className="text-white font-semibold">Volume Semanal (kg)</Label>
+                  <Label htmlFor="weeklyVolume" className="text-white font-semibold">
+                    {isProdutor ? 'Volume Semanal de Produção (kg)' : 'Volume Semanal de Compra (kg)'}
+                  </Label>
                   <Input 
                     id="weeklyVolume" 
                     type="number"
@@ -217,14 +223,17 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="packaging" className="text-white font-semibold">Tipo de Embalagem</Label>
+                  <Label htmlFor="packaging" className="text-white font-semibold">
+                    {isProdutor ? 'Tipo de Embalagem' : 'Preferência de Embalagem'}
+                  </Label>
                   <Select value={formData.packaging} onValueChange={(v) => setFormData({ ...formData, packaging: v })}>
                     <SelectTrigger id="packaging" className="flex h-10 w-full bg-black/20 border border-white/20 text-white focus:ring-amber-500 rounded-xl px-4 py-2 outline-none cursor-pointer">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#b85200] border border-white/20 text-white rounded-xl shadow-xl" position="popper" sideOffset={4}>
-                      <SelectItem value="Com Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-lg">Com Rótulo</SelectItem>
-                      <SelectItem value="Sem Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-lg">Sem Rótulo</SelectItem>
+                    <SelectContent className="bg-[#b85200] border border-white/20 text-white rounded-[10px] shadow-xl" position="popper" sideOffset={4}>
+                      <SelectItem value="Com Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-[8px]">Com Rótulo</SelectItem>
+                      <SelectItem value="Sem Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-[8px]">Sem Rótulo</SelectItem>
+                      <SelectItem value="Ambos" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-[8px]">Ambos</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -328,9 +337,15 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
               )}
 
               <div className="space-y-4">
-                <Label className="text-white text-lg">
-                  {isProdutor ? 'Fotos dos Seus Queijos' : 'Fotos do Seu Comércio'}
-                </Label>
+                <div>
+                  <Label className="text-white text-lg font-semibold flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5 text-[#f4d763]" />
+                    {isProdutor ? 'Fotos dos Seus Queijos' : 'Fotos do Seu Comércio'}
+                  </Label>
+                  <p className="text-white/70 text-sm mt-1">
+                    {isProdutor ? 'Adicione até 5 fotos dos seus produtos. Elas serão visíveis no catálogo.' : 'Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.'}
+                  </p>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {images.map((img, index) => (
                     <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-black/20 border border-white/20">
