@@ -84,15 +84,15 @@ export function Demands() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {demands.map((demand) => (
-            <Card key={demand.id} className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px] overflow-hidden flex flex-col">
-              <CardHeader className="bg-app-cardDark border-none pb-2 pt-6 px-6 text-left">
+            <Card key={demand.id} className="p-0 gap-0 shadow-2xl border border-transparent bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
+              <CardHeader className="bg-[#d36101] border-b border-white/10 pb-4 pt-6 px-6 text-left">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors">{demand.cheeseType}</CardTitle>
-                  <Badge variant="secondary" className="bg-[#4a2000] text-app-accent hover:bg-[#4a2000]/80 border-none font-bold px-3 py-1">{demand.quantityKg} kg</Badge>
+                  <CardTitle className="text-xl text-white">{demand.cheeseType}</CardTitle>
+                  <Badge variant="secondary" className="bg-white text-[#d36101] border-none font-bold px-3 py-1">{demand.quantityKg} kg</Badge>
                 </div>
                 <CardDescription className="text-white/80 font-medium text-sm mt-1">{demand.region}</CardDescription>
               </CardHeader>
-              <CardContent className="pt-4 px-6 flex-1">
+              <CardContent className="pt-6 px-6 flex-1">
                 <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[15px] border border-app-accent/10">
                   <div className="flex justify-between border-b border-white/5 pb-2">
                     <span className="text-white/70 font-semibold">Frequência:</span>

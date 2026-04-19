@@ -83,36 +83,36 @@ export function AdminUsers() {
           </div>
         ) : (
           users.map((user) => (
-            <Card key={user.id} className={`transition-all hover:shadow-md bg-card ${user.role === 'ADMIN' ? 'border-primary shadow-[0_0_15px_rgba(244,215,99,0.15)]' : 'border-border/50'}`}>
-              <CardHeader className="pb-3 border-b border-border/40">
+            <Card key={user.id} className={`p-0 gap-0 shadow-2xl border border-transparent overflow-hidden rounded-[24px] transition-all bg-[#703200] text-white`}>
+              <CardHeader className={`pb-4 pt-6 px-6 border-b border-white/10 ${user.role === 'ADMIN' ? 'bg-[#4a2000]' : 'bg-[#d36101]'}`}>
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                   <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-full ${user.role === 'ADMIN' ? 'bg-primary/20 text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                    <div className={`p-2 rounded-xl border border-white/10 ${user.role === 'ADMIN' ? 'bg-[#d36101] text-white' : 'bg-[#4a2000] text-app-accent'}`}>
                       {user.role === 'ADMIN' ? <ShieldCheck className="h-6 w-6" /> : <Shield className="h-6 w-6" />}
                     </div>
                     <div>
-                      <CardTitle className="text-xl font-bold text-foreground">
+                      <CardTitle className="text-xl font-bold text-white">
                         {user.name}
                       </CardTitle>
-                      <CardDescription className="text-muted-foreground mt-1 text-sm">{user.email}</CardDescription>
+                      <CardDescription className="text-white/80 mt-1 text-sm">{user.email}</CardDescription>
                     </div>
                   </div>
                   {user.role !== 'ADMIN' && (
                     <div className="text-left md:text-right">
-                      <p className="text-sm font-medium text-foreground">CNPJ/CPF: <span className="font-mono text-muted-foreground">{user.cpfCnpj}</span></p>
-                      <p className="text-sm text-muted-foreground">{user.city} - {user.state}</p>
+                      <p className="text-sm font-medium text-white">CNPJ/CPF: <span className="font-mono text-white/50">{user.cpfCnpj}</span></p>
+                      <p className="text-sm text-white/50">{user.city} - {user.state}</p>
                     </div>
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="pt-6 px-6 pb-6">
                 <div className="flex flex-col md:flex-row gap-8">
                   <div className="flex-1 space-y-4">
-                    <label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Perfil de Acesso:</label>
+                    <label className="text-sm font-semibold uppercase tracking-wider text-white/70">Perfil de Acesso:</label>
                     <div className="flex flex-wrap gap-2">
                       <Button
                         variant={user.role === 'ADMIN' ? 'default' : 'outline'}
-                        className={user.role === 'ADMIN' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'hover:bg-primary/10 border-border/50 hover:border-primary/50 hover:text-primary'}
+                        className={user.role === 'ADMIN' ? 'bg-app-accent hover:bg-app-accentHover text-app-bgDark border-transparent font-bold' : 'hover:bg-white/10 border-white/20 text-white bg-transparent'}
                         onClick={() => updateUserRole(user.id, 'ADMIN')}
                         size="sm"
                       >
@@ -120,7 +120,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.role === 'PRODUTOR' ? 'default' : 'outline'}
-                        className={user.role === 'PRODUTOR' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'hover:bg-primary/10 border-border/50 hover:border-primary/50 hover:text-primary'}
+                        className={user.role === 'PRODUTOR' ? 'bg-app-accent hover:bg-app-accentHover text-app-bgDark border-transparent font-bold' : 'hover:bg-white/10 border-white/20 text-white bg-transparent'}
                         onClick={() => updateUserRole(user.id, 'PRODUTOR')}
                         size="sm"
                       >
@@ -128,7 +128,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.role === 'ATACADISTA' ? 'default' : 'outline'}
-                        className={user.role === 'ATACADISTA' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'hover:bg-primary/10 border-border/50 hover:border-primary/50 hover:text-primary'}
+                        className={user.role === 'ATACADISTA' ? 'bg-app-accent hover:bg-app-accentHover text-app-bgDark border-transparent font-bold' : 'hover:bg-white/10 border-white/20 text-white bg-transparent'}
                         onClick={() => updateUserRole(user.id, 'ATACADISTA')}
                         size="sm"
                       >
@@ -138,11 +138,11 @@ export function AdminUsers() {
                   </div>
                   
                   <div className="flex-1 space-y-4">
-                    <label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Status da Conta (Verificação):</label>
+                    <label className="text-sm font-semibold uppercase tracking-wider text-white/70">Status da Conta (Verificação):</label>
                     <div className="flex flex-wrap gap-2">
                       <Button
                         variant={user.kycStatus === 'VALIDADO' ? 'default' : 'outline'}
-                        className={user.kycStatus === 'VALIDADO' ? 'bg-green-600 hover:bg-green-700 text-white border-transparent' : 'hover:bg-green-500/20 border-border/50 hover:text-green-400 hover:border-green-500/50'}
+                        className={user.kycStatus === 'VALIDADO' ? 'bg-green-600 hover:bg-green-700 text-white border-transparent font-bold' : 'hover:bg-green-500/20 border-white/20 text-white bg-transparent hover:text-green-400'}
                         onClick={() => updateUserStatus(user.id, 'VALIDADO')}
                         size="sm"
                       >
@@ -150,7 +150,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.kycStatus === 'PENDENTE' ? 'default' : 'outline'}
-                        className={user.kycStatus === 'PENDENTE' ? 'bg-yellow-500 hover:bg-yellow-600 text-white border-transparent' : 'hover:bg-yellow-500/20 border-border/50 hover:text-yellow-400 hover:border-yellow-500/50'}
+                        className={user.kycStatus === 'PENDENTE' ? 'bg-yellow-500 hover:bg-yellow-600 text-white border-transparent font-bold' : 'hover:bg-yellow-500/20 border-white/20 text-white bg-transparent hover:text-yellow-400'}
                         onClick={() => updateUserStatus(user.id, 'PENDENTE')}
                         size="sm"
                       >
@@ -158,7 +158,7 @@ export function AdminUsers() {
                       </Button>
                       <Button
                         variant={user.kycStatus === 'BLOQUEADO' ? 'default' : 'outline'}
-                        className={user.kycStatus === 'BLOQUEADO' ? 'bg-red-600 hover:bg-red-700 text-white border-transparent' : 'hover:bg-red-500/20 border-border/50 hover:text-red-400 hover:border-red-500/50'}
+                        className={user.kycStatus === 'BLOQUEADO' ? 'bg-red-600 hover:bg-red-700 text-white border-transparent font-bold' : 'hover:bg-red-500/20 border-white/20 text-white bg-transparent hover:text-red-400'}
                         onClick={() => updateUserStatus(user.id, 'BLOQUEADO')}
                         size="sm"
                       >

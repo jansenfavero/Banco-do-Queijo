@@ -174,7 +174,7 @@ export function Catalog() {
 
 function ProductCard({ product, role }: { key?: React.Key, product: any, role?: string }) {
   return (
-    <Card className="overflow-hidden flex flex-col shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
+    <Card className="p-0 gap-0 overflow-hidden flex flex-col shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
       <div className="aspect-[4/3] relative rounded-[16px] mx-4 mt-4 overflow-hidden">
         {product.photos && product.photos.length > 0 ? (
           <img src={product.photos[0]} alt={product.cheeseType} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" referrerPolicy="no-referrer" />

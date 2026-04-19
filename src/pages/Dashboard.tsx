@@ -63,42 +63,42 @@ function AdminDashboard() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
             <Users className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">--</div>
             <p className="text-xs text-white/70">Produtores e Atacadistas</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Transações Totais</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">R$ 0,00</div>
             <p className="text-xs text-white/70">Volume transacionado</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Produtos Cadastrados</CardTitle>
             <Package className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">--</div>
             <p className="text-xs text-white/70">No catálogo geral</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Demandas Ativas</CardTitle>
             <TrendingUp className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">--</div>
             <p className="text-xs text-white/70">Aguardando propostas</p>
           </CardContent>
@@ -106,12 +106,12 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-7 shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="bg-app-cardDark border-none rounded-t-[24px] pb-2 pt-8 px-8 text-left">
+        <Card className="col-span-7 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-center">
             <CardTitle className="text-xl">Painel Administrativo</CardTitle>
           </CardHeader>
-          <CardContent className="pt-4 pb-8 px-8">
-            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-app-accent/10">
+          <CardContent className="pt-8 pb-8 px-8">
+            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
               Você tem acesso total à plataforma. Use o menu lateral para gerenciar o catálogo, demandas e pedidos.
             </div>
           </CardContent>
@@ -125,42 +125,42 @@ function ProducerDashboard() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Faturamento (30 dias)</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">R$ 0,00</div>
             <p className="text-xs text-white/70">+0% em relação ao mês anterior</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Pedidos Ativos</CardTitle>
             <ShoppingBag className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">0</div>
             <p className="text-xs text-white/70">0 aguardando envio</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Compradores Ativos</CardTitle>
             <Users className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">0</div>
             <p className="text-xs text-white/70">Clientes que compraram nos últimos 90 dias</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Produtos em Estoque</CardTitle>
             <Package className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">0 kg</div>
             <p className="text-xs text-white/70">Total disponível para venda</p>
           </CardContent>
@@ -168,22 +168,22 @@ function ProducerDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="bg-app-cardDark border-none rounded-t-[24px] pb-2 pt-8 px-8 text-left">
+        <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-left">
             <CardTitle className="text-xl">Últimos Pedidos</CardTitle>
           </CardHeader>
-          <CardContent className="pt-4 pb-8 px-8">
-            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-app-accent/10">
+          <CardContent className="pt-8 pb-8 px-8">
+            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
               Nenhum pedido recente.
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-3 shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-start bg-app-cardDark border-none rounded-t-[24px] pb-2 pt-8 px-8">
+        <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-start bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8">
             <CardTitle className="text-xl">Meus Queijos</CardTitle>
           </CardHeader>
-          <CardContent className="pt-4 pb-8 px-8">
-            <div className="text-center py-10 text-white/70 flex flex-col items-center gap-4 bg-[#4a2000] rounded-[20px] shadow-sm border border-app-accent/10 p-4">
+          <CardContent className="pt-8 pb-8 px-8">
+            <div className="text-center py-10 text-white/70 flex flex-col items-center gap-4 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10 p-4">
               <p>Seu Perfil e Produtos ainda não estão publicados, publique para que fique disponivel aos Atacadistas Compradores.</p>
             </div>
           </CardContent>
@@ -373,42 +373,42 @@ function WholesalerDashboard() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Volume Comprado</CardTitle>
             <Package className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">0 kg</div>
             <p className="text-xs text-white/70">Nos últimos 30 dias</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Valor Pago</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">R$ 0,00</div>
             <p className="text-xs text-white/70">Nos últimos 30 dias</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Produtores</CardTitle>
             <Users className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">0</div>
             <p className="text-xs text-white/70">Fornecedores ativos</p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-app-cardDark border-none rounded-t-[24px]">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 pt-8 px-8 bg-[#d36101] border-b border-white/10">
             <CardTitle className="text-sm font-medium">Demandas Ativas</CardTitle>
             <TrendingUp className="h-4 w-4 text-app-accent" />
           </CardHeader>
-          <CardContent className="pt-2 px-8">
+          <CardContent className="pt-6 px-8">
             <div className="text-2xl font-bold">0</div>
             <p className="text-xs text-white/70">Aguardando propostas</p>
           </CardContent>
@@ -416,22 +416,22 @@ function WholesalerDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="bg-app-cardDark border-none rounded-t-[24px] pb-2 pt-8 px-8 text-left">
+        <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-left">
             <CardTitle className="text-xl">Histórico de Pedidos</CardTitle>
           </CardHeader>
-          <CardContent className="pt-4 pb-8 px-8">
-            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-app-accent/10">
+          <CardContent className="pt-8 pb-8 px-8">
+            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
               Nenhum pedido recente.
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-3 shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
-          <CardHeader className="bg-app-cardDark border-none rounded-t-[24px] pb-2 pt-8 px-8 text-left">
+        <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 text-left">
             <CardTitle className="text-xl">Meus Fornecedores</CardTitle>
           </CardHeader>
-          <CardContent className="pt-4 pb-8 px-8">
-            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-app-accent/10">
+          <CardContent className="pt-8 pb-8 px-8">
+            <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
               Nenhum fornecedor ainda.
             </div>
           </CardContent>

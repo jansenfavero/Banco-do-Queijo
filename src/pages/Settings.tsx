@@ -101,7 +101,7 @@ export function Settings() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
+        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
           <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
             <CardTitle className="text-xl text-white">Dados do Perfil</CardTitle>
             <CardDescription className="text-white/80">
@@ -156,7 +156,7 @@ export function Settings() {
         </Card>
 
         {isPasswordProvider ? (
-          <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
+          <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
             <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
               <CardTitle className="text-xl text-white">Segurança</CardTitle>
               <CardDescription className="text-white/80">
@@ -207,7 +207,7 @@ export function Settings() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
+          <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px] h-max">
             <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
               <CardTitle className="text-xl text-white">Segurança</CardTitle>
               <CardDescription className="text-white/80">
