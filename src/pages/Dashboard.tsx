@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { toast } from 'sonner';
+import { CatalogMetrics } from './CatalogMetrics';
 
 const CHEESE_TYPES = [
   'Qualho', 'Mussarela', 'Frescal', 'Canastra', 'Parmesão', 'Prato', 'Provolone', 'Gorgonzola', 'Ricota', 'Meia Cura'
@@ -36,6 +37,8 @@ export function Dashboard() {
           </p>
         </div>
       </div>
+
+      <CatalogMetrics />
 
       {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">

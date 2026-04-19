@@ -77,9 +77,9 @@ export function CatalogMetrics() {
             <SelectTrigger className="w-[180px] bg-black/20 border-white/20 text-white rounded-xl">
               <SelectValue placeholder="Selecione..." />
             </SelectTrigger>
-            <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-xl">
+            <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px]">
               {CHEESE_TYPES.map(type => (
-                <SelectItem key={type} value={type} className="hover:bg-white/10 cursor-pointer rounded-lg">{type}</SelectItem>
+                <SelectItem key={type} value={type} className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">{type}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -140,9 +140,9 @@ export function CatalogMetrics() {
               <SelectTrigger className="w-[120px] h-8 bg-black/20 border-white/20 text-white rounded-lg text-xs">
                 <SelectValue placeholder="Queijo..." />
               </SelectTrigger>
-              <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-xl">
+              <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px]">
                 {CHEESE_TYPES.map(type => (
-                  <SelectItem key={type} value={type} className="hover:bg-white/10 cursor-pointer rounded-lg text-xs">{type}</SelectItem>
+                  <SelectItem key={type} value={type} className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px] text-xs">{type}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
