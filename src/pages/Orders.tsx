@@ -51,25 +51,25 @@ export function Orders() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-          <ShoppingCart className="h-8 w-8 text-primary" />
+        <div className="p-3 bg-[#4a2000] rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+          <ShoppingCart className="h-8 w-8 text-app-accent" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
             Todos os Pedidos
           </h1>
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-white/70 text-sm md:text-base">
             Acompanhe o status e histórico das transações.
           </p>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-10">Carregando pedidos...</div>
+        <div className="flex justify-center py-10 text-white">Carregando pedidos...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-[#703200] text-white rounded-[24px] border-none shadow-2xl">
+        <div className="text-center py-20 bg-app-cardDark text-white rounded-[24px] border border-[#4a2000] shadow-2xl">
           <h3 className="text-lg font-bold">Nenhum pedido encontrado</h3>
           <p className="text-white/70 mt-1">
             Você ainda não possui histórico de pedidos.
@@ -77,10 +77,10 @@ export function Orders() {
         </div>
       ) : (
         <div className="space-y-4">
-          <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px]">
+          <Card className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
             <CardContent className="p-8 space-y-4">
               {orders.map((order) => (
-                <div key={order.id} className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm flex flex-col md:flex-row justify-between gap-4">
+                <div key={order.id} className="bg-[#4a2000] rounded-[20px] p-6 border border-app-accent/10 shadow-sm flex flex-col md:flex-row justify-between gap-4">
                   <div>
                     <h3 className="text-lg font-bold flex items-center gap-2 text-app-accent mb-1">
                       Pedido #{order.id.slice(0, 8).toUpperCase()}

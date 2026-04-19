@@ -10,7 +10,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { toast } from 'sonner';
-import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 const formatPhone = (value: string) => {
@@ -67,8 +67,9 @@ export function Register() {
   };
 
   const createProfileDoc = async (uid: string) => {
+    const defaultName = googleUser?.displayName || formData.email.split('@')[0] || '';
     await setDoc(doc(db, 'users', uid), {
-      name: formData.name,
+      name: defaultName,
       email: formData.email,
       phone: formData.phone,
       role: formData.role,
@@ -94,7 +95,8 @@ export function Register() {
       } else {
         // Standard Email/Password Registration
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-        await updateProfile(userCredential.user, { displayName: formData.name });
+        const defaultName = formData.email.split('@')[0] || '';
+        await updateProfile(userCredential.user, { displayName: defaultName });
         await createProfileDoc(userCredential.user.uid);
         toast.success('Cadastro concluído com sucesso!');
         navigate('/painel');
@@ -126,7 +128,7 @@ export function Register() {
           email: userCredential.user.email || prev.email,
           name: userCredential.user.displayName || prev.name
         }));
-        toast.info('Para continuar, precisamos do seu WhatsApp e do seu perfil de uso.');
+        toast.info('Para continuar, precisamos apenas do seu WhatsApp.');
       }
     } catch (error: any) {
       console.error(error);
@@ -138,19 +140,25 @@ export function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative p-4 overflow-hidden">
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-black/80" onClick={() => navigate('/')}>
         <video 
           src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
           autoPlay 
           loop 
           muted 
           playsInline 
-          className="absolute inset-0 w-full h-full object-cover object-center" 
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none opacity-50" 
         />
-        <div className="absolute inset-0 bg-[#4a2000]/70"></div>
+        <div className="absolute inset-0 bg-[#4a2000]/70 pointer-events-none"></div>
       </div>
 
       <Card className="w-full max-w-md relative z-10 border-none shadow-2xl bg-[#a64b00] backdrop-blur-md">
+        <button 
+          onClick={() => navigate('/')} 
+          className="absolute top-4 right-4 p-2 text-white/70 hover:text-white rounded-full hover:bg-black/20 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 flex items-center justify-center">
@@ -160,6 +168,9 @@ export function Register() {
           <CardTitle className="text-2xl font-bold text-white">
             {googleUser ? 'Finalizar Cadastro' : 'Crie sua conta'}
           </CardTitle>
+          <p className="text-app-accent font-bold uppercase tracking-wider text-sm mt-1">
+            Perfil: {defaultRole === 'PRODUTOR' ? 'Produtor' : 'Atacadista'}
+          </p>
           <CardDescription className="text-white/70">
             {googleUser ? 'Falta pouco! Complete as informações abaixo.' : 'Junte-se à maior rede de queijos artesanais do Brasil'}
           </CardDescription>
@@ -167,41 +178,6 @@ export function Register() {
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
             
-            <div className="space-y-3">
-              <Label className="text-white">Qual será o seu perfil? *</Label>
-              <RadioGroup 
-                value={formData.role} 
-                onValueChange={(val) => setFormData({...formData, role: val})} 
-                className="grid grid-cols-2 gap-4"
-              >
-                <div>
-                  <RadioGroupItem value="PRODUTOR" id="role-produtor" className="peer sr-only" />
-                  <Label htmlFor="role-produtor" className="flex flex-col items-center justify-between rounded-xl border-2 border-white/20 bg-white/5 p-4 hover:bg-white/10 peer-data-[state=checked]:border-app-accent peer-data-[state=checked]:bg-app-accent/20 cursor-pointer transition-all">
-                    <span className="font-semibold text-white">Produtor</span>
-                    <span className="text-xs text-center mt-1 text-white/70">Quero vender</span>
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem value="ATACADISTA" id="role-atacadista" className="peer sr-only" />
-                  <Label htmlFor="role-atacadista" className="flex flex-col items-center justify-between rounded-xl border-2 border-white/20 bg-white/5 p-4 hover:bg-white/10 peer-data-[state=checked]:border-app-accent peer-data-[state=checked]:bg-app-accent/20 cursor-pointer transition-all">
-                    <span className="font-semibold text-white">Atacadista</span>
-                    <span className="text-xs text-center mt-1 text-white/70">Quero comprar</span>
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-white">Nome ou Razão Social *</Label>
-              <Input 
-                id="name" 
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="bg-[#5a2a00] border-none text-white placeholder:text-white/50 rounded-xl"
-              />
-            </div>
-
             {!googleUser && (
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-white">E-mail *</Label>

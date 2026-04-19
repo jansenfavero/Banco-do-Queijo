@@ -9,7 +9,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { toast } from 'sonner';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, X } from 'lucide-react';
 
 export function Login() {
   const navigate = useNavigate();
@@ -94,19 +94,25 @@ export function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center relative p-4 overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-black/80" onClick={() => navigate('/')}>
         <video 
           src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
           autoPlay 
           loop 
           muted 
           playsInline 
-          className="absolute inset-0 w-full h-full object-cover object-center" 
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none opacity-50" 
         />
-        <div className="absolute inset-0 bg-[#703200]/50"></div>
+        <div className="absolute inset-0 bg-[#703200]/50 pointer-events-none"></div>
       </div>
 
       <Card className="w-full max-w-md relative z-10 border-none shadow-2xl bg-[#d36101] backdrop-blur-md">
+        <button 
+          onClick={() => navigate('/')} 
+          className="absolute top-4 right-4 p-2 text-white/70 hover:text-white rounded-full hover:bg-black/20 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 flex items-center justify-center">

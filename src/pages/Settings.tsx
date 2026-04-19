@@ -85,16 +85,16 @@ export function Settings() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-          <SettingsIcon className="h-8 w-8 text-primary" />
+        <div className="p-3 bg-app-card rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+          <SettingsIcon className="h-8 w-8 text-app-accent" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
             Configurações da Conta
           </h1>
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-white/70 text-sm md:text-base">
             Atualize seus dados pessoais e preferências de segurança.
           </p>
         </div>
@@ -102,7 +102,7 @@ export function Settings() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
-          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px]">
+          <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
             <CardTitle className="text-xl text-white">Dados do Perfil</CardTitle>
             <CardDescription className="text-white/80">
               Atualize as configurações básicas.
@@ -157,7 +157,7 @@ export function Settings() {
 
         {isPasswordProvider ? (
           <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
-            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px]">
+            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
               <CardTitle className="text-xl text-white">Segurança</CardTitle>
               <CardDescription className="text-white/80">
                 Atualize sua senha de acesso.
@@ -208,9 +208,9 @@ export function Settings() {
           </Card>
         ) : (
           <Card className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] h-max">
-            <CardHeader className="bg-black/10 border-b border-white/10 pb-6 pt-8 px-8">
-              <CardTitle className="text-xl text-app-accent">Segurança</CardTitle>
-              <CardDescription className="text-white/70">
+            <CardHeader className="bg-[#d36101] border-b border-white/10 pb-6 pt-8 px-8 rounded-t-[24px] text-center">
+              <CardTitle className="text-xl text-white">Segurança</CardTitle>
+              <CardDescription className="text-white/80">
                 Sua conta é vinculada ao Google.
               </CardDescription>
             </CardHeader>

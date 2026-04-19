@@ -209,7 +209,7 @@ export function CatalogPublic() {
         </div>
 
         {/* Nova Seção de Catálogo */}
-        <div className={`${catalogType === 'produtores' ? 'bg-[#703200]' : 'bg-app-cardDark'} w-full relative z-30 rounded-t-[2rem] md:rounded-t-[4rem] pt-10 md:pt-16 pb-8 border-t border-white/10 flex-grow flex flex-col transition-colors duration-500`}>
+        <div className={`${catalogType === 'produtores' ? 'bg-[#703200]' : 'bg-app-cardDark'} w-full relative z-30 pt-10 md:pt-16 pb-8 border-t border-white/10 flex-grow flex flex-col transition-colors duration-500`}>
           
           {/* Abas de Alternância */}
           <div className="max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-8 mb-8 w-full flex justify-center animate-in fade-in slide-in-from-bottom-8 duration-700">

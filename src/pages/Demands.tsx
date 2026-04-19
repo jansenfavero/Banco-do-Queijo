@@ -41,15 +41,15 @@ export function Demands() {
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-            <Megaphone className="h-8 w-8 text-primary" />
+          <div className="p-3 bg-app-card rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+            <Megaphone className="h-8 w-8 text-app-accent" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">Todas as Demandas</h1>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">Todas as Demandas</h1>
+            <p className="text-white/70 text-sm md:text-base">
               {profile?.role === 'ATACADISTA' ? 'Publique o que você precisa e receba propostas.' : 'Encontre compradores buscando fornecedores.'}
             </p>
           </div>
@@ -57,7 +57,7 @@ export function Demands() {
         {profile?.role === 'ATACADISTA' && (
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button>Nova Demanda</Button>
+              <Button className="bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full">Nova Demanda</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -73,9 +73,9 @@ export function Demands() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-10">Carregando demandas...</div>
+        <div className="flex justify-center py-10 text-white">Carregando demandas...</div>
       ) : demands.length === 0 ? (
-        <div className="text-center py-20 bg-[#703200] text-white rounded-[24px] border-none shadow-2xl">
+        <div className="text-center py-20 bg-app-cardDark text-white rounded-[24px] border border-[#4a2000] shadow-2xl">
           <h3 className="text-lg font-bold">Nenhuma demanda ativa</h3>
           <p className="text-white/70 mt-1">
             Não há compradores buscando produtos no momento.
@@ -84,17 +84,17 @@ export function Demands() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {demands.map((demand) => (
-            <Card key={demand.id} className="shadow-2xl border-none bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
-              <CardHeader className="bg-[#d36101] border-b border-white/10 pb-4">
+            <Card key={demand.id} className="shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px] overflow-hidden flex flex-col">
+              <CardHeader className="bg-app-cardDark border-none pb-2 pt-6 px-6 text-left">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl text-white">{demand.cheeseType}</CardTitle>
-                  <Badge variant="secondary" className="bg-[#4a2000] text-white hover:bg-[#4a2000]/80 border-none">{demand.quantityKg} kg</Badge>
+                  <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors">{demand.cheeseType}</CardTitle>
+                  <Badge variant="secondary" className="bg-[#4a2000] text-app-accent hover:bg-[#4a2000]/80 border-none font-bold px-3 py-1">{demand.quantityKg} kg</Badge>
                 </div>
-                <CardDescription className="text-white/80">{demand.region}</CardDescription>
+                <CardDescription className="text-white/80 font-medium text-sm mt-1">{demand.region}</CardDescription>
               </CardHeader>
-              <CardContent className="pt-6 flex-1">
-                <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[20px] shadow-sm border border-white/10">
-                  <div className="flex justify-between">
+              <CardContent className="pt-4 px-6 flex-1">
+                <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[15px] border border-app-accent/10">
+                  <div className="flex justify-between border-b border-white/5 pb-2">
                     <span className="text-white/70 font-semibold">Frequência:</span>
                     <span className="font-bold text-white">{demand.frequency}</span>
                   </div>
@@ -104,11 +104,11 @@ export function Demands() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="pb-6">
+              <CardFooter className="pb-6 px-6 pt-4 border-t border-[#4a2000]">
                 {profile?.role === 'PRODUTOR' ? (
                   <Button className="w-full bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">Tenho Interesse</Button>
                 ) : demand.compradorId === profile?.id ? (
-                  <Button variant="outline" className="w-full border-red-500/50 text-red-300 hover:bg-red-500/20 rounded-xl">Encerrar Demanda</Button>
+                  <Button variant="outline" className="w-full border-red-500/50 text-red-300 hover:bg-red-500/20 rounded-xl bg-transparent">Encerrar Demanda</Button>
                 ) : null}
               </CardFooter>
             </Card>

@@ -47,17 +47,17 @@ export function Catalog() {
   }, [profile]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-app-cardDark min-h-screen p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-            <Store className="h-8 w-8 text-primary" />
+          <div className="p-3 bg-app-card rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+            <Store className="h-8 w-8 text-app-accent" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
               Vitrine
             </h1>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <p className="text-white/70 text-sm md:text-base">
               Explore o catálogo geral de queijos da plataforma.
             </p>
           </div>
@@ -65,7 +65,7 @@ export function Catalog() {
         {profile?.role === 'PRODUTOR' && (
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-full">
+              <Button className="bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full">
                 Publicar Queijo
               </Button>
             </DialogTrigger>
@@ -82,16 +82,16 @@ export function Catalog() {
         )}
       </div>
 
-      <div className="flex bg-muted/50 p-1.5 rounded-2xl border border-border/50 w-fit">
+      <div className="flex bg-app-cardDark p-1.5 rounded-2xl border border-[#4a2000] w-fit shadow-lg">
         <button
           onClick={() => setActiveTab('produtores')}
-          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
         >
           Produtores
         </button>
         <button
           onClick={() => setActiveTab('atacadistas')}
-          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+          className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
         >
           Atacadistas
         </button>
@@ -105,11 +105,11 @@ export function Catalog() {
             <ProductCard key={product.id} product={product} role={profile?.role} />
           ))}
           {MOCK_PRODUCTS.map((prod) => (
-            <div key={prod.id} className="group rounded-[24px] bg-[#703200] border-none text-white overflow-hidden shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-              <div className="relative aspect-[4/3] overflow-hidden">
+            <div key={prod.id} className="group rounded-[24px] bg-app-cardDark border shadow-2xl transition-all border-[#4a2000] duration-300 hover:-translate-y-1 flex flex-col">
+              <div className="relative mx-4 mt-4 aspect-[4/3] rounded-[16px] overflow-hidden">
                 <img src={prod.imagem} alt={prod.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-white/10">
+                  <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-app-accent/20">
                     {prod.categoria}
                   </span>
                 </div>
@@ -117,14 +117,14 @@ export function Catalog() {
                   <Star className="w-3 h-3 fill-current" /> {prod.avaliacao}
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1 bg-[#703200]">
+              <div className="p-5 flex flex-col flex-1 bg-app-cardDark rounded-b-[24px]">
                 <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{prod.nome}</h3>
                 <p className="text-sm text-white/70 mb-4 font-medium flex-1">{prod.produtor}</p>
-                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-white/10 w-fit">
+                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-app-accent/10 w-fit">
                   <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{prod.local}</span>
                 </div>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
                   <div>
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                     <span className="font-bold text-xl text-white">R$ {prod.preco.toFixed(2)}</span>
@@ -140,21 +140,21 @@ export function Catalog() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {MOCK_WHOLESALERS.map((wholesaler) => (
-            <div key={wholesaler.id} className="group rounded-[24px] bg-[#703200] border-none text-white overflow-hidden shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-              <div className="relative aspect-[4/3] overflow-hidden">
+             <div key={wholesaler.id} className="group rounded-[24px] bg-app-cardDark border shadow-2xl transition-all border-[#4a2000] duration-300 hover:-translate-y-1 flex flex-col">
+              <div className="relative mx-4 mt-4 aspect-[4/3] rounded-[16px] overflow-hidden">
                 <img src={wholesaler.imagem} alt={wholesaler.empresa} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
                   <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao}
                 </div>
               </div>
-              <div className="p-5 flex flex-col flex-1 bg-[#703200]">
+              <div className="p-5 flex flex-col flex-1 bg-app-cardDark rounded-b-[24px]">
                 <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{wholesaler.empresa}</h3>
                 <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
-                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-white/10 w-fit">
+                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#4a2000] p-2 rounded-[15px] border border-app-accent/10 w-fit">
                   <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{wholesaler.local}</span>
                 </div>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
                   <div>
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Demandado</span>
                     <span className="font-bold text-lg text-white">{wholesaler.quantidade} kg/mês</span>
@@ -174,10 +174,10 @@ export function Catalog() {
 
 function ProductCard({ product, role }: { key?: React.Key, product: any, role?: string }) {
   return (
-    <Card className="overflow-hidden flex flex-col shadow-2xl border-none bg-[#703200] text-white rounded-[24px]">
-      <div className="aspect-video bg-[#4a2000] relative">
+    <Card className="overflow-hidden flex flex-col shadow-2xl border border-[#4a2000] bg-app-cardDark text-white rounded-[24px]">
+      <div className="aspect-[4/3] relative rounded-[16px] mx-4 mt-4 overflow-hidden">
         {product.photos && product.photos.length > 0 ? (
-          <img src={product.photos[0]} alt={product.cheeseType} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+          <img src={product.photos[0]} alt={product.cheeseType} className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" referrerPolicy="no-referrer" />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-[#4a2000] text-app-accent/50">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -185,24 +185,28 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
         )}
         {!product.active && (
           <div className="absolute top-2 right-2">
-            <Badge variant="destructive" className="bg-red-500/90 text-white border-none">Inativo</Badge>
+             <span className="px-2 py-1 bg-red-500/90 backdrop-blur-sm rounded-md text-xs font-bold text-white shadow-sm border border-white/10 uppercase">
+              Inativo
+            </span>
           </div>
         )}
       </div>
-      <CardHeader className="bg-[#d36101] border-b border-white/10 p-4">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg text-white">{product.cheeseType}</CardTitle>
-          <span className="font-bold text-app-accent">R$ {product.pricePerKg.toFixed(2)}/kg</span>
+      <CardHeader className="bg-app-cardDark border-none pt-4 px-4 pb-2 text-left">
+        <div className="flex justify-between items-start w-full">
+          <div>
+            <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors">{product.cheeseType}</CardTitle>
+            <CardDescription className="text-white/80 font-medium text-sm mt-1">{product.format}</CardDescription>
+          </div>
+           <span className="font-bold text-xl text-white">R$ {product.pricePerKg.toFixed(2)}<span className="text-xs text-white/50 tracking-wider font-normal"> / Kg</span></span>
         </div>
-        <CardDescription className="text-white/80">{product.format}</CardDescription>
       </CardHeader>
       <CardContent className="p-4 pt-4 flex-1">
-        <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[20px] shadow-sm border border-white/10">
-          <div className="flex justify-between">
+        <div className="space-y-3 text-sm bg-[#4a2000] p-4 rounded-[15px] border border-app-accent/10">
+          <div className="flex justify-between border-b border-white/5 pb-2">
             <span className="text-white/70 font-semibold">Disponível:</span>
             <span className="font-bold text-white">{product.availableKg} kg</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between border-b border-white/5 pb-2">
             <span className="text-white/70 font-semibold">Embalagem:</span>
             <span className="font-bold text-white">{product.vacuumPacked ? 'Vácuo' : 'Normal'}</span>
           </div>
@@ -212,11 +216,11 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
           </div>
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0 mt-auto">
+      <CardFooter className="p-4 pt-0 mt-auto border-t border-[#4a2000] pt-4 items-center justify-between">
         {role === 'ATACADISTA' ? (
-          <Button className="w-full bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl mt-2">Fazer Pedido</Button>
+          <Button className="w-full bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">Fazer Pedido</Button>
         ) : (
-          <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10 rounded-xl mt-2">Editar Anúncio</Button>
+          <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10 rounded-xl">Editar Anúncio</Button>
         )}
       </CardFooter>
     </Card>

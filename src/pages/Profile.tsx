@@ -22,16 +22,16 @@ export function Profile() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-app-cardDark min-h-screen p-4 md:p-8">
       <div className="flex items-center gap-4 mb-2">
-        <div className="p-3 bg-card rounded-2xl border border-border/50 shadow-sm shrink-0">
-          <User className="h-8 w-8 text-primary" />
+        <div className="p-3 bg-[#4a2000] rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+          <User className="h-8 w-8 text-app-accent" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary mb-1">
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
             Meu Perfil
           </h1>
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-white/70 text-sm md:text-base">
             Gerencie suas informações pessoais e de comercialização.
           </p>
         </div>
