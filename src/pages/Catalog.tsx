@@ -25,6 +25,32 @@ export function Catalog() {
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'produtores' | 'atacadistas'>('produtores');
+  
+  // Custom Searchable Dropdown for Location
+  const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
+  const [locationSearch, setLocationSearch] = useState('');
+  const locationDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  const uniqueLocations = React.useMemo(() => {
+    return Array.from(new Set([
+      ...MOCK_PRODUCTS.map(p => p.local),
+      ...MOCK_WHOLESALERS.map(w => w.local)
+    ])).sort((a, b) => a.localeCompare(b));
+  }, []);
+
+  const filteredLocations = React.useMemo(() => {
+    return uniqueLocations.filter(loc => loc.toLowerCase().includes(locationSearch.toLowerCase()));
+  }, [uniqueLocations, locationSearch]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) {
+        setIsLocationDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -115,59 +141,105 @@ export function Catalog() {
       )}
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border border-white/10 shadow-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
-        <div className="space-y-1.5 lg:col-span-2">
+      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 items-end">
+        <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Pesquisar por Nome/Empresa</Label>
           <Input 
             placeholder="Digite o nome..." 
             className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all"
           />
         </div>
-        <div className="space-y-1.5 lg:col-span-1">
+
+        <div className="space-y-1.5 relative" ref={locationDropdownRef}>
           <Label className="text-white/80 font-medium text-sm ml-1">Localização</Label>
-          <Input 
-            placeholder="Cidade ou Estado" 
-            className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all"
-          />
+          <div className="relative">
+            <Input 
+              placeholder="Cidade ou Estado"
+              value={locationSearch}
+              onChange={(e) => {
+                setLocationSearch(e.target.value);
+                setIsLocationDropdownOpen(true);
+              }}
+              onFocus={() => setIsLocationDropdownOpen(true)}
+              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all pr-10"
+            />
+            {isLocationDropdownOpen && (
+              <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-[#b85200] border border-[#d36101] rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto overflow-x-hidden flex flex-col">
+                <div 
+                  className="px-4 py-2.5 text-sm font-medium text-white hover:bg-[#d36101] cursor-pointer transition-colors border-b border-[#a64b00]"
+                  onClick={() => {
+                     setLocationSearch('');
+                     setIsLocationDropdownOpen(false);
+                  }}
+                >
+                  Qualquer Região
+                </div>
+                {filteredLocations.map((loc, idx) => (
+                  <div 
+                    key={loc}
+                    className={`px-4 py-2.5 text-sm font-medium text-white hover:bg-[#d36101] cursor-pointer transition-colors ${idx !== filteredLocations.length - 1 ? 'border-b border-[#a64b00]' : ''}`}
+                    onClick={() => {
+                      setLocationSearch(loc);
+                      setIsLocationDropdownOpen(false);
+                    }}
+                  >
+                    {loc}
+                  </div>
+                ))}
+                {filteredLocations.length === 0 && (
+                  <div className="px-4 py-3 text-sm text-white/50 italic text-center">Nenhuma cidade encontrada</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="space-y-1.5 lg:col-span-2">
+
+        <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
-            <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px] shadow-xl">
-              <SelectItem value="todos" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Qualquer</SelectItem>
-              {CHEESE_TYPES.map(type => (
-                <SelectItem key={type} value={type} className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">{type}</SelectItem>
-              ))}
+            <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
+              <div className="flex flex-col">
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
+                {CHEESE_TYPES.map((type, idx) => (
+                  <SelectItem key={type} value={type} className={`px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none ${idx !== CHEESE_TYPES.length - 1 ? 'border-b border-[#a64b00]' : ''}`}>{type}</SelectItem>
+                ))}
+              </div>
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5 lg:col-span-2">
+
+        <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
-            <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px] shadow-xl">
-              <SelectItem value="todos" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Qualquer</SelectItem>
-              <SelectItem value="com" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Com Rótulo</SelectItem>
-              <SelectItem value="sem" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Sem Rótulo</SelectItem>
-              <SelectItem value="ambos" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Ambos</SelectItem>
+            <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
+              <div className="flex flex-col">
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
+                <SelectItem value="com" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Com Rótulo</SelectItem>
+                <SelectItem value="sem" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Sem Rótulo</SelectItem>
+                <SelectItem value="ambos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none">Ambos</SelectItem>
+              </div>
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5 lg:col-span-2">
+
+        <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
-            <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px] shadow-xl">
-              <SelectItem value="todos" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Qualquer</SelectItem>
-              <SelectItem value="gratis" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Frete Incluso</SelectItem>
-              <SelectItem value="pago" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Cobra Frete</SelectItem>
+            <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
+              <div className="flex flex-col">
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
+                <SelectItem value="gratis" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Frete Incluso</SelectItem>
+                <SelectItem value="pago" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none">Cobra Frete</SelectItem>
+              </div>
             </SelectContent>
           </Select>
         </div>

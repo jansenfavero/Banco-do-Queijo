@@ -282,11 +282,11 @@ export function CatalogPublic() {
               </div>
 
               {isRegionDropdownOpen && (
-                <div className={`absolute top-[calc(100%+8px)] left-0 w-full ${catalogType === 'produtores' ? 'bg-app-cardDark' : 'bg-[#703200]'} border-2 border-[#f4d763] rounded-xl overflow-hidden shadow-2xl z-50 py-1 transition-colors duration-500`}>
-                  {regions.map(region => (
+                <div className={`absolute top-[calc(100%+8px)] left-0 w-full ${catalogType === 'produtores' ? 'bg-app-cardDark' : 'bg-[#703200]'} border-2 border-[#f4d763] rounded-xl shadow-2xl z-50 flex flex-col transition-colors duration-500 overflow-y-auto max-h-60 overflow-x-hidden`}>
+                  {regions.map((region, idx) => (
                     <div 
                       key={region.value}
-                      className={`px-5 py-3 text-sm md:text-base font-bold cursor-pointer transition-colors ${selectedRegion === region.value ? 'bg-[#d36101] text-white' : 'text-white hover:bg-[#d36101]'}`}
+                      className={`px-5 py-3 text-sm md:text-base font-bold cursor-pointer transition-colors ${selectedRegion === region.value ? 'bg-[#d36101] text-white' : 'text-white hover:bg-[#d36101]'} ${idx !== regions.length - 1 ? 'border-b border-[#a64b00]' : ''}`}
                       onClick={() => {
                         setSelectedRegion(region.value);
                         setIsRegionDropdownOpen(false);
