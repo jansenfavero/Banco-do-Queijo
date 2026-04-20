@@ -141,16 +141,18 @@ export function Catalog() {
       )}
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-        <div className="space-y-1.5 flex flex-col justify-end">
-          <Label className="text-white/80 font-medium text-sm ml-1">Pesquisar por Nome/Empresa</Label>
+      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 items-center">
+        <div className="space-y-1.5 w-full">
+          <Label className="text-white/80 font-medium text-sm ml-1">
+            <span className="font-bold text-app-accent">Pesquisar por</span> Nome/Empresa
+          </Label>
           <Input 
             placeholder="Digite o nome..." 
             className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all"
           />
         </div>
 
-        <div className="space-y-1.5 relative flex flex-col justify-end" ref={locationDropdownRef}>
+        <div className="space-y-1.5 relative w-full" ref={locationDropdownRef}>
           <Label className="text-white/80 font-medium text-sm ml-1">Localização</Label>
           <div className="relative">
             <Input 
@@ -194,7 +196,7 @@ export function Catalog() {
           </div>
         </div>
 
-        <div className="space-y-1.5 flex flex-col justify-end">
+        <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -211,7 +213,7 @@ export function Catalog() {
           </Select>
         </div>
 
-        <div className="space-y-1.5 flex flex-col justify-end">
+        <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -228,7 +230,7 @@ export function Catalog() {
           </Select>
         </div>
 
-        <div className="space-y-1.5 flex flex-col justify-end">
+        <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -277,9 +279,8 @@ export function Catalog() {
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                     <span className="font-bold text-xl text-white">R$ {prod.preco.toFixed(2)}</span>
                   </div>
-                  <button className="h-10 px-4 rounded-full bg-app-accent flex items-center justify-center gap-2 text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
+                  <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
                     Comprar
-                    <Store className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -311,9 +312,8 @@ export function Catalog() {
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Demandado</span>
                     <span className="font-bold text-lg text-white">{wholesaler.quantidade} kg/mês</span>
                   </div>
-                  <button className="h-10 px-4 rounded-full bg-app-accent flex items-center justify-center gap-2 text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
+                  <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
                     Oferecer
-                    <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
