@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Store, ArrowRight } from 'lucide-react';
+import { Footer } from '../components/layout/Footer';
 
 const CheeseIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -64,7 +65,7 @@ export function Home() {
              <Star className="w-3 h-3 text-app-accent" /> A Maior Plataforma de Queijos do Brasil
           </span>
           <h2 className="text-4xl md:text-[4rem] leading-[1.1] font-bold text-white tracking-tight max-w-5xl drop-shadow-2xl mb-6">
-            Mais Vendas para Quem Produz,<br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-app-accent to-yellow-200">Mais Lucro para Quem Vende.</span>
+            Mais Vendas para Quem Produz, <br className="md:hidden" /> <span className="hidden md:inline"><br /></span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-app-accent to-yellow-200">Mais Lucro para Quem Vende.</span>
           </h2>
           <p className="text-white/90 max-w-3xl text-lg md:text-xl font-medium drop-shadow-md mb-12">
             Conectamos Produtores Artesanais a Compradores Atacadistas. Elimine Intermediários, Reduza Custos e Garanta Sempre o Melhor Queijo, com o Melhor Preço, com Cotação em Tempo Real.
@@ -131,6 +132,7 @@ export function Home() {
 
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

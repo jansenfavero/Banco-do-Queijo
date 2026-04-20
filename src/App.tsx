@@ -14,6 +14,8 @@ import { Demands } from './pages/Demands';
 import { AdminUsers } from './pages/AdminUsers';
 import { Settings } from './pages/Settings';
 import { Profile } from './pages/Profile';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsOfService } from './pages/TermsOfService';
 import { Toaster } from './components/ui/sonner';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) {
@@ -43,6 +45,8 @@ export default function App() {
         <Route path="/explorar" element={<CatalogPublic />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Register />} />
+        <Route path="/privacidade" element={<PrivacyPolicy />} />
+        <Route path="/termos" element={<TermsOfService />} />
         
         <Route element={<AppLayout />}>
           <Route path="/painel" element={

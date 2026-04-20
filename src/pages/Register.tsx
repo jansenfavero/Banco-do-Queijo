@@ -8,10 +8,12 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
+import { Checkbox } from '../components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { toast } from 'sonner';
 import { Eye, EyeOff, ShieldCheck, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { Footer } from '../components/layout/Footer';
 
 const formatPhone = (value: string) => {
   const numbers = value.replace(/\D/g, '');
@@ -36,6 +38,7 @@ export function Register() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [googleUser, setGoogleUser] = useState<any>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     const checkState = async () => {
@@ -89,6 +92,11 @@ export function Register() {
       toast.error('Informe um número de WhatsApp válido.');
       return;
     }
+    
+    if (!acceptedTerms) {
+      toast.error('Você precisa aceitar os Termos de Privacidade e Serviço para continuar.');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -115,6 +123,11 @@ export function Register() {
   };
 
   const handleGoogleRegister = async () => {
+    if (!acceptedTerms) {
+      toast.error('Você precisa aceitar os Termos de Privacidade e Serviço para continuar.');
+      return;
+    }
+    
     setLoading(true);
     try {
       const provider = new GoogleAuthProvider();
@@ -144,8 +157,8 @@ export function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative p-4 overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-black/80" onClick={() => navigate('/')}>
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-black/80">
         <video 
           src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
           autoPlay 
@@ -157,7 +170,8 @@ export function Register() {
         <div className="absolute inset-0 bg-[#4a2000]/70 pointer-events-none"></div>
       </div>
 
-      <Card className="w-full max-w-md relative z-10 border-none shadow-2xl bg-[#a64b00] backdrop-blur-md">
+      <div className="flex-1 flex items-center justify-center p-4 z-10 relative mt-12 mb-12">
+        <Card className="w-full max-w-md border-none shadow-2xl bg-[#a64b00] backdrop-blur-md">
         <button 
           onClick={() => navigate('/')} 
           className="absolute top-4 right-4 p-2 text-white/70 hover:text-white rounded-full hover:bg-black/20 transition-colors"
@@ -233,6 +247,28 @@ export function Register() {
               </div>
             )}
 
+            <div className="flex items-start justify-start space-x-3 pt-2 pb-2 w-full">
+              <Checkbox 
+                id="terms" 
+                checked={acceptedTerms}
+                onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                required
+                className="border-2 border-white/40 data-[state=checked]:bg-[#f4d763] data-[state=checked]:border-[#f4d763] data-[state=checked]:text-[#a64b00] mt-1 shrink-0"
+              />
+              <Label htmlFor="terms" className="text-sm font-normal text-white/80 leading-none text-left cursor-pointer flex flex-col gap-1 items-start">
+                <span className="block text-left w-full">Li e estou de acordo com a</span>
+                <span className="block text-left w-full">
+                  <Link to="/privacidade" target="_blank" className="text-[#f4d763] hover:underline hover:text-white transition-colors whitespace-nowrap">
+                    Política de Privacidade
+                  </Link>{' '}
+                  e os{' '}
+                  <Link to="/termos" target="_blank" className="text-[#f4d763] hover:underline hover:text-white transition-colors whitespace-nowrap">
+                    Termos de Serviço
+                  </Link>.
+                </span>
+              </Label>
+            </div>
+
             <Button type="submit" className="w-full bg-app-accent text-[#5a2a00] hover:bg-app-accentHover font-bold rounded-xl" disabled={loading}>
               {loading ? 'Cadastrando...' : 'Criar Conta'}
             </Button>
@@ -270,6 +306,10 @@ export function Register() {
           </p>
         </CardFooter>
       </Card>
+      </div>
+      <div className="z-10 relative mt-auto">
+        <Footer />
+      </div>
     </div>
   );
 }

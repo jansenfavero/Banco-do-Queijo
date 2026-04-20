@@ -10,6 +10,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { toast } from 'sonner';
 import { Eye, EyeOff, X } from 'lucide-react';
+import { Footer } from '../components/layout/Footer';
 
 export function Login() {
   const navigate = useNavigate();
@@ -92,9 +93,9 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative p-4 overflow-hidden">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0 bg-black/80" onClick={() => navigate('/')}>
+      <div className="absolute inset-0 z-0 bg-black/80">
         <video 
           src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
           autoPlay 
@@ -105,8 +106,9 @@ export function Login() {
         />
         <div className="absolute inset-0 bg-[#703200]/50 pointer-events-none"></div>
       </div>
-
-      <Card className="w-full max-w-md relative z-10 border-none shadow-2xl bg-[#d36101] backdrop-blur-md">
+      
+      <div className="flex-1 flex items-center justify-center p-4 z-10 relative">
+        <Card className="w-full max-w-md relative border-none shadow-2xl bg-[#d36101] backdrop-blur-md">
         <button 
           onClick={() => navigate('/')} 
           className="absolute top-4 right-4 p-2 text-white/70 hover:text-white rounded-full hover:bg-black/20 transition-colors"
@@ -206,6 +208,10 @@ export function Login() {
           </p>
         </CardFooter>
       </Card>
+      </div>
+      <div className="z-10 relative mt-auto">
+        <Footer />
+      </div>
     </div>
   );
 }

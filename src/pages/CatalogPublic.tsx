@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, ArrowRight, ShieldCheck, Star, ChevronDown } from 'lucide-react';
+import { Footer } from '../components/layout/Footer';
 
 export const MOCK_PRODUCTS = [
   // Coalho
@@ -389,11 +390,7 @@ export function CatalogPublic() {
         </div>
       </main>
       
-      <footer className="w-full py-8 mt-auto border-t border-[#d36101]/30 relative z-30 bg-[#4a2000]">
-          <p className="text-center text-xs font-bold text-[#f4d763] tracking-wide px-4">
-              &copy; 2026 | Banco do Queijo | Conectando Produtores e Compradores
-          </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

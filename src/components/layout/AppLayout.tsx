@@ -17,6 +17,7 @@ import {
   Slice
 } from 'lucide-react';
 import { useState } from 'react';
+import { Footer } from './Footer';
 
 export function AppLayout() {
   const { profile } = useAuth();
@@ -124,8 +125,11 @@ export function AppLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-[#2b1400]">
-        <Outlet />
+      <main className="flex-1 overflow-auto bg-[#2b1400] flex flex-col">
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <Footer />
       </main>
     </div>
   );
