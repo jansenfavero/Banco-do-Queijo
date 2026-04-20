@@ -22,25 +22,40 @@ import { CatalogMetrics } from './CatalogMetrics';
 export function Catalog() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [wholesalers, setWholesalers] = useState<any[]>([]);
+  const [usersInfo, setUsersInfo] = useState<Record<string, any>>({});
+  
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'produtores' | 'atacadistas'>('produtores');
   
   // Custom Searchable Dropdown for Location
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
+  
+  // States for Smart Filtering
+  const [textSearch, setTextSearch] = useState('');
   const [locationSearch, setLocationSearch] = useState('');
+  const [cheeseTypeSearch, setCheeseTypeSearch] = useState('todos');
+  const [packagingSearch, setPackagingSearch] = useState('todos');
+  const [freightSearch, setFreightSearch] = useState('todos');
+  
   const locationDropdownRef = React.useRef<HTMLDivElement>(null);
 
   const uniqueLocations = React.useMemo(() => {
     return Array.from(new Set([
       ...MOCK_PRODUCTS.map(p => p.local),
-      ...MOCK_WHOLESALERS.map(w => w.local)
+      ...MOCK_WHOLESALERS.map(w => w.local),
+      ...Object.values(usersInfo).map((u: any) => `${u.city || ''}, ${u.state || ''}`.replace(/^,\s*|,\s*$/g, '').trim()).filter(Boolean)
     ])).sort((a, b) => a.localeCompare(b));
-  }, []);
+  }, [usersInfo]);
 
   const filteredLocations = React.useMemo(() => {
     return uniqueLocations.filter(loc => loc.toLowerCase().includes(locationSearch.toLowerCase()));
   }, [uniqueLocations, locationSearch]);
+
+  const loading = loadingProducts || loadingUsers;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -63,28 +78,118 @@ export function Catalog() {
   }, [profile]);
 
   useEffect(() => {
-    let q;
+    let qProducts;
     if (profile?.role === 'ADMIN') {
-      q = query(collection(db, 'products'));
+      qProducts = query(collection(db, 'products'));
     } else {
-      q = query(collection(db, 'products'), where('active', '==', true));
+      qProducts = query(collection(db, 'products'), where('active', '==', true));
     }
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribeProducts = onSnapshot(qProducts, (snapshot) => {
       const prods: any[] = [];
       snapshot.forEach((doc) => {
         prods.push({ id: doc.id, ...doc.data() });
       });
       setProducts(prods);
-      setLoading(false);
+      setLoadingProducts(false);
     }, (error) => {
       console.error("Error fetching products:", error);
-      toast.error("Erro ao carregar vitrine.");
-      setLoading(false);
+      toast.error("Erro ao carregar produtos da vitrine.");
+      setLoadingProducts(false);
+    });
+    
+    const unsubscribeUsers = onSnapshot(query(collection(db, 'users'), where('kycStatus', '==', 'VALIDADO')), (snapshot) => {
+      const usersData: Record<string, any> = {};
+      const wholesaleArr: any[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        usersData[doc.id] = data;
+        if (data.role === 'ATACADISTA') {
+          wholesaleArr.push({ id: doc.id, ...data });
+        }
+      });
+      setUsersInfo(usersData);
+      setWholesalers(wholesaleArr);
+      setLoadingUsers(false);
+    }, (error) => {
+      console.error("Error fetching users:", error);
+      setLoadingUsers(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeProducts();
+      unsubscribeUsers();
+    };
   }, [profile]);
+
+  // SMARTER COMBINED FILTER LOGIC
+  const { filteredProducts, filteredWholesalers } = React.useMemo(() => {
+    const filterText = textSearch.toLowerCase().trim();
+    const filterLoc = locationSearch.toLowerCase().trim();
+    
+    // Normalize string handling
+    const containsStr = (src: string, target: string) => (src || '').toLowerCase().includes(target);
+    const exactStr = (src: string, target: string) => (src || '').toLowerCase() === target;
+
+    // Filter Products (Real)
+    const activeProducts = products.filter(p => {
+      const owner = usersInfo[p.produtorId];
+      if (!owner) return false; // Hide orphans
+      
+      const locStr = `${owner.city || ''}, ${owner.state || ''}`.toLowerCase();
+      
+      let pass = true;
+      if (filterText && !containsStr(owner.name, filterText) && !containsStr(p.cheeseType, filterText)) pass = false;
+      if (filterLoc && !locStr.includes(filterLoc)) pass = false;
+      if (cheeseTypeSearch !== 'todos' && !exactStr(p.cheeseType, cheeseTypeSearch.toLowerCase())) pass = false;
+      if (packagingSearch === 'com' && !p.vacuumPacked) pass = false;
+      if (packagingSearch === 'sem' && p.vacuumPacked) pass = false;
+      if (freightSearch === 'gratis' && owner.chargesFreight) pass = false;
+      if (freightSearch === 'pago' && !owner.chargesFreight) pass = false;
+      
+      return pass;
+    });
+
+    // Filter MOCK Products
+    const mockProds = MOCK_PRODUCTS.filter(p => {
+      let pass = true;
+      if (filterText && !containsStr(p.nome, filterText) && !containsStr(p.produtor, filterText)) pass = false;
+      if (filterLoc && !containsStr(p.local, filterLoc)) pass = false;
+      if (cheeseTypeSearch !== 'todos' && !exactStr(p.categoria, cheeseTypeSearch.toLowerCase())) pass = false;
+      // Mocks have no packaging or freight properties, assume they match or skip filtering
+      return pass;
+    });
+    
+    // Filter Wholesalers (Real)
+    const activeWholesalers = wholesalers.filter(w => {
+      const locStr = `${w.city || ''}, ${w.state || ''}`.toLowerCase();
+      
+      let pass = true;
+      if (filterText && !containsStr(w.name, filterText)) pass = false;
+      if (filterLoc && !locStr.includes(filterLoc)) pass = false;
+      if (cheeseTypeSearch !== 'todos' && !(w.cheeseTypes || []).some((t: string) => exactStr(t, cheeseTypeSearch.toLowerCase()))) pass = false;
+      if (packagingSearch === 'com' && exactStr(w.packaging, 'A granel')) pass = false;
+      if (packagingSearch === 'sem' && !exactStr(w.packaging, 'A granel')) pass = false;
+      if (freightSearch === 'gratis' && w.chargesFreight) pass = false;
+      if (freightSearch === 'pago' && !w.chargesFreight) pass = false;
+
+      return pass;
+    });
+
+    // Filter MOCK Wholesalers
+    const mockWholesalersFiltered = MOCK_WHOLESALERS.filter(w => {
+      let pass = true;
+      if (filterText && !containsStr(w.empresa, filterText) && !containsStr(w.comprador, filterText)) pass = false;
+      if (filterLoc && !containsStr(w.local, filterLoc)) pass = false;
+      // Mocks lack detailed data
+      return pass;
+    });
+
+    return { 
+      filteredProducts: [...activeProducts, ...mockProds], 
+      filteredWholesalers: [...activeWholesalers, ...mockWholesalersFiltered] 
+    };
+  }, [products, wholesalers, usersInfo, textSearch, locationSearch, cheeseTypeSearch, packagingSearch, freightSearch]);
 
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
@@ -168,6 +273,8 @@ export function Catalog() {
           </Label>
           <Input 
             placeholder="Digite o nome..." 
+            value={textSearch}
+            onChange={(e) => setTextSearch(e.target.value)}
             className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px] h-11 px-4 transition-all"
           />
         </div>
@@ -218,7 +325,7 @@ export function Catalog() {
 
         <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
-          <Select defaultValue="todos">
+          <Select value={cheeseTypeSearch} onValueChange={setCheeseTypeSearch}>
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
@@ -235,7 +342,7 @@ export function Catalog() {
 
         <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
-          <Select defaultValue="todos">
+          <Select value={packagingSearch} onValueChange={setPackagingSearch}>
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
@@ -252,7 +359,7 @@ export function Catalog() {
 
         <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
-          <Select defaultValue="todos">
+          <Select value={freightSearch} onValueChange={setFreightSearch}>
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
@@ -271,66 +378,70 @@ export function Catalog() {
         <div className="flex justify-center py-10 text-white">Carregando catálogo...</div>
       ) : activeTab === 'produtores' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} role={profile?.role} />
-          ))}
-          {MOCK_PRODUCTS.map((prod) => (
-            <div key={prod.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-              <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
-                <img src={prod.imagem} alt={prod.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-app-accent/20">
-                    {prod.categoria}
-                  </span>
-                </div>
-                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
-                  <Star className="w-3 h-3 fill-current" /> {prod.avaliacao}
-                </div>
-              </div>
-              <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
-                <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{prod.nome}</h3>
-                <p className="text-sm text-white/70 mb-4 font-medium flex-1">{prod.produtor}</p>
-                <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
-                  <MapPin className="w-4 h-4 text-app-accent" />
-                  <span>{prod.local}</span>
-                </div>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
-                  <div>
-                    <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
-                    <span className="font-bold text-xl text-white">R$ {prod.preco.toFixed(2)}</span>
+          {filteredProducts.map((product) => (
+            product.produtor ? ( // Assume it's a MOCK product if it has 'produtor'
+              <div key={product.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+                <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
+                  <img src={product.imagem} alt={product.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-app-accent/20">
+                      {product.categoria}
+                    </span>
                   </div>
-                  <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
-                    Comprar
-                  </button>
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
+                    <Star className="w-3 h-3 fill-current" /> {product.avaliacao}
+                  </div>
+                </div>
+                <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
+                  <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{product.nome}</h3>
+                  <p className="text-sm text-white/70 mb-4 font-medium flex-1">{product.produtor}</p>
+                  <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
+                    <MapPin className="w-4 h-4 text-app-accent" />
+                    <span>{product.local}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
+                    <div>
+                      <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
+                      <span className="font-bold text-xl text-white">R$ {product.preco.toFixed(2)}</span>
+                    </div>
+                    <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
+                      Comprar
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <ProductCard key={product.id} product={product} role={profile?.role} owner={usersInfo[product.produtorId]} currentUserId={profile?.id} />
+            )
           ))}
+          {filteredProducts.length === 0 && (
+            <div className="col-span-full flex justify-center py-10 text-white/50 font-medium">Nenhum produto encontrado com os filtros atuais.</div>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {MOCK_WHOLESALERS.map((wholesaler) => (
+          {filteredWholesalers.map((wholesaler) => (
              <div key={wholesaler.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
-                <img src={wholesaler.imagem} alt={wholesaler.empresa} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <img src={wholesaler.imagem || (wholesaler.images && wholesaler.images[0]) || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600'} alt={wholesaler.empresa || wholesaler.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
-                  <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao}
+                  <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao || '5.0'}
                 </div>
               </div>
               <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
                 <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white flex items-center gap-2">
                   <Store className="w-5 h-5 text-app-accent" />
-                  {wholesaler.empresa}
+                  {wholesaler.empresa || wholesaler.name}
                 </h3>
-                <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador}</p>
+                <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador || wholesaler.name}</p>
                 <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
                   <MapPin className="w-4 h-4 text-app-accent" />
-                  <span>{wholesaler.local}</span>
+                  <span>{wholesaler.local || `${wholesaler.city}, ${wholesaler.state}`}</span>
                 </div>
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
                   <div>
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Demandado</span>
-                    <span className="font-bold text-lg text-white">{wholesaler.quantidade} kg/mês</span>
+                    <span className="font-bold text-lg text-white">{wholesaler.quantidade || wholesaler.weeklyVolume} kg/mês</span>
                   </div>
                   <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
                     Oferecer
@@ -339,13 +450,20 @@ export function Catalog() {
               </div>
             </div>
           ))}
+          {filteredWholesalers.length === 0 && (
+            <div className="col-span-full flex justify-center py-10 text-white/50 font-medium">Nenhum comprador encontrado com os filtros atuais.</div>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-function ProductCard({ product, role }: { key?: React.Key, product: any, role?: string }) {
+function ProductCard({ product, role, owner, currentUserId }: { key?: React.Key, product: any, role?: string, owner?: any, currentUserId?: string }) {
+  const isOwner = currentUserId === product.produtorId;
+  const isAdmin = role === 'ADMIN';
+  const canEdit = isOwner || isAdmin;
+  
   return (
     <Card className="p-0 gap-0 overflow-hidden flex flex-col shadow-2xl border-none bg-[#d36101] text-white rounded-[24px]">
       <div className="aspect-[4/3] relative rounded-[16px] mx-4 mt-4 overflow-hidden">
@@ -365,15 +483,26 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
         )}
       </div>
       <CardHeader className="bg-[#d36101] border-none pt-4 px-4 pb-2 text-left">
-        <div className="flex justify-between items-start w-full">
-          <div>
-            <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors flex items-center gap-2">
-              <Slice className="w-4 h-4 text-app-accent" />
-              {product.cheeseType}
-            </CardTitle>
-            <CardDescription className="text-white/80 font-medium text-sm mt-1">{product.format}</CardDescription>
+        <div className="flex flex-col gap-2 w-full">
+          {owner && (
+            <div className="text-sm font-medium text-white/70 truncate">{owner.name}</div>
+          )}
+          <div className="flex justify-between items-start w-full">
+            <div>
+              <CardTitle className="text-xl text-white group-hover:text-app-accent transition-colors flex items-center gap-2">
+                <Slice className="w-4 h-4 text-app-accent shrink-0" />
+                <span className="truncate">{product.cheeseType}</span>
+              </CardTitle>
+              <CardDescription className="text-white/80 font-medium text-sm mt-1">{product.format}</CardDescription>
+            </div>
+             <span className="font-bold text-xl text-white shrink-0 mt-1">R$ {product.pricePerKg.toFixed(2)}<span className="text-xs text-white/50 tracking-wider font-normal"> / Kg</span></span>
           </div>
-           <span className="font-bold text-xl text-white">R$ {product.pricePerKg.toFixed(2)}<span className="text-xs text-white/50 tracking-wider font-normal"> / Kg</span></span>
+          {owner && owner.city && owner.state && (
+            <div className="flex items-center gap-2 text-xs text-white/70 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit mt-1">
+              <MapPin className="w-4 h-4 text-app-accent" />
+              <span>{owner.city}, {owner.state}</span>
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-4 flex-1">
@@ -393,10 +522,10 @@ function ProductCard({ product, role }: { key?: React.Key, product: any, role?: 
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 mt-auto border-t border-[#4a2000] pt-4 items-center justify-between">
-        {role === 'ATACADISTA' ? (
-          <Button className="w-full bg-app-accent text-app-bgDark hover:bg-app-accentHover font-bold rounded-xl">Fazer Pedido</Button>
-        ) : (
+        {canEdit ? (
           <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10 rounded-xl">Editar Anúncio</Button>
+        ) : (
+          <Button className="h-10 w-full px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">Comprar</Button>
         )}
       </CardFooter>
     </Card>

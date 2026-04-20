@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { db } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { Upload, X, MapPin, Package, Truck, Image as ImageIcon, User, ShieldCheck } from 'lucide-react';
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 export function Profile() {
   const { profile } = useAuth();
@@ -89,6 +89,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
   const [images, setImages] = useState<string[]>(profile.images || []);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatCPF = (val: string) => val.replace(/\D/g, "").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})/, "$1-$2").replace(/(-\d{2})\d+?$/, "$1");
@@ -238,6 +239,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
     }
 
     setUploading(true);
+    setUploadProgress(0);
     const storage = getStorage();
     const newImages = [...images];
 
@@ -245,9 +247,24 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const imageRef = storageRef(storage, `profiles/${profile.id}/${Date.now()}_${file.name}`);
-        await uploadBytes(imageRef, file);
-        const url = await getDownloadURL(imageRef);
-        newImages.push(url);
+        const uploadTask = uploadBytesResumable(imageRef, file);
+        
+        await new Promise((resolve, reject) => {
+          uploadTask.on('state_changed', 
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              setUploadProgress(((i * 100) + progress) / files.length);
+            }, 
+            (error) => {
+              reject(error);
+            }, 
+            async () => {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              newImages.push(url);
+              resolve(null);
+            }
+          );
+        });
       }
       setImages(newImages);
       toast.success('Imagens enviadas com sucesso!');
@@ -256,6 +273,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       toast.error('Erro ao enviar imagens.');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -551,15 +569,30 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                       </button>
                     </div>
                   ))}
-                  {images.length < 3 && (
+                  {images.length < (isProdutor ? 5 : 3) && (
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploading}
-                      className="aspect-square rounded-lg border-2 border-dashed border-white/30 flex flex-col items-center justify-center text-white/70 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-50"
+                      className="relative aspect-square rounded-[20px] border-2 border-dashed border-white/30 flex flex-col items-center justify-center text-white/70 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-80 overflow-hidden"
                     >
-                      <Upload className="w-6 h-6 mb-2" />
-                      <span className="text-sm">{uploading ? 'Enviando...' : 'Adicionar Foto'}</span>
+                      {uploading ? (
+                        <div className="flex flex-col items-center justify-center z-10 w-full px-4">
+                          <span className="text-sm font-bold text-app-accent mb-2">{Math.round(uploadProgress)}%</span>
+                          <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden">
+                            <div className="h-full bg-app-accent transition-all duration-300 rounded-full" style={{ width: `${uploadProgress}%` }} />
+                          </div>
+                          <span className="text-xs text-white/90 mt-2 font-medium">Enviando...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-6 h-6 mb-2 relative z-10" />
+                          <span className="text-sm font-medium relative z-10">Adicionar Foto</span>
+                        </>
+                      )}
+                      {uploading && (
+                         <div className="absolute inset-0 bg-black/50 z-0" />
+                      )}
                     </button>
                   )}
                 </div>
