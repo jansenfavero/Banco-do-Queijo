@@ -1,21 +1,8 @@
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Package, Users, DollarSign, TrendingUp, ShoppingBag, LayoutDashboard, ShieldCheck, ShoppingCart } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
-import { Checkbox } from '../components/ui/checkbox';
-import React, { useState } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { toast } from 'sonner';
+import React from 'react';
 import { CatalogMetrics } from './CatalogMetrics';
-
-const CHEESE_TYPES = [
-  'Qualho', 'Mussarela', 'Frescal', 'Canastra', 'Parmesão', 'Prato', 'Provolone', 'Gorgonzola', 'Ricota', 'Meia Cura'
-];
 
 export function Dashboard() {
   const { profile } = useAuth();
@@ -96,8 +83,8 @@ function AdminDashboard() {
             <p className="text-xs text-white/70">No catálogo geral</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Demandas Ativas</CardTitle>
             <TrendingUp className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -108,9 +95,9 @@ function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-7 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 flex flex-col items-center justify-center">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 pt-4">
+        <Card className="col-span-7 p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none bg-[#d36101] border-b border-white/10 px-6 py-5 flex flex-col items-center justify-center m-0">
             <CardTitle className="text-xl flex items-center gap-2">
               <ShieldCheck className="w-5 h-5" />
               Painel Administrativo
@@ -131,8 +118,8 @@ function ProducerDashboard() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Faturamento (30 dias)</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -141,8 +128,8 @@ function ProducerDashboard() {
             <p className="text-xs text-white/70">+0% em relação ao mês anterior</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Pedidos Ativos</CardTitle>
             <ShoppingBag className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -151,8 +138,8 @@ function ProducerDashboard() {
             <p className="text-xs text-white/70">0 aguardando envio</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Compradores Ativos</CardTitle>
             <Users className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -161,8 +148,8 @@ function ProducerDashboard() {
             <p className="text-xs text-white/70">Clientes que compraram nos últimos 90 dias</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Produtos em Estoque</CardTitle>
             <Package className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -173,9 +160,9 @@ function ProducerDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-left">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 pt-4">
+        <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none bg-[#d36101] border-b border-white/10 px-6 py-5 text-left m-0">
             <CardTitle className="text-xl flex items-center gap-2">
               <ShoppingCart className="w-5 h-5 text-white" />
               Últimos Pedidos
@@ -187,8 +174,8 @@ function ProducerDashboard() {
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-start bg-[#d36101] border-b border-white/10 px-6 py-5">
+        <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-start bg-[#d36101] border-b border-white/10 px-6 py-5 m-0">
             <CardTitle className="text-xl flex items-center gap-2">
               <Package className="w-5 h-5 text-white" />
               Meus Queijos
@@ -206,187 +193,12 @@ function ProducerDashboard() {
   );
 }
 
-function ProducerProfileCard() {
-  const { profile } = useAuth();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    weeklyVolume: profile?.weeklyVolume || '',
-    chargesFreight: profile?.chargesFreight ? 'SIM' : 'NAO',
-    freightType: profile?.freightType || 'FIXO',
-    freightValue: profile?.freightValue || '',
-    cheeseTypes: profile?.cheeseTypes || []
-  });
-
-  if (!profile) return null;
-
-  const handleCheckboxChange = (type: string, checked: boolean) => {
-    if (checked) {
-      setFormData({ ...formData, cheeseTypes: [...formData.cheeseTypes, type] });
-    } else {
-      setFormData({ ...formData, cheeseTypes: formData.cheeseTypes.filter((t: string) => t !== type) });
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.cheeseTypes.length === 0) {
-      toast.error('Selecione pelo menos um tipo de queijo.');
-      return;
-    }
-    setLoading(true);
-    try {
-      await updateDoc(doc(db, 'users', profile.id), {
-        weeklyVolume: Number(formData.weeklyVolume),
-        chargesFreight: formData.chargesFreight === 'SIM',
-        freightType: formData.freightType,
-        freightValue: formData.chargesFreight === 'SIM' ? Number(formData.freightValue) : 0,
-        cheeseTypes: formData.cheeseTypes
-      });
-      toast.success('Dados atualizados com sucesso!');
-      setIsDialogOpen(false);
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao atualizar dados.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Dados de Cadastro e Comercialização</CardTitle>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm">Editar Detalhes</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
-            <DialogHeader>
-              <DialogTitle>Editar Dados do Produtor</DialogTitle>
-              <DialogDescription className="text-white/80">
-                Atualize as informações de produção e frete.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-white">Volume Semanal (Kg)</Label>
-                <Input type="number" min="0" value={formData.weeklyVolume} onChange={e => setFormData({...formData, weeklyVolume: e.target.value})} className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20" required />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white">Tipos Produzidos</Label>
-                <div className="grid grid-cols-2 gap-2 bg-[#4a2000] p-4 rounded-lg">
-                  {CHEESE_TYPES.map(type => (
-                    <div key={type} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`edit-cheese-${type}`} 
-                        checked={formData.cheeseTypes.includes(type)}
-                        onCheckedChange={(checked) => handleCheckboxChange(type, checked as boolean)}
-                        className="border-white/50 data-[state=checked]:bg-app-accent data-[state=checked]:text-app-bgDark"
-                      />
-                      <label htmlFor={`edit-cheese-${type}`} className="text-sm font-medium leading-none text-white cursor-pointer">
-                        {type}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-white">Cobra frete?</Label>
-                <RadioGroup 
-                  value={formData.chargesFreight} 
-                  onValueChange={(v) => setFormData({...formData, chargesFreight: v})}
-                  className="flex space-x-4 bg-[#4a2000] p-4 rounded-lg"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="SIM" id="edit-f1" className="border-white/50 text-app-accent" />
-                    <Label htmlFor="edit-f1" className="text-white cursor-pointer">Sim</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="NAO" id="edit-f2" className="border-white/50 text-app-accent" />
-                    <Label htmlFor="edit-f2" className="text-white cursor-pointer">Não</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {formData.chargesFreight === 'SIM' && (
-                <div className="grid grid-cols-2 gap-4 bg-[#4a2000]/50 p-4 rounded-lg">
-                  <div className="space-y-2">
-                    <Label className="text-white">Tipo de Cobrança</Label>
-                    <RadioGroup 
-                      value={formData.freightType} 
-                      onValueChange={(v) => setFormData({...formData, freightType: v})}
-                      className="flex flex-col space-y-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="FIXO" id="edit-ft1" className="border-white/50 text-app-accent" />
-                        <Label htmlFor="edit-ft1" className="text-white cursor-pointer">Fixo</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="POR_KM" id="edit-ft2" className="border-white/50 text-app-accent" />
-                        <Label htmlFor="edit-ft2" className="text-white cursor-pointer">Por KM</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white">Valor (R$)</Label>
-                    <Input 
-                      type="number" 
-                      step="0.01"
-                      min="0"
-                      value={formData.freightValue} 
-                      onChange={e => setFormData({...formData, freightValue: e.target.value})} 
-                      className="bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-white/20" 
-                      required 
-                    />
-                  </div>
-                </div>
-              )}
-              
-              <DialogFooter className="pt-4">
-                <Button type="button" variant="outline" className="border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full font-bold" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
-                <Button type="submit" className="bg-[#ffcb05] text-[#4a2000] hover:bg-[#ffb000] rounded-full font-bold" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Alterações'}</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Localidade</p>
-            <p>{profile.city} - {profile.state}</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Volume Semanal</p>
-            <p>{profile.weeklyVolume} kg</p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">Frete</p>
-            <p>
-              {profile.chargesFreight ? `Sim (${profile.freightType === 'FIXO' ? 'Fixo: R$ ' + profile.freightValue : 'Por KM: R$ ' + profile.freightValue})` : 'Não cobrar frete'}
-            </p>
-          </div>
-          <div className="space-y-1 md:col-span-2 lg:col-span-3">
-            <p className="text-sm font-medium text-muted-foreground">Tipos Produzidos</p>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {profile.cheeseTypes?.map((c: string) => (
-                <span key={c} className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">{c}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
 function WholesalerDashboard() {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Volume Comprado</CardTitle>
             <Package className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -395,8 +207,8 @@ function WholesalerDashboard() {
             <p className="text-xs text-white/70">Nos últimos 30 dias</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Valor Pago</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -405,8 +217,8 @@ function WholesalerDashboard() {
             <p className="text-xs text-white/70">Nos últimos 30 dias</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Produtores</CardTitle>
             <Users className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -415,8 +227,8 @@ function WholesalerDashboard() {
             <p className="text-xs text-white/70">Fornecedores ativos</p>
           </CardContent>
         </Card>
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Demandas Ativas</CardTitle>
             <TrendingUp className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -427,9 +239,9 @@ function WholesalerDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-left">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 pt-4">
+        <Card className="col-span-4 p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none bg-[#d36101] border-b border-white/10 px-6 py-5 text-left m-0">
             <CardTitle className="text-xl flex items-center gap-2">
               <ShoppingCart className="w-5 h-5 text-white" />
               Histórico de Pedidos
@@ -441,8 +253,8 @@ function WholesalerDashboard() {
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-left">
+        <Card className="col-span-3 p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none bg-[#d36101] border-b border-white/10 px-6 py-5 text-left m-0">
             <CardTitle className="text-xl flex items-center gap-2">
               <Users className="w-5 h-5 text-white" />
               Meus Fornecedores

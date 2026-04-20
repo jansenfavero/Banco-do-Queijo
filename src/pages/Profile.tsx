@@ -53,8 +53,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
   const [formData, setFormData] = useState({
     name: profile.name || '',
     phone: profile.phone || '',
-    cpf: profile.cpf || '',
-    cnpj: profile.cnpj || '',
+    cpfCnpj: (profile.cpfCnpj && profile.cpfCnpj !== '00000000000') ? profile.cpfCnpj : '',
     weeklyVolume: profile.weeklyVolume || '',
     packaging: profile.packaging || '',
     cheeseTypes: profile.cheeseTypes || [],
@@ -136,6 +135,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       await updateDoc(doc(db, 'users', profile.id), {
         name: formData.name,
         phone: formData.phone,
+        cpfCnpj: formData.cpfCnpj || '00000000000', // Ensure fallback for validation rule
+        city: formData.address.city || 'A definir',
+        state: formData.address.state || 'NA',
         weeklyVolume: Number(formData.weeklyVolume),
         packaging: formData.packaging,
         chargesFreight: formData.chargesFreight === 'SIM',
@@ -179,7 +181,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-6 pt-4">
               
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label className="text-white font-semibold">Nome / Razão Social</Label>
                   <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
@@ -187,6 +189,10 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 <div className="space-y-2">
                   <Label className="text-white font-semibold">Telefone</Label>
                   <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white font-semibold">CPF/CNPJ</Label>
+                  <Input value={formData.cpfCnpj} onChange={e => setFormData({...formData, cpfCnpj: e.target.value})} placeholder="Apenas números" className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                 </div>
               </div>
 
@@ -224,16 +230,16 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="packaging" className="text-white font-semibold">
-                    {isProdutor ? 'Tipo de Embalagem' : 'Preferência de Embalagem'}
+                    {isProdutor ? 'Embalagem dos Produtos' : 'Tipo de Queijo que Compra (Embalagem)'}
                   </Label>
                   <Select value={formData.packaging} onValueChange={(v) => setFormData({ ...formData, packaging: v })}>
                     <SelectTrigger id="packaging" className="flex h-10 w-full bg-black/20 border border-white/20 text-white focus:ring-amber-500 rounded-xl px-4 py-2 outline-none cursor-pointer">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#b85200] border border-white/20 text-white rounded-[10px] shadow-xl" position="popper" sideOffset={4}>
-                      <SelectItem value="Com Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-[8px]">Com Rótulo</SelectItem>
-                      <SelectItem value="Sem Rótulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-[8px]">Sem Rótulo</SelectItem>
-                      <SelectItem value="Ambos" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-[8px]">Ambos</SelectItem>
+                    <SelectContent className="bg-[#b85200] border border-white/20 text-white rounded-[10px] shadow-xl relative z-50">
+                      <SelectItem value="Com Rótulo" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Com Rótulo</SelectItem>
+                      <SelectItem value="Sem Rótulo" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Sem Rótulo</SelectItem>
+                      <SelectItem value="Ambos" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Ambos (Com/Sem Rótulo)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -340,10 +346,10 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 <div>
                   <Label className="text-white text-lg font-semibold flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-[#f4d763]" />
-                    {isProdutor ? 'Fotos dos Seus Queijos' : 'Fotos do Seu Comércio'}
+                    {isProdutor ? 'Fotos da sua Produção' : 'Fotos do Seu Comércio'}
                   </Label>
                   <p className="text-white/70 text-sm mt-1">
-                    {isProdutor ? 'Adicione até 5 fotos dos seus produtos. Elas serão visíveis no catálogo.' : 'Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.'}
+                    {isProdutor ? 'Adicione até 3 fotos da sua estrutura/produção. Pelo menos 1 foto é obrigatória.' : 'Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.'}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -359,7 +365,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                       </button>
                     </div>
                   ))}
-                  {images.length < (isProdutor ? 5 : 3) && (
+                  {images.length < 3 && (
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
@@ -405,7 +411,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 <p className="text-xl text-white font-bold">{profile.name}</p>
                 <p className="text-white/70">{profile.email}</p>
                 <p className="text-white/70">{profile.phone}</p>
-                <p className="text-white/70">{profile.cpf || profile.cnpj}</p>
+                <p className="text-white/70">{profile.cpfCnpj}</p>
               </div>
             </div>
 

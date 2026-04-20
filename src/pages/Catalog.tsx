@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner';
 import { Store, Slice } from 'lucide-react';
 
+const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
+
 import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
 import { Star, MapPin } from 'lucide-react';
 
@@ -96,7 +98,7 @@ export function Catalog() {
       </div>
 
       {(!profile || profile.role === 'ADMIN') && (
-        <div className="flex bg-app-cardDark p-1.5 rounded-2xl border border-[#4a2000] w-fit shadow-lg mb-6">
+        <div className="flex bg-app-cardDark p-1.5 rounded-[24px] border border-[#4a2000] w-fit shadow-lg">
           <button
             onClick={() => setActiveTab('produtores')}
             className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
@@ -113,20 +115,34 @@ export function Catalog() {
       )}
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border border-white/10 shadow-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 mb-8">
-        <div className="space-y-1.5 lg:col-span-5">
+      <div className="bg-[#703200] p-5 rounded-[24px] border border-white/10 shadow-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="space-y-1.5 lg:col-span-2">
           <Label className="text-white/80 font-medium text-sm ml-1">Pesquisar por Nome/Empresa</Label>
           <Input 
             placeholder="Digite o nome..." 
             className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all"
           />
         </div>
-        <div className="space-y-1.5 lg:col-span-3">
+        <div className="space-y-1.5 lg:col-span-1">
           <Label className="text-white/80 font-medium text-sm ml-1">Localização</Label>
           <Input 
             placeholder="Cidade ou Estado" 
             className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all"
           />
+        </div>
+        <div className="space-y-1.5 lg:col-span-2">
+          <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
+          <Select defaultValue="todos">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+              <SelectValue placeholder="Qualquer" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px] shadow-xl">
+              <SelectItem value="todos" className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">Qualquer</SelectItem>
+              {CHEESE_TYPES.map(type => (
+                <SelectItem key={type} value={type} className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">{type}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="space-y-1.5 lg:col-span-2">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>

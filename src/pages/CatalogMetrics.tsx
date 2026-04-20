@@ -65,7 +65,7 @@ export function CatalogMetrics() {
   };
 
   return (
-    <div className="space-y-6 mb-10">
+    <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#703200] p-4 rounded-[24px] border border-white/10 shadow-lg">
         <div className="text-white font-semibold flex items-center gap-2">
           <Activity className="w-5 h-5 text-app-accent" />
@@ -89,8 +89,8 @@ export function CatalogMetrics() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Card 1: Valor Médio Negociado */}
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Preço Médio do Dia ({globalCheeseType})</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
@@ -107,8 +107,8 @@ export function CatalogMetrics() {
         </Card>
 
         {/* Card 2: Gráfico de Linha (Altos e Baixos) */}
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Variação de Preço ({globalCheeseType})</CardTitle>
             <button 
               onClick={() => setTimeRange(timeRange === 'Semana' ? 'Mês' : 'Semana')}
@@ -133,8 +133,8 @@ export function CatalogMetrics() {
         </Card>
 
         {/* Card 3: Valores negociados e quantidadade em kg */}
-        <Card className="p-0 gap-0 shadow-2xl border-none bg-[#703200] text-white overflow-hidden rounded-[24px]">
-          <CardHeader className="rounded-t-[24px] flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 px-6 py-4 bg-[#d36101] border-b border-white/10">
+        <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
+          <CardHeader className="rounded-none flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 px-6 py-4 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Volume de Negócios</CardTitle>
             <Select value={card3CheeseType} onValueChange={setCard3CheeseType}>
               <SelectTrigger className="w-[120px] h-8 bg-black/20 border-white/20 text-white rounded-lg text-xs">
