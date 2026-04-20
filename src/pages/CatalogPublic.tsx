@@ -282,7 +282,7 @@ export function CatalogPublic() {
               </div>
 
               {isRegionDropdownOpen && (
-                <div className={`absolute top-[calc(100%+8px)] left-0 w-full ${catalogType === 'produtores' ? 'bg-app-cardDark' : 'bg-[#703200]'} border-2 border-[#f4d763] rounded-xl shadow-2xl z-50 flex flex-col transition-colors duration-500 overflow-y-auto max-h-60 overflow-x-hidden`}>
+                <div className={`absolute top-[calc(100%+8px)] left-0 w-full ${catalogType === 'produtores' ? 'bg-app-cardDark' : 'bg-[#703200]'} border-2 border-[#f4d763] rounded-[10px] shadow-2xl z-50 flex flex-col transition-colors duration-500 overflow-y-auto max-h-60 overflow-x-hidden`}>
                   {regions.map((region, idx) => (
                     <div 
                       key={region.value}

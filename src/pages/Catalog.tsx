@@ -141,8 +141,8 @@ export function Catalog() {
       )}
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 items-end">
-        <div className="space-y-1.5">
+      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+        <div className="space-y-1.5 flex flex-col justify-end">
           <Label className="text-white/80 font-medium text-sm ml-1">Pesquisar por Nome/Empresa</Label>
           <Input 
             placeholder="Digite o nome..." 
@@ -150,7 +150,7 @@ export function Catalog() {
           />
         </div>
 
-        <div className="space-y-1.5 relative" ref={locationDropdownRef}>
+        <div className="space-y-1.5 relative flex flex-col justify-end" ref={locationDropdownRef}>
           <Label className="text-white/80 font-medium text-sm ml-1">Localização</Label>
           <div className="relative">
             <Input 
@@ -164,7 +164,7 @@ export function Catalog() {
               className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all pr-10"
             />
             {isLocationDropdownOpen && (
-              <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-[#b85200] border border-[#d36101] rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto overflow-x-hidden flex flex-col">
+              <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-[#b85200] border border-[#d36101] rounded-[10px] shadow-2xl z-50 max-h-60 overflow-y-auto overflow-x-hidden flex flex-col">
                 <div 
                   className="px-4 py-2.5 text-sm font-medium text-white hover:bg-[#d36101] cursor-pointer transition-colors border-b border-[#a64b00]"
                   onClick={() => {
@@ -194,7 +194,7 @@ export function Catalog() {
           </div>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 flex flex-col justify-end">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -211,7 +211,7 @@ export function Catalog() {
           </Select>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 flex flex-col justify-end">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -228,7 +228,7 @@ export function Catalog() {
           </Select>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 flex flex-col justify-end">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -254,7 +254,7 @@ export function Catalog() {
           ))}
           {MOCK_PRODUCTS.map((prod) => (
             <div key={prod.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-              <div className="relative mx-4 mt-4 aspect-[4/3] rounded-[16px] overflow-hidden">
+              <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
                 <img src={prod.imagem} alt={prod.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 left-3 flex gap-2">
                   <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-app-accent/20">
@@ -277,8 +277,9 @@ export function Catalog() {
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                     <span className="font-bold text-xl text-white">R$ {prod.preco.toFixed(2)}</span>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors">
-                    <Store className="w-5 h-5" />
+                  <button className="h-10 px-4 rounded-full bg-app-accent flex items-center justify-center gap-2 text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
+                    Comprar
+                    <Store className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -289,7 +290,7 @@ export function Catalog() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {MOCK_WHOLESALERS.map((wholesaler) => (
              <div key={wholesaler.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
-              <div className="relative mx-4 mt-4 aspect-[4/3] rounded-[16px] overflow-hidden">
+              <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
                 <img src={wholesaler.imagem} alt={wholesaler.empresa} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
                 <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
                   <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao}
@@ -310,8 +311,9 @@ export function Catalog() {
                     <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Demandado</span>
                     <span className="font-bold text-lg text-white">{wholesaler.quantidade} kg/mês</span>
                   </div>
-                  <button className="px-4 py-2 rounded-xl bg-app-accent text-app-bgDark font-bold hover:bg-app-accentHover transition-colors text-sm">
-                    Fazer Oferta
+                  <button className="h-10 px-4 rounded-full bg-app-accent flex items-center justify-center gap-2 text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
+                    Oferecer
+                    <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
