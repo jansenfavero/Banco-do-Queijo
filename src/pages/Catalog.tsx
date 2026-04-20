@@ -10,7 +10,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Store, Slice } from 'lucide-react';
+import { Store, Slice, Info, ArrowRight } from 'lucide-react';
 
 const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
 
@@ -103,24 +103,44 @@ export function Catalog() {
             </p>
           </div>
         </div>
-        {profile?.role === 'PRODUTOR' && (
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full">
-                Publicar Queijo
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl rounded-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
-              <DialogHeader>
-                <DialogTitle className="text-2xl">Publicar Queijo</DialogTitle>
-                <DialogDescription className="text-white/80">
-                  Preencha os detalhes do seu produto para listá-lo no catálogo.
-                </DialogDescription>
-              </DialogHeader>
-              <AddProductForm onSuccess={() => setIsAddDialogOpen(false)} />
-            </DialogContent>
-          </Dialog>
-        )}
+        
+        <div className="flex items-center gap-4">
+          <div className="bg-[#d36101]/20 border border-[#d36101]/50 rounded-2xl p-4 max-w-sm shrink-0 animate-pulse-slow shadow-[0_0_15px_rgba(211,97,1,0.15)] flex items-start gap-3 mt-4 md:mt-0">
+            <Info className="w-5 h-5 text-app-accent shrink-0 mt-0.5" />
+            <p className="text-xs text-white/80 leading-relaxed font-medium">
+              <strong className="text-app-accent">Os dados atuais da vitrine são para efeito de demonstração</strong>, os dados reais de Produtores e Atacadistas estarão disponíveis em breve para negociação.
+            </p>
+          </div>
+          
+          {profile?.role === 'PRODUTOR' && (
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <div className="relative group mt-4 md:mt-0">
+                  <Button 
+                    disabled={profile.kycStatus === 'PENDENTE'}
+                    className="bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Publicar Queijo
+                  </Button>
+                  {profile.kycStatus === 'PENDENTE' && (
+                    <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-black text-white text-xs p-2 rounded z-50 text-center">
+                      Complete seu perfil para habilitar a publicação de produtos.
+                    </div>
+                  )}
+                </div>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl rounded-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">Publicar Queijo</DialogTitle>
+                  <DialogDescription className="text-white/80">
+                    Preencha os detalhes do seu produto para listá-lo no catálogo.
+                  </DialogDescription>
+                </DialogHeader>
+                <AddProductForm onSuccess={() => setIsAddDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
       </div>
 
       {(!profile || profile.role === 'ADMIN') && (

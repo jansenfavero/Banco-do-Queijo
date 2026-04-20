@@ -45,7 +45,12 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .9; transform: scale(0.99); }
+    }
     --animate-scale-pulse: scale-pulse 2s ease-in-out infinite;
+    --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
 }
 
 :root {

@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from 'sonner';
 import { db } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { Upload, X, MapPin, Package, Truck, Image as ImageIcon, User } from 'lucide-react';
+import { Upload, X, MapPin, Package, Truck, Image as ImageIcon, User, ShieldCheck } from 'lucide-react';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export function Profile() {
@@ -36,6 +36,22 @@ export function Profile() {
           </p>
         </div>
       </div>
+      
+      {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (
+        <div className="bg-[#b85200]/20 border border-[#f4d763]/50 p-5 rounded-[20px] shadow-[0_0_15px_rgba(244,215,99,0.1)]">
+          <div className="flex">
+            <div className="flex-shrink-0 mt-0.5">
+              <ShieldCheck className="h-6 w-6 text-[#f4d763]" />
+            </div>
+            <div className="ml-4">
+              <h3 className="text-lg font-bold text-[#f4d763] mb-1">Ação Necessária</h3>
+              <p className="text-sm text-white/90">
+                Seu perfil ainda não está completo. Somente após completar <strong>todos os seus dados e informações abaixo</strong> (incluindo CPF/CNPJ válidos, endereço e fotos) você estará habilitado e sua conta será ativada automaticamente para aparecer na vitrine de negociação.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-1 md:col-span-3">
@@ -74,6 +90,116 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
   const [images, setImages] = useState<string[]>(profile.images || []);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const formatCPF = (val: string) => val.replace(/\D/g, "").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})/, "$1-$2").replace(/(-\d{2})\d+?$/, "$1");
+  const formatCNPJ = (val: string) => val.replace(/\D/g, "").replace(/(\d{2})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1/$2").replace(/(\d{4})(\d{1,2})/, "$1-$2").replace(/(-\d{2})\d+?$/, "$1");
+  const formatPhone = (val: string) => {
+    let r = val.replace(/\D/g,"");
+    if(r.length > 11) r = r.substring(0,11);
+    if(r.length > 10) return r.replace(/^(\d\d)(\d{5})(\d{4}).*/,"($1) $2-$3");
+    else if(r.length > 5) return r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/,"($1) $2-$3");
+    else if(r.length > 2) return r.replace(/^(\d\d)(\d{0,5})/,"($1) $2");
+    else return r;
+  };
+  const formatCep = (val: string) => val.replace(/\D/g, "").replace(/(\d{5})(\d)/, "$1-$2").replace(/(-\d{3})\d+?$/, "$1");
+
+  const isValidCPF = (cpf: string) => {
+    cpf = cpf.replace(/[^\d]+/g, "");
+    if (cpf == "" || cpf.length != 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    let add = 0;
+    for (let i = 0; i < 9; i++) add += parseInt(cpf.charAt(i)) * (10 - i);
+    let rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11) rev = 0;
+    if (rev != parseInt(cpf.charAt(9))) return false;
+    add = 0;
+    for (let i = 0; i < 10; i++) add += parseInt(cpf.charAt(i)) * (11 - i);
+    rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11) rev = 0;
+    return rev == parseInt(cpf.charAt(10));
+  };
+
+  const isValidCNPJ = (cnpj: string) => {
+    cnpj = cnpj.replace(/[^\d]+/g, "");
+    if (cnpj == "" || cnpj.length != 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+    let tamanho = cnpj.length - 2;
+    let numeros = cnpj.substring(0, tamanho);
+    let digitos = cnpj.substring(tamanho);
+    let soma = 0;
+    let pos = tamanho - 7;
+    for (let i = tamanho; i >= 1; i--) { soma += parseInt(numeros.charAt(tamanho - i)) * pos--; if (pos < 2) pos = 9; }
+    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    if (resultado != parseInt(digitos.charAt(0))) return false;
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (let i = tamanho; i >= 1; i--) { soma += parseInt(numeros.charAt(tamanho - i)) * pos--; if (pos < 2) pos = 9; }
+    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    return resultado == parseInt(digitos.charAt(1));
+  };
+
+  const handleCpfCnpjChange = (val: string) => {
+    const raw = val.replace(/\D/g, "");
+    if (raw.length <= 11) setFormData({ ...formData, cpfCnpj: formatCPF(raw) });
+    else setFormData({ ...formData, cpfCnpj: formatCNPJ(raw) });
+  };
+
+  const fetchCnpjData = async (cnpjStr: string) => {
+    const raw = cnpjStr.replace(/\D/g, "");
+    if (raw.length === 14 && isValidCNPJ(raw)) {
+      toast.info("Buscando dados do CNPJ...");
+      try {
+        const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${raw}`);
+        if(res.ok) {
+          const data = await res.json();
+          setFormData(prev => ({
+            ...prev,
+            name: data.razao_social || data.nome_fantasia || prev.name,
+            phone: data.ddd_telefone_1 ? formatPhone(data.ddd_telefone_1) : prev.phone,
+            address: {
+              ...prev.address,
+              zipCode: data.cep ? formatCep(data.cep) : prev.address.zipCode,
+              street: data.logradouro || prev.address.street,
+              number: data.numero || prev.address.number,
+              complement: data.complemento || prev.address.complement,
+              neighborhood: data.bairro || prev.address.neighborhood,
+              city: data.municipio || prev.address.city,
+              state: data.uf || prev.address.state
+            }
+          }));
+          toast.success("Dados preenchidos via CNPJ!");
+          return;
+        }
+      } catch(e) {}
+    } else if (raw.length === 11 && !isValidCPF(raw)) {
+      toast.error('CPF inválido.');
+    }
+  };
+
+  const fetchCepData = async (cepStr: string) => {
+    const raw = cepStr.replace(/\D/g, "");
+    if (raw.length === 8) {
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`);
+        if (res.ok) {
+          const data = await res.json();
+          if (!data.erro) {
+            setFormData(prev => ({
+              ...prev,
+              address: {
+                ...prev.address,
+                street: data.logradouro || prev.address.street,
+                neighborhood: data.bairro || prev.address.neighborhood,
+                city: data.localidade || prev.address.city,
+                state: data.uf || prev.address.state
+              }
+            }));
+            toast.success("Endereço atualizado via CEP!");
+          }
+        }
+      } catch(e) {}
+    }
+  };
 
   const handleCheckboxChange = (type: string, checked: boolean) => {
     if (checked) {
@@ -130,12 +256,32 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       toast.error(`Pelo menos uma foto ${isProdutor ? 'do seu queijo' : 'do seu comércio'} é obrigatória.`);
       return;
     }
+    
+    // Auto-validate logic
+    let isCompleted = true;
+    if (!formData.name || !formData.phone || !formData.cpfCnpj || !formData.weeklyVolume || !formData.packaging) isCompleted = false;
+    if (!formData.address.zipCode || !formData.address.street || !formData.address.number || !formData.address.neighborhood || !formData.address.city || !formData.address.state) isCompleted = false;
+    
+    const rawCnpjCpf = formData.cpfCnpj.replace(/\D/g, "");
+    if (rawCnpjCpf.length === 11 && !isValidCPF(rawCnpjCpf)) {
+        toast.error("CPF inválido.");
+        return;
+    }
+    if (rawCnpjCpf.length === 14 && !isValidCNPJ(rawCnpjCpf)) {
+        toast.error("CNPJ inválido.");
+        return;
+    }
+    if (rawCnpjCpf.length !== 11 && rawCnpjCpf.length !== 14) {
+        toast.error("CPF ou CNPJ inválido.");
+        return;
+    }
+
     setLoading(true);
     try {
       await updateDoc(doc(db, 'users', profile.id), {
         name: formData.name,
         phone: formData.phone,
-        cpfCnpj: formData.cpfCnpj || '00000000000', // Ensure fallback for validation rule
+        cpfCnpj: formData.cpfCnpj,
         city: formData.address.city || 'A definir',
         state: formData.address.state || 'NA',
         weeklyVolume: Number(formData.weeklyVolume),
@@ -146,8 +292,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         cheeseTypes: formData.cheeseTypes,
         address: formData.address,
         images: images,
+        kycStatus: isCompleted ? 'VALIDADO' : 'PENDENTE'
       });
-      toast.success('Perfil atualizado com sucesso!');
+      toast.success(isCompleted ? 'Perfil atualizado e validado com sucesso!' : 'Perfil atualizado, porém ainda pendente de validação (preencha todos os campos).');
       setIsDialogOpen(false);
     } catch (error) {
       console.error(error);
@@ -168,7 +315,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
             Seus Dados
           </CardTitle>
           <p className="text-base text-white/80 mt-2 font-medium">
-            Mantenha seu perfil atualizado para que {isProdutor ? 'os Atacadistas' : 'os Produtores'} conheçam você.
+            Mantenha seu perfil atualizado para que {isProdutor ? 'os Atacadistas' : 'os Produtores'} conheçam você. Preencha todos os dados e CPF/CNPJ para aprovação automática na vitrine.
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -187,12 +334,12 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                   <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-white font-semibold">Telefone</Label>
-                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  <Label className="text-white font-semibold">Telefone/WhatsApp</Label>
+                  <Input value={formData.phone} onChange={e => setFormData({...formData, phone: formatPhone(e.target.value)})} placeholder="(00) 00000-0000" className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-white font-semibold">CPF/CNPJ</Label>
-                  <Input value={formData.cpfCnpj} onChange={e => setFormData({...formData, cpfCnpj: e.target.value})} placeholder="Apenas números" className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                  <Label className="text-white font-semibold flex items-center gap-2">CPF/CNPJ <span className="text-[10px] text-white/50">(Autopreenchimento)</span></Label>
+                  <Input value={formData.cpfCnpj} onChange={e => handleCpfCnpjChange(e.target.value)} onBlur={(e) => fetchCnpjData(e.target.value)} placeholder="000.000.000-00 ou 00.000.000/0000-00" className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                 </div>
               </div>
 
@@ -252,7 +399,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label className="text-white/90">CEP</Label>
-                    <Input value={formData.address.zipCode} onChange={e => setFormData({...formData, address: {...formData.address, zipCode: e.target.value}})} className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
+                    <Input value={formData.address.zipCode} onChange={e => setFormData({...formData, address: {...formData.address, zipCode: formatCep(e.target.value)}})} onBlur={(e) => fetchCepData(e.target.value)} placeholder="00000-000" className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-xl px-4" />
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label className="text-white/90">Rua/Logradouro</Label>

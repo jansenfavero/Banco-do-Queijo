@@ -28,16 +28,15 @@ export function Dashboard() {
       <CatalogMetrics />
 
       {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+        <div className="bg-[#b85200]/20 border border-[#f4d763]/50 p-5 rounded-[20px] shadow-[0_0_15px_rgba(244,215,99,0.1)]">
           <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
+            <div className="flex-shrink-0 mt-0.5">
+              <ShieldCheck className="h-6 w-6 text-[#f4d763]" />
             </div>
-            <div className="ml-3">
-              <p className="text-sm text-yellow-700">
-                Sua conta está com status <strong>PENDENTE</strong>. Nossa equipe está analisando seus dados (KYC). Você poderá operar na plataforma assim que for validado.
+            <div className="ml-4">
+              <h3 className="text-lg font-bold text-[#f4d763] mb-1">Ação Necessária</h3>
+              <p className="text-sm text-white/90">
+                Seu perfil ainda não está completo. Somente após completar <strong>todos os seus dados e informações em "Meu Perfil"</strong> (incluindo CPF/CNPJ válidos, endereço e fotos) você estará habilitado e sua conta será ativada automaticamente para aparecer na vitrine de negociação.
               </p>
             </div>
           </div>
