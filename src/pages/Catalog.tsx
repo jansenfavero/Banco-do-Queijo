@@ -161,14 +161,14 @@ export function Catalog() {
       )}
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 items-center">
+      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-4 items-end">
         <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">
-            <span className="font-bold text-app-accent">Pesquisar por</span> Nome/Empresa
+            Nome/Empresa
           </Label>
           <Input 
             placeholder="Digite o nome..." 
-            className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all"
+            className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px] h-11 px-4 transition-all"
           />
         </div>
 
@@ -183,7 +183,7 @@ export function Catalog() {
                 setIsLocationDropdownOpen(true);
               }}
               onFocus={() => setIsLocationDropdownOpen(true)}
-              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-xl h-11 px-4 transition-all pr-10"
+              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px] h-11 px-4 transition-all pr-10"
             />
             {isLocationDropdownOpen && (
               <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-[#b85200] border border-[#d36101] rounded-[10px] shadow-2xl z-50 max-h-60 overflow-y-auto overflow-x-hidden flex flex-col">
@@ -219,7 +219,7 @@ export function Catalog() {
         <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
           <Select defaultValue="todos">
-            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
@@ -236,7 +236,7 @@ export function Catalog() {
         <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
           <Select defaultValue="todos">
-            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
@@ -253,7 +253,7 @@ export function Catalog() {
         <div className="space-y-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
           <Select defaultValue="todos">
-            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">

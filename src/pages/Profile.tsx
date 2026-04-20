@@ -152,6 +152,30 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${raw}`);
         if(res.ok) {
           const data = await res.json();
+          let street = data.descricao_tipo_de_logradouro ? `${data.descricao_tipo_de_logradouro} ${data.logradouro}`.trim() : data.logradouro || '';
+          let neighborhood = data.bairro || '';
+          let city = data.municipio || '';
+          let state = data.uf || '';
+          let complement = data.complemento || '';
+          let number = data.numero || '';
+
+          // Fetch from ViaCEP using the CNPJ's CEP for richer address info (specially Logradouro/Complemento)
+          if (data.cep) {
+            try {
+               const cepRes = await fetch(`https://viacep.com.br/ws/${data.cep.replace(/\D/g, "")}/json/`);
+               if (cepRes.ok) {
+                 const cepData = await cepRes.json();
+                 if (!cepData.erro) {
+                    street = cepData.logradouro || street;
+                    neighborhood = cepData.bairro || neighborhood;
+                    city = cepData.localidade || city;
+                    state = cepData.uf || state;
+                    complement = cepData.complemento || complement;
+                 }
+               }
+            } catch(e) {}
+          }
+
           setFormData(prev => ({
             ...prev,
             name: data.razao_social || data.nome_fantasia || prev.name,
@@ -159,15 +183,15 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
             address: {
               ...prev.address,
               zipCode: data.cep ? formatCep(data.cep) : prev.address.zipCode,
-              street: data.logradouro || prev.address.street,
-              number: data.numero || prev.address.number,
-              complement: data.complemento || prev.address.complement,
-              neighborhood: data.bairro || prev.address.neighborhood,
-              city: data.municipio || prev.address.city,
-              state: data.uf || prev.address.state
+              street: street || prev.address.street,
+              number: number || prev.address.number,
+              complement: complement || prev.address.complement,
+              neighborhood: neighborhood || prev.address.neighborhood,
+              city: city || prev.address.city,
+              state: state || prev.address.state
             }
           }));
-          toast.success("Dados preenchidos via CNPJ!");
+          toast.success("Dados preenchidos via CNPJ e Correios!");
           return;
         }
       } catch(e) {}
