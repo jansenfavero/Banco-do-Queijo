@@ -197,14 +197,14 @@ export function Catalog() {
         <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
           <Select defaultValue="todos">
-            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
               <div className="flex flex-col">
-                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
                 {CHEESE_TYPES.map((type, idx) => (
-                  <SelectItem key={type} value={type} className={`px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none ${idx !== CHEESE_TYPES.length - 1 ? 'border-b border-[#a64b00]' : ''}`}>{type}</SelectItem>
+                  <SelectItem key={type} value={type} className={`px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none ${idx !== CHEESE_TYPES.length - 1 ? 'border-b border-[#a64b00]' : ''}`}>{type}</SelectItem>
                 ))}
               </div>
             </SelectContent>
@@ -214,15 +214,15 @@ export function Catalog() {
         <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
           <Select defaultValue="todos">
-            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
               <div className="flex flex-col">
-                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
-                <SelectItem value="com" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Com Rótulo</SelectItem>
-                <SelectItem value="sem" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Sem Rótulo</SelectItem>
-                <SelectItem value="ambos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none">Ambos</SelectItem>
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
+                <SelectItem value="com" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Com Rótulo</SelectItem>
+                <SelectItem value="sem" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Sem Rótulo</SelectItem>
+                <SelectItem value="ambos" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none">Ambos</SelectItem>
               </div>
             </SelectContent>
           </Select>
@@ -231,14 +231,14 @@ export function Catalog() {
         <div className="space-y-1.5">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
           <Select defaultValue="todos">
-            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-xl !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
               <SelectValue placeholder="Qualquer" />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
               <div className="flex flex-col">
-                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
-                <SelectItem value="gratis" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Frete Incluso</SelectItem>
-                <SelectItem value="pago" className="px-4 py-2.5 focus:bg-[#d36101] focus:text-white cursor-pointer rounded-none">Cobra Frete</SelectItem>
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer</SelectItem>
+                <SelectItem value="gratis" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Frete Incluso</SelectItem>
+                <SelectItem value="pago" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none">Cobra Frete</SelectItem>
               </div>
             </SelectContent>
           </Select>
