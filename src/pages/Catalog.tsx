@@ -161,8 +161,8 @@ export function Catalog() {
       )}
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-4 items-end">
-        <div className="space-y-1.5 w-full">
+      <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-5 items-end">
+        <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">
             Nome/Empresa
           </Label>
@@ -172,9 +172,9 @@ export function Catalog() {
           />
         </div>
 
-        <div className="space-y-1.5 relative w-full" ref={locationDropdownRef}>
+        <div className="flex flex-col gap-1.5 relative w-full" ref={locationDropdownRef}>
           <Label className="text-white/80 font-medium text-sm ml-1">Localização</Label>
-          <div className="relative">
+          <div className="relative w-full">
             <Input 
               placeholder="Cidade ou Estado"
               value={locationSearch}
@@ -216,7 +216,7 @@ export function Catalog() {
           </div>
         </div>
 
-        <div className="space-y-1.5 w-full">
+        <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Tipo de Queijo</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -233,7 +233,7 @@ export function Catalog() {
           </Select>
         </div>
 
-        <div className="space-y-1.5 w-full">
+        <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Embalagem</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
@@ -250,7 +250,7 @@ export function Catalog() {
           </Select>
         </div>
 
-        <div className="space-y-1.5 w-full">
+        <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">Frete</Label>
           <Select defaultValue="todos">
             <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">

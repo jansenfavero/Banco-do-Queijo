@@ -156,10 +156,8 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
           let neighborhood = data.bairro || '';
           let city = data.municipio || '';
           let state = data.uf || '';
-          let complement = data.complemento || '';
-          let number = data.numero || '';
 
-          // Fetch from ViaCEP using the CNPJ's CEP for richer address info (specially Logradouro/Complemento)
+          // Fetch from ViaCEP using the CNPJ's CEP for richer address info (specially Logradouro)
           if (data.cep) {
             try {
                const cepRes = await fetch(`https://viacep.com.br/ws/${data.cep.replace(/\D/g, "")}/json/`);
@@ -170,7 +168,6 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                     neighborhood = cepData.bairro || neighborhood;
                     city = cepData.localidade || city;
                     state = cepData.uf || state;
-                    complement = cepData.complemento || complement;
                  }
                }
             } catch(e) {}
@@ -184,14 +181,12 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
               ...prev.address,
               zipCode: data.cep ? formatCep(data.cep) : prev.address.zipCode,
               street: street || prev.address.street,
-              number: number || prev.address.number,
-              complement: complement || prev.address.complement,
               neighborhood: neighborhood || prev.address.neighborhood,
               city: city || prev.address.city,
               state: state || prev.address.state
             }
           }));
-          toast.success("Dados preenchidos via CNPJ e Correios!");
+          toast.success("Dados preenchidos via CNPJ e Correios! Preencha o número manualmente.");
           return;
         }
       } catch(e) {}
@@ -272,20 +267,40 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const isProdutor = profile.role === 'PRODUTOR';
+    const isAtacadista = profile.role === 'ATACADISTA';
+
+    // Verify required fields
+    if (!formData.name.trim()) return toast.error('O Nome/Empresa é obrigatório.');
+    if (!formData.cpfCnpj.trim()) return toast.error('O CPF/CNPJ é obrigatório.');
+    if (!formData.phone.trim()) return toast.error('O Telefone/WhatsApp é obrigatório.');
+    if (!formData.address.zipCode.trim()) return toast.error('O CEP é obrigatório.');
+    if (!formData.address.street.trim()) return toast.error('A Rua/Logradouro é obrigatória.');
+    if (!formData.address.number.trim()) return toast.error('O Número do endereço é obrigatório.');
+    if (!formData.address.neighborhood.trim()) return toast.error('O Bairro é obrigatório.');
+    if (!formData.address.city.trim()) return toast.error('A Cidade é obrigatória.');
+    if (!formData.address.state.trim()) return toast.error('O Estado (UF) é obrigatório.');
+
     if (formData.cheeseTypes.length === 0) {
       toast.error('Selecione pelo menos um tipo de queijo.');
       return;
     }
     if (images.length === 0) {
-      toast.error(`Pelo menos uma foto ${isProdutor ? 'do seu queijo' : 'do seu comércio'} é obrigatória.`);
+      toast.error(`Pelo menos uma foto ${isProdutor ? 'do seu queijo/comércio' : 'do seu comércio'} é obrigatória.`);
       return;
     }
+
+    if (isProdutor) {
+      if (!formData.weeklyVolume) return toast.error('A Produção Semanal é obrigatória.');
+      if (!formData.packaging) return toast.error('O Tipo de Embalagem é obrigatório.');
+    }
+
+    if (isAtacadista) {
+      if (!formData.weeklyVolume) return toast.error('O Volume Semanal é obrigatório.');
+      if (!formData.packaging) return toast.error('A Embalagem requerida é obrigatória.');
+    }
     
-    // Auto-validate logic
-    let isCompleted = true;
-    if (!formData.name || !formData.phone || !formData.cpfCnpj || !formData.weeklyVolume || !formData.packaging) isCompleted = false;
-    if (!formData.address.zipCode || !formData.address.street || !formData.address.number || !formData.address.neighborhood || !formData.address.city || !formData.address.state) isCompleted = false;
-    
+    // Auto-validate logic Check if done
     const rawCnpjCpf = formData.cpfCnpj.replace(/\D/g, "");
     if (rawCnpjCpf.length === 11 && !isValidCPF(rawCnpjCpf)) {
         toast.error("CPF inválido.");
@@ -316,9 +331,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         cheeseTypes: formData.cheeseTypes,
         address: formData.address,
         images: images,
-        kycStatus: isCompleted ? 'VALIDADO' : 'PENDENTE'
+        kycStatus: 'VALIDADO' // Automatically validated since we now require all info
       });
-      toast.success(isCompleted ? 'Perfil atualizado e validado com sucesso!' : 'Perfil atualizado, porém ainda pendente de validação (preencha todos os campos).');
+      toast.success('Perfil atualizado e ativado com sucesso!');
       setIsDialogOpen(false);
     } catch (error) {
       console.error(error);

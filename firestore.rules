@@ -226,7 +226,7 @@ service cloud.firestore {
       allow update: if 
         request.auth.token.email == 'contato@jansenfavero.com' ||
         isAdmin() ||
-        (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'kycStatus', 'createdAt', 'email']));
+        (isOwner(userId) && isValidUser(request.resource.data) && areImmutableFieldsUnchanged(['role', 'createdAt', 'email']));
     }
 
     match /products/{productId} {
