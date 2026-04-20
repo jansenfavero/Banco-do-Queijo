@@ -15,6 +15,7 @@ import { Store, Slice, Info, ArrowRight } from 'lucide-react';
 const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
 
 import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
+import { Link } from 'react-router-dom';
 import { Star, MapPin } from 'lucide-react';
 
 import { CatalogMetrics } from './CatalogMetrics';
@@ -28,7 +29,6 @@ export function Catalog() {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(true);
   
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'produtores' | 'atacadistas'>('produtores');
   
   // Custom Searchable Dropdown for Location
@@ -78,46 +78,38 @@ export function Catalog() {
   }, [profile]);
 
   useEffect(() => {
-    let qProducts;
-    if (profile?.role === 'ADMIN') {
-      qProducts = query(collection(db, 'products'));
-    } else {
-      qProducts = query(collection(db, 'products'), where('active', '==', true));
-    }
-
-    const unsubscribeProducts = onSnapshot(qProducts, (snapshot) => {
-      const prods: any[] = [];
-      snapshot.forEach((doc) => {
-        prods.push({ id: doc.id, ...doc.data() });
-      });
-      setProducts(prods);
-      setLoadingProducts(false);
-    }, (error) => {
-      console.error("Error fetching products:", error);
-      toast.error("Erro ao carregar produtos da vitrine.");
-      setLoadingProducts(false);
-    });
-    
     const unsubscribeUsers = onSnapshot(query(collection(db, 'users'), where('kycStatus', '==', 'VALIDADO')), (snapshot) => {
       const usersData: Record<string, any> = {};
       const wholesaleArr: any[] = [];
+      const producerArr: any[] = [];
+      
       snapshot.forEach((doc) => {
         const data = doc.data();
         usersData[doc.id] = data;
-        if (data.role === 'ATACADISTA') {
-          wholesaleArr.push({ id: doc.id, ...data });
+        
+        const isProfilePublic = data.isPublic !== false;
+        const canSee = isProfilePublic || profile?.role === 'ADMIN' || profile?.id === doc.id;
+        
+        if (canSee) {
+          if (data.role === 'ATACADISTA') {
+            wholesaleArr.push({ id: doc.id, ...data });
+          } else if (data.role === 'PRODUTOR') {
+            producerArr.push({ id: doc.id, ...data });
+          }
         }
       });
       setUsersInfo(usersData);
       setWholesalers(wholesaleArr);
+      setProducts(producerArr); // using setProducts to hold producers to minimize massive refactoring needed for `products` state name
       setLoadingUsers(false);
+      setLoadingProducts(false); // We skip fetching actual products
     }, (error) => {
       console.error("Error fetching users:", error);
       setLoadingUsers(false);
+      setLoadingProducts(false);
     });
 
     return () => {
-      unsubscribeProducts();
       unsubscribeUsers();
     };
   }, [profile]);
@@ -131,19 +123,15 @@ export function Catalog() {
     const containsStr = (src: string, target: string) => (src || '').toLowerCase().includes(target);
     const exactStr = (src: string, target: string) => (src || '').toLowerCase() === target;
 
-    // Filter Products (Real)
-    const activeProducts = products.filter(p => {
-      const owner = usersInfo[p.produtorId];
-      if (!owner) return false; // Hide orphans
-      
+    // Filter Producers (Stored in products state)
+    const activeProducers = products.filter(owner => {
       const locStr = `${owner.city || ''}, ${owner.state || ''}`.toLowerCase();
-      
       let pass = true;
-      if (filterText && !containsStr(owner.name, filterText) && !containsStr(p.cheeseType, filterText)) pass = false;
+      if (filterText && !containsStr(owner.name, filterText)) pass = false;
       if (filterLoc && !locStr.includes(filterLoc)) pass = false;
-      if (cheeseTypeSearch !== 'todos' && !exactStr(p.cheeseType, cheeseTypeSearch.toLowerCase())) pass = false;
-      if (packagingSearch === 'com' && p.packagingType !== 'com-rotulo') pass = false;
-      if (packagingSearch === 'sem' && p.packagingType !== 'sem-rotulo') pass = false;
+      if (cheeseTypeSearch !== 'todos' && !(owner.cheeseTypes || []).some((t: string) => exactStr(t, cheeseTypeSearch.toLowerCase()))) pass = false;
+      if (packagingSearch === 'com' && exactStr(owner.packaging, 'Sem Rótulo')) pass = false;
+      if (packagingSearch === 'sem' && exactStr(owner.packaging, 'Com Rótulo')) pass = false;
       if (freightSearch === 'gratis' && owner.chargesFreight) pass = false;
       if (freightSearch === 'pago' && !owner.chargesFreight) pass = false;
       
@@ -186,7 +174,7 @@ export function Catalog() {
     });
 
     return { 
-      filteredProducts: [...activeProducts, ...mockProds], 
+      filteredProducts: [...activeProducers, ...mockProds], 
       filteredWholesalers: [...activeWholesalers, ...mockWholesalersFiltered] 
     };
   }, [products, wholesalers, usersInfo, textSearch, locationSearch, cheeseTypeSearch, packagingSearch, freightSearch]);
@@ -216,35 +204,6 @@ export function Catalog() {
               <strong className="text-app-accent">Os dados atuais da vitrine são para efeito de demonstração</strong>, os dados reais de Produtores e Atacadistas estarão disponíveis em breve para negociação.
             </p>
           </div>
-          
-          {profile?.role === 'PRODUTOR' && (
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <div className="relative group mt-4 md:mt-0">
-                  <Button 
-                    disabled={profile.kycStatus === 'PENDENTE'}
-                    className="bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Publicar Queijo
-                  </Button>
-                  {profile.kycStatus === 'PENDENTE' && (
-                    <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-black text-white text-xs p-2 rounded z-50 text-center">
-                      Complete seu perfil para habilitar a publicação de produtos.
-                    </div>
-                  )}
-                </div>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px] bg-[#d36101] border-none text-white shadow-2xl rounded-2xl" overlayClassName="bg-[#4a2000]/80 backdrop-blur-sm">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">Publicar Queijo</DialogTitle>
-                  <DialogDescription className="text-white/80">
-                    Preencha os detalhes do seu produto para listá-lo no catálogo.
-                  </DialogDescription>
-                </DialogHeader>
-                <AddProductForm onSuccess={() => setIsAddDialogOpen(false)} />
-              </DialogContent>
-            </Dialog>
-          )}
         </div>
       </div>
 
@@ -411,7 +370,43 @@ export function Catalog() {
                 </div>
               </div>
             ) : (
-              <ProductCard key={product.id} product={product} role={profile?.role} owner={usersInfo[product.produtorId]} currentUserId={profile?.id} />
+              <div key={product.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+                <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
+                  <img src={product.imagem || (product.images && product.images[0]) || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600'} alt={product.empresa || product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
+                    <Star className="w-3 h-3 fill-current" /> {product.avaliacao || '5.0'}
+                  </div>
+                </div>
+                <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
+                  <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white flex items-center gap-2">
+                    <Store className="w-5 h-5 text-app-accent" />
+                    {product.name}
+                  </h3>
+                  <div className="flex flex-wrap gap-1 mb-4">
+                     {product.cheeseTypes?.slice(0, 3).map((c: string) => (
+                       <span key={c} className="bg-white/10 px-2 py-0.5 rounded text-[10px] text-white uppercase tracking-wider">{c}</span>
+                     ))}
+                     {(product.cheeseTypes?.length || 0) > 3 && <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] text-white uppercase tracking-wider">+{product.cheeseTypes.length - 3}</span>}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
+                    <MapPin className="w-4 h-4 text-app-accent" />
+                    <span>{product.city}, {product.state}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
+                    <div>
+                      <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Produzido</span>
+                      <span className="font-bold text-lg text-white">{product.weeklyVolume} kg/sem</span>
+                    </div>
+                    {profile?.id === product.id || profile?.role === 'ADMIN' ? (
+                        <Link to="/perfil">
+                            <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full h-10 px-6 font-bold text-sm">Editar</Button>
+                        </Link>
+                    ) : (
+                        <Button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">Contatar</Button>
+                    )}
+                  </div>
+                </div>
+              </div>
             )
           ))}
           {filteredProducts.length === 0 && (
@@ -532,257 +527,4 @@ function ProductCard({ product, role, owner, currentUserId }: { key?: React.Key,
   );
 }
 
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Camera, Image as ImageIcon, Check, CheckCircle2, Save, Upload, X } from 'lucide-react';
-import { useRef } from 'react';
 
-function AddProductForm({ onSuccess }: { onSuccess: () => void }) {
-  const { profile } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [savingAsDraft, setSavingAsDraft] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const [formData, setFormData] = useState({
-    cheeseType: '',
-    format: '',
-    pricePerKg: '',
-    availableKg: '',
-    packagingType: 'sem-rotulo',
-    paymentMethods: [] as string[],
-    sliceable: 'false',
-    deliveryType: 'entrego'
-  });
-
-  const togglePaymentMethod = (method: string) => {
-    if (method === 'Todos') {
-      if (formData.paymentMethods.length === 4) {
-        setFormData({ ...formData, paymentMethods: [] });
-      } else {
-        setFormData({ ...formData, paymentMethods: ['PIX', 'Dinheiro', 'Cartão', 'Boleto'] });
-      }
-      return;
-    }
-
-    const current = formData.paymentMethods;
-    if (current.includes(method)) {
-      setFormData({ ...formData, paymentMethods: current.filter(m => m !== method) });
-    } else {
-      setFormData({ ...formData, paymentMethods: [...current, method] });
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    if (images.length + files.length > 5) {
-      toast.error('Você pode enviar no máximo 5 imagens.');
-      return;
-    }
-
-    setUploading(true);
-    const storage = getStorage();
-    const newImages = [...images];
-
-    try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const imageRef = storageRef(storage, `products/${profile?.id}/${Date.now()}_${file.name}`);
-        await uploadBytes(imageRef, file);
-        const url = await getDownloadURL(imageRef);
-        newImages.push(url);
-      }
-      setImages(newImages);
-      toast.success('Imagens enviadas com sucesso!');
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao enviar imagens.');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
-  };
-
-  const submitAction = async (isDraft: boolean) => {
-    if (!profile) return;
-    
-    // allow draft if not validated? Let's say yes for now, but not active.
-    if (!isDraft && profile.kycStatus !== 'VALIDADO') {
-      toast.error('Você precisa ter o cadastro validado para publicar anúncios. Tente salvar sem publicar.');
-      return;
-    }
-
-    if (images.length === 0 && !isDraft) {
-      toast.error('Adicione pelo menos 1 imagem para publicar.');
-      return;
-    }
-
-    if (isDraft) setSavingAsDraft(true);
-    else setLoading(true);
-
-    try {
-      await addDoc(collection(db, 'products'), {
-        produtorId: profile.id,
-        cheeseType: formData.cheeseType,
-        format: formData.format,
-        pricePerKg: parseFloat(formData.pricePerKg),
-        availableKg: parseFloat(formData.availableKg),
-        packagingType: formData.packagingType,
-        paymentMethods: formData.paymentMethods,
-        photos: images,
-        active: !isDraft, // false if draft
-        createdAt: serverTimestamp()
-      });
-      toast.success(isDraft ? 'Salvo em rascunhos!' : 'Queijo publicado com sucesso!');
-      onSuccess();
-    } catch (error: any) {
-      console.error(error);
-      toast.error('Erro ao salvar anúncio: ' + error.message);
-    } finally {
-      setLoading(false);
-      setSavingAsDraft(false);
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="cheeseType" className="text-white font-semibold">Tipo de Queijo</Label>
-          <Input id="cheeseType" value={formData.cheeseType} onChange={(e) => setFormData({...formData, cheeseType: e.target.value})} required placeholder="Ex: Canastra, Coalho..." className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="format" className="text-white font-semibold">Formato</Label>
-          <Input id="format" value={formData.format} onChange={(e) => setFormData({...formData, format: e.target.value})} required placeholder="Ex: Barra 1kg..." className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="pricePerKg" className="text-white font-semibold">Preço por Kg (R$)</Label>
-          <Input id="pricePerKg" type="number" step="0.01" min="0" value={formData.pricePerKg} onChange={(e) => setFormData({...formData, pricePerKg: e.target.value})} required className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="availableKg" className="text-white font-semibold">Qtd Disponível (Kg)</Label>
-          <Input id="availableKg" type="number" step="0.1" min="0" value={formData.availableKg} onChange={(e) => setFormData({...formData, availableKg: e.target.value})} required className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-full px-4" />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="packagingType" className="text-white font-semibold">Tipo de Embalagem:</Label>
-          <Select value={formData.packagingType} onValueChange={(v) => setFormData({...formData, packagingType: v})}>
-            <SelectTrigger className="bg-black/20 border-white/20 text-white focus:ring-amber-500 rounded-full px-4"><SelectValue /></SelectTrigger>
-            <SelectContent className="bg-[#a64b00] border-white/20 text-white rounded-2xl shadow-xl" position="popper" sideOffset={4}>
-              <SelectItem value="com-rotulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-xl">Com Rótulo</SelectItem>
-              <SelectItem value="sem-rotulo" className="hover:bg-white/10 focus:bg-white/10 cursor-pointer rounded-xl">Sem Rótulo</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label className="text-white font-semibold">Tipos de Pagamentos Aceitos</Label>
-          <Select value="" onValueChange={togglePaymentMethod}>
-            <SelectTrigger className="bg-black/20 border-white/20 text-white focus:ring-amber-500 rounded-full px-4">
-              <SelectValue placeholder={formData.paymentMethods.length > 0 ? `${formData.paymentMethods.length} selecionado(s)` : 'Selecione...'} />
-            </SelectTrigger>
-            <SelectContent className="bg-[#a64b00] border-white/20 text-white rounded-2xl shadow-xl" position="popper" sideOffset={4}>
-              {['Todos', 'PIX', 'Dinheiro', 'Cartão', 'Boleto'].map((method) => (
-                <div 
-                  key={method} 
-                  className="relative flex w-full cursor-pointer select-none items-center rounded-xl py-2 pl-8 pr-2 text-sm outline-none hover:bg-white/10 focus:bg-white/10 transition-colors"
-                  onClick={() => togglePaymentMethod(method)}
-                >
-                  <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
-                    {(method === 'Todos' ? formData.paymentMethods.length === 4 : formData.paymentMethods.includes(method)) && (
-                      <Check className="h-4 w-4 text-white" />
-                    )}
-                  </span>
-                  {method}
-                </div>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label className="text-white font-semibold">Fotos do Queijo (Até 5)</Label>
-        <div className="grid grid-cols-5 gap-3">
-          {images.map((img, index) => (
-            <div key={index} className="relative aspect-square rounded-md overflow-hidden bg-black/20 border border-white/20">
-              <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(index)}
-                className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-                title="Remover"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </div>
-          ))}
-          {images.length < 5 && (
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className="aspect-square rounded-md border border-dashed border-white/30 flex flex-col items-center justify-center text-white/50 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-50"
-            >
-              <Camera className="w-5 h-5 mb-1" />
-              <span className="text-[10px] leading-tight text-center px-1">
-                {uploading ? 'Enviando...' : 'Add Foto'}
-              </span>
-            </button>
-          )}
-        </div>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          ref={fileInputRef}
-          onChange={handleImageUpload}
-        />
-      </div>
-
-      <DialogFooter className="pt-4 flex flex-col sm:flex-row gap-2 sm:gap-0 mt-4">
-        <Button 
-          type="button" 
-          variant="outline" 
-          className="border-none bg-[#4a2000] text-white hover:bg-[#3a1800] hover:text-white rounded-full font-bold mr-auto" 
-          onClick={onSuccess}
-        >
-          Cancelar
-        </Button>
-        <div className="flex gap-2">
-          <Button 
-            type="button" 
-            variant="outline"
-            className="border-white/20 bg-black/20 text-white hover:bg-black/40 hover:text-white rounded-full font-bold" 
-            onClick={() => submitAction(true)}
-            disabled={loading || savingAsDraft}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {savingAsDraft ? 'Salvando...' : 'Salvar Sem Publicar'}
-          </Button>
-          <Button 
-            type="button"
-            className="bg-[#ffcb05] text-[#4a2000] hover:bg-[#ffb000] rounded-full font-bold" 
-            onClick={() => submitAction(false)}
-            disabled={loading || savingAsDraft}
-          >
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            {loading ? 'Publicando...' : 'Publicar Agora'}
-          </Button>
-        </div>
-      </DialogFooter>
-    </div>
-  );
-}

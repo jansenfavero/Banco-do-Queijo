@@ -14,27 +14,57 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { Upload, X, MapPin, Package, Truck, Image as ImageIcon, User, ShieldCheck } from 'lucide-react';
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
+import { Switch } from '../components/ui/switch';
+
 export function Profile() {
   const { profile } = useAuth();
+  const [isPublic, setIsPublic] = useState(profile?.isPublic !== false);
   
   if (!profile) {
     return <div>Carregando...</div>;
   }
 
+  const handleTogglePublic = async (checked: boolean) => {
+    setIsPublic(checked);
+    try {
+      await updateDoc(doc(db, 'users', profile.id), { isPublic: checked });
+      toast.success(`Perfil agora está ${checked ? 'Ativo' : 'Oculto'}.`);
+    } catch (e) {
+      toast.error('Erro ao atualizar status.');
+      setIsPublic(!checked);
+    }
+  };
+
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
-      <div className="flex items-center gap-4">
-        <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
-          <User className="h-8 w-8 text-app-accent" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+            <User className="h-8 w-8 text-app-accent" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+              Meu Perfil
+            </h1>
+            <p className="text-white/70 text-sm md:text-base">
+              Gerencie suas informações pessoais e de comercialização.
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-            Meu Perfil
-          </h1>
-          <p className="text-white/70 text-sm md:text-base">
-            Gerencie suas informações pessoais e de comercialização.
-          </p>
-        </div>
+
+        {profile.role !== 'ADMIN' && (
+          <div className="flex items-center gap-4 bg-black/20 p-4 rounded-xl border border-white/10 shrink-0">
+            <div>
+              <p className="text-white font-bold mb-0.5">{isPublic ? 'Ativo na Vitrine' : 'Perfil Oculto'}</p>
+              <p className="text-xs text-white/50 max-w-[200px]">Deixe no modo ativo para seu perfil aparecer na Vitrine, ou Oculte para não aparecer.</p>
+            </div>
+            <Switch 
+              checked={isPublic} 
+              onCheckedChange={handleTogglePublic} 
+              className="data-[state=checked]:bg-app-accent" 
+            />
+          </div>
+        )}
       </div>
       
       {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (
@@ -345,7 +375,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
     setLoading(true);
     try {
-      await updateDoc(doc(db, 'users', profile.id), {
+      const updates: any = {
         name: formData.name,
         phone: formData.phone,
         cpfCnpj: formData.cpfCnpj,
@@ -360,7 +390,13 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         address: formData.address,
         images: images,
         kycStatus: 'VALIDADO' // Automatically validated since we now require all info
-      });
+      };
+      
+      if (profile.isPublic === undefined) {
+        updates.isPublic = true;
+      }
+
+      await updateDoc(doc(db, 'users', profile.id), updates);
       toast.success('Perfil atualizado e ativado com sucesso!');
       setIsDialogOpen(false);
     } catch (error) {
