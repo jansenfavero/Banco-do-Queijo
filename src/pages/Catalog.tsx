@@ -142,8 +142,8 @@ export function Catalog() {
       if (filterText && !containsStr(owner.name, filterText) && !containsStr(p.cheeseType, filterText)) pass = false;
       if (filterLoc && !locStr.includes(filterLoc)) pass = false;
       if (cheeseTypeSearch !== 'todos' && !exactStr(p.cheeseType, cheeseTypeSearch.toLowerCase())) pass = false;
-      if (packagingSearch === 'com' && !p.vacuumPacked) pass = false;
-      if (packagingSearch === 'sem' && p.vacuumPacked) pass = false;
+      if (packagingSearch === 'com' && p.packagingType !== 'com-rotulo') pass = false;
+      if (packagingSearch === 'sem' && p.packagingType !== 'sem-rotulo') pass = false;
       if (freightSearch === 'gratis' && owner.chargesFreight) pass = false;
       if (freightSearch === 'pago' && !owner.chargesFreight) pass = false;
       
@@ -513,11 +513,11 @@ function ProductCard({ product, role, owner, currentUserId }: { key?: React.Key,
           </div>
           <div className="flex justify-between border-b border-white/5 pb-2">
             <span className="text-white/70 font-semibold">Embalagem:</span>
-            <span className="font-bold text-white">{product.vacuumPacked ? 'Vácuo' : 'Normal'}</span>
+            <span className="font-bold text-white">{product.packagingType === 'com-rotulo' ? 'Com Rótulo' : 'Sem Rótulo'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-white/70 font-semibold">Rótulo:</span>
-            <span className="font-bold text-white">{product.labelType === 'COMPLETO_SIE' ? 'SIE' : 'Simples'}</span>
+            <span className="text-white/70 font-semibold">Pagamento:</span>
+            <span className="font-bold text-white text-xs text-right max-w-[120px] truncate">{product.paymentMethods?.join(', ') || 'A combinar'}</span>
           </div>
         </div>
       </CardContent>

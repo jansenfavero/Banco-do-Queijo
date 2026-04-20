@@ -72,7 +72,17 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
     cpfCnpj: (profile.cpfCnpj && profile.cpfCnpj !== '00000000000') ? profile.cpfCnpj : '',
     weeklyVolume: profile.weeklyVolume || '',
     packaging: profile.packaging || '',
-    cheeseTypes: profile.cheeseTypes || [],
+    cheeseTypes: (profile.cheeseTypes || []).map((c: string) => {
+      const lower = c.toLowerCase();
+      if (lower === 'qualho' || lower === 'coalho') return 'Coalho';
+      if (lower === 'mussarela') return 'Mussarela';
+      if (lower === 'prato') return 'Prato';
+      if (lower === 'provolone') return 'Provolone';
+      if (lower === 'parmesao' || lower === 'parmesão') return 'Parmesão';
+      if (lower === 'colonial') return 'Colonial';
+      if (lower === 'requeijao' || lower === 'requeijão') return 'Requeijão';
+      return c;
+    }),
     chargesFreight: profile.chargesFreight ? 'SIM' : 'NAO',
     freightType: profile.freightType || 'FIXO',
     freightValue: profile.freightValue || '',
@@ -405,7 +415,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                   {isProdutor ? 'Tipos de Queijo Produzidos' : 'Tipos de Queijo que Compra'}
                 </Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {['qualho', 'mussarela', 'prato', 'provolone', 'parmesao', 'colonial', 'requeijao'].map((type) => (
+                  {['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'].map((type) => (
                     <div key={type} className="flex items-center space-x-2">
                       <Checkbox 
                         id={`edit-${type}`}
@@ -413,7 +423,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                         onCheckedChange={(checked) => handleCheckboxChange(type, checked as boolean)}
                         className="border-white/30 data-[state=checked]:bg-app-accent data-[state=checked]:text-app-bgDark rounded"
                       />
-                      <Label htmlFor={`edit-${type}`} className="text-sm font-medium capitalize text-white/90">{type}</Label>
+                      <Label htmlFor={`edit-${type}`} className="text-sm font-medium text-white/90">{type}</Label>
                     </div>
                   ))}
                 </div>
@@ -653,7 +663,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
           <div className="space-y-6">
             <div className="bg-[#4a2000] rounded-[20px] p-6 border border-white/10 shadow-sm">
               <h3 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Package className="w-4 h-4 text-app-accent" /> Secao de Comercialização
+                <Package className="w-4 h-4 text-app-accent" /> Seção de Comercialização
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
