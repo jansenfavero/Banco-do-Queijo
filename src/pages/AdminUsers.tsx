@@ -4,13 +4,17 @@ import { db } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Shield, ShieldAlert, ShieldCheck, Users, Store } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function AdminUsers() {
   const { profile } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Derived metrics
+  const producerCount = users.filter(u => u.role === 'PRODUTOR').length;
+  const wholesalerCount = users.filter(u => u.role === 'ATACADISTA').length;
 
   useEffect(() => {
     if (profile?.role !== 'ADMIN') return;
@@ -73,6 +77,27 @@ export function AdminUsers() {
           <p className="text-white/70 text-sm md:text-base">
             Gerencie o nível de acesso e o status de todos os usuários da plataforma.
           </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-[#4a2000] p-6 rounded-[24px] border border-white/10 flex items-center gap-4">
+            <div className="p-4 bg-[#703200] rounded-full text-white">
+                <Store className="w-8 h-8" />
+            </div>
+            <div>
+                <p className="text-white/70 text-sm uppercase tracking-wider font-semibold">Total de Produtores</p>
+                <p className="text-4xl font-bold text-white">{loading ? '-' : producerCount}</p>
+            </div>
+        </div>
+        <div className="bg-[#4a2000] p-6 rounded-[24px] border border-white/10 flex items-center gap-4">
+            <div className="p-4 bg-[#703200] rounded-full text-app-accent">
+                <Users className="w-8 h-8" />
+            </div>
+            <div>
+                <p className="text-white/70 text-sm uppercase tracking-wider font-semibold">Total de Atacadistas</p>
+                <p className="text-4xl font-bold text-white">{loading ? '-' : wholesalerCount}</p>
+            </div>
         </div>
       </div>
 

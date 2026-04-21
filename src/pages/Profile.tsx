@@ -399,7 +399,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       toast.error('Selecione pelo menos um tipo de queijo.');
       return;
     }
-    if (images.length === 0) {
+    if (images.length === 0 && (!isProdutor || Object.values(cheeseImages).every((arr) => arr.length === 0))) {
       toast.error(`Pelo menos uma foto ${isProdutor ? 'do seu queijo/comércio' : 'do seu comércio'} é obrigatória.`);
       return;
     }
