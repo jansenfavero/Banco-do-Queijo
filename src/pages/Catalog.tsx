@@ -10,15 +10,74 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Store, Slice, Info, ArrowRight } from 'lucide-react';
-
-const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
+import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
 
 import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
 import { Link } from 'react-router-dom';
-import { Star, MapPin } from 'lucide-react';
 
 import { CatalogMetrics } from './CatalogMetrics';
+
+function CardImageCarousel({ images, alt, onImageClick }: { images: string[], alt: string, onImageClick: (images: string[], index: number) => void }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentIndex(c => c === 0 ? images.length - 1 : c - 1);
+  };
+
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentIndex(c => c === images.length - 1 ? 0 : c + 1);
+  };
+
+  return (
+    <div className="w-full h-full relative group/carousel h-full overflow-hidden">
+      <img 
+        src={images[currentIndex]} 
+        alt={alt} 
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer" 
+        loading="lazy" 
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onImageClick(images, currentIndex); }}
+      />
+      
+      {images.length > 1 && (
+        <>
+          <button 
+            type="button"
+            onClick={prev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-1.5 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity hover:bg-black/80 z-20"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button 
+            type="button"
+            onClick={next}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-1.5 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity hover:bg-black/80 z-20"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+            {images.map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full shadow-sm ${i === currentIndex ? 'bg-app-accent' : 'bg-white/60'}`} />
+            ))}
+          </div>
+        </>
+      )}
+
+      <button
+        type="button"
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onImageClick(images, currentIndex); }}
+        className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm text-white p-2 rounded-md opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black/80 hover:text-app-accent z-20"
+        title="Expandir Imagem"
+      >
+        <Maximize2 className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
 
 export function Catalog() {
   const { profile } = useAuth();
@@ -30,6 +89,16 @@ export function Catalog() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   
   const [activeTab, setActiveTab] = useState<'produtores' | 'atacadistas'>('produtores');
+
+  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState<number>(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const openLightbox = (images: string[], index: number = 0) => {
+    setLightboxImages(images);
+    setLightboxIndex(index);
+    setIsLightboxOpen(true);
+  };
   
   // Custom Searchable Dropdown for Location
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
@@ -52,7 +121,9 @@ export function Catalog() {
   }, [usersInfo]);
 
   const filteredLocations = React.useMemo(() => {
-    return uniqueLocations.filter(loc => loc.toLowerCase().includes(locationSearch.toLowerCase()));
+    const normalizeStr = (str: string) => (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const searchNormalized = normalizeStr(locationSearch);
+    return uniqueLocations.filter(loc => normalizeStr(loc).includes(searchNormalized));
   }, [uniqueLocations, locationSearch]);
 
   const loading = loadingProducts || loadingUsers;
@@ -116,24 +187,38 @@ export function Catalog() {
 
   // SMARTER COMBINED FILTER LOGIC
   const { filteredProducts, filteredWholesalers } = React.useMemo(() => {
-    const filterText = textSearch.toLowerCase().trim();
-    const filterLoc = locationSearch.toLowerCase().trim();
+    // Normalize string handling (remove accents and make lowercase)
+    const normalizeStr = (str: string) => (str || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const filterText = normalizeStr(textSearch).trim();
+    const filterLoc = normalizeStr(locationSearch).trim();
     
-    // Normalize string handling
-    const containsStr = (src: string, target: string) => (src || '').toLowerCase().includes(target);
-    const exactStr = (src: string, target: string) => (src || '').toLowerCase() === target;
+    const containsStr = (src: string, target: string) => normalizeStr(src).includes(target);
+    const exactStr = (src: string, target: string) => normalizeStr(src) === target;
 
-    // Filter Producers (Stored in products state)
-    const activeProducers = products.filter(owner => {
-      const locStr = `${owner.city || ''}, ${owner.state || ''}`.toLowerCase();
+    // Filter Producers and Unroll into separate cards per cheese (Stored in products state)
+    const activeProducers = products.flatMap(owner => {
+       return (owner.cheeseTypes || []).map((cheeseType: string) => {
+         return {
+           ...owner,
+           _isRealProdCard: true,
+           _displayCheese: cheeseType,
+           _displayPrice: owner.cheesePrices?.[cheeseType] || 0,
+           _uniqueId: `${owner.id}-${cheeseType}`
+         };
+       });
+    }).filter(item => {
+      const locStr = `${item.city || ''}, ${item.state || ''}`;
       let pass = true;
-      if (filterText && !containsStr(owner.name, filterText)) pass = false;
-      if (filterLoc && !locStr.includes(filterLoc)) pass = false;
-      if (cheeseTypeSearch !== 'todos' && !(owner.cheeseTypes || []).some((t: string) => exactStr(t, cheeseTypeSearch.toLowerCase()))) pass = false;
-      if (packagingSearch === 'com' && exactStr(owner.packaging, 'Sem Rótulo')) pass = false;
-      if (packagingSearch === 'sem' && exactStr(owner.packaging, 'Com Rótulo')) pass = false;
-      if (freightSearch === 'gratis' && owner.chargesFreight) pass = false;
-      if (freightSearch === 'pago' && !owner.chargesFreight) pass = false;
+      if (filterText && !containsStr(item.name, filterText)) pass = false;
+      if (filterLoc && !containsStr(locStr, filterLoc)) pass = false;
+      if (cheeseTypeSearch !== 'todos' && !exactStr(item._displayCheese, normalizeStr(cheeseTypeSearch))) pass = false;
+      
+      if (packagingSearch === 'com' && !exactStr(item.packaging, 'Com Rótulo') && !exactStr(item.packaging, 'Ambos') && !exactStr(item.packaging, 'Com Rotulo')) pass = false;
+      if (packagingSearch === 'sem' && !exactStr(item.packaging, 'Sem Rótulo') && !exactStr(item.packaging, 'Ambos') && !exactStr(item.packaging, 'Sem Rotulo')) pass = false;
+      if (packagingSearch === 'ambos' && !exactStr(item.packaging, 'Ambos')) pass = false;
+
+      if (freightSearch === 'gratis' && item.chargesFreight) pass = false;
+      if (freightSearch === 'pago' && !item.chargesFreight) pass = false;
       
       return pass;
     });
@@ -143,21 +228,24 @@ export function Catalog() {
       let pass = true;
       if (filterText && !containsStr(p.nome, filterText) && !containsStr(p.produtor, filterText)) pass = false;
       if (filterLoc && !containsStr(p.local, filterLoc)) pass = false;
-      if (cheeseTypeSearch !== 'todos' && !exactStr(p.categoria, cheeseTypeSearch.toLowerCase())) pass = false;
+      if (cheeseTypeSearch !== 'todos' && !exactStr(p.categoria, normalizeStr(cheeseTypeSearch))) pass = false;
       // Mocks have no packaging or freight properties, assume they match or skip filtering
       return pass;
     });
     
     // Filter Wholesalers (Real)
     const activeWholesalers = wholesalers.filter(w => {
-      const locStr = `${w.city || ''}, ${w.state || ''}`.toLowerCase();
+      const locStr = `${w.city || ''}, ${w.state || ''}`;
       
       let pass = true;
       if (filterText && !containsStr(w.name, filterText)) pass = false;
-      if (filterLoc && !locStr.includes(filterLoc)) pass = false;
-      if (cheeseTypeSearch !== 'todos' && !(w.cheeseTypes || []).some((t: string) => exactStr(t, cheeseTypeSearch.toLowerCase()))) pass = false;
-      if (packagingSearch === 'com' && exactStr(w.packaging, 'A granel')) pass = false;
-      if (packagingSearch === 'sem' && !exactStr(w.packaging, 'A granel')) pass = false;
+      if (filterLoc && !containsStr(locStr, filterLoc)) pass = false;
+      if (cheeseTypeSearch !== 'todos' && !(w.cheeseTypes || []).some((t: string) => exactStr(t, normalizeStr(cheeseTypeSearch)))) pass = false;
+      
+      if (packagingSearch === 'com' && !exactStr(w.packaging, 'Com Rótulo') && !exactStr(w.packaging, 'Ambos') && !exactStr(w.packaging, 'Com Rotulo')) pass = false;
+      if (packagingSearch === 'sem' && !exactStr(w.packaging, 'Sem Rótulo') && !exactStr(w.packaging, 'Ambos') && !exactStr(w.packaging, 'Sem Rotulo')) pass = false;
+      if (packagingSearch === 'ambos' && !exactStr(w.packaging, 'Ambos')) pass = false;
+
       if (freightSearch === 'gratis' && w.chargesFreight) pass = false;
       if (freightSearch === 'pago' && !w.chargesFreight) pass = false;
 
@@ -341,13 +429,17 @@ export function Catalog() {
             product.produtor ? ( // Assume it's a MOCK product if it has 'produtor'
               <div key={product.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
                 <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
-                  <img src={product.imagem} alt={product.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute top-3 left-3 flex gap-2">
+                  <CardImageCarousel 
+                    images={[product.imagem]} 
+                    alt={product.nome} 
+                    onImageClick={openLightbox}
+                  />
+                  <div className="absolute top-3 left-3 flex gap-2 pointer-events-none">
                     <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-app-accent/20">
                       {product.categoria}
                     </span>
                   </div>
-                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm pointer-events-none">
                     <Star className="w-3 h-3 fill-current" /> {product.avaliacao}
                   </div>
                 </div>
@@ -370,32 +462,34 @@ export function Catalog() {
                 </div>
               </div>
             ) : (
-              <div key={product.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+              <div key={product._uniqueId || product.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
                 <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
-                  <img src={product.imagem || (product.images && product.images[0]) || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600'} alt={product.empresa || product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
+                  <CardImageCarousel 
+                    images={product.images?.length ? product.images : [product.imagem || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600']} 
+                    alt={product.empresa || product.name} 
+                    onImageClick={openLightbox}
+                  />
+                  <div className="absolute top-3 left-3 flex gap-2 pointer-events-none">
+                    <span className="px-2 py-1 bg-[#4a2000]/90 backdrop-blur-sm rounded-md text-xs font-bold text-app-accent shadow-sm capitalize border border-app-accent/20">
+                      {product._displayCheese}
+                    </span>
+                  </div>
+                  <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm pointer-events-none">
                     <Star className="w-3 h-3 fill-current" /> {product.avaliacao || '5.0'}
                   </div>
                 </div>
                 <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
-                  <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white flex items-center gap-2">
-                    <Store className="w-5 h-5 text-app-accent" />
-                    {product.name}
-                  </h3>
-                  <div className="flex flex-wrap gap-1 mb-4">
-                     {product.cheeseTypes?.slice(0, 3).map((c: string) => (
-                       <span key={c} className="bg-white/10 px-2 py-0.5 rounded text-[10px] text-white uppercase tracking-wider">{c}</span>
-                     ))}
-                     {(product.cheeseTypes?.length || 0) > 3 && <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] text-white uppercase tracking-wider">+{product.cheeseTypes.length - 3}</span>}
-                  </div>
+                  <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">Queijo {product._displayCheese}</h3>
+                  <p className="text-sm text-white/70 mb-4 font-medium flex-1 cursor-help group-hover/tooltip hover:text-white" title={`Produção Semanal: ${product.weeklyVolume} kg/sem | Embalagem: ${product.packaging}`}>{product.name}</p>
+                  
                   <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
                     <MapPin className="w-4 h-4 text-app-accent" />
                     <span>{product.city}, {product.state}</span>
                   </div>
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
                     <div>
-                      <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Produzido</span>
-                      <span className="font-bold text-lg text-white">{product.weeklyVolume} kg/sem</span>
+                      <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
+                      <span className="font-bold text-xl text-white">R$ {Number(product._displayPrice || 0).toFixed(2)}</span>
                     </div>
                     {profile?.id === product.id || profile?.role === 'ADMIN' ? (
                         <Link to="/perfil">
@@ -418,8 +512,12 @@ export function Catalog() {
           {filteredWholesalers.map((wholesaler) => (
              <div key={wholesaler.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
-                <img src={wholesaler.imagem || (wholesaler.images && wholesaler.images[0]) || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600'} alt={wholesaler.empresa || wholesaler.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
-                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm">
+                <CardImageCarousel 
+                  images={wholesaler.images?.length ? wholesaler.images : [wholesaler.imagem || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600']} 
+                  alt={wholesaler.empresa || wholesaler.name} 
+                  onImageClick={openLightbox}
+                />
+                <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-app-accent rounded-md text-xs font-bold text-app-bgDark shadow-sm pointer-events-none">
                   <Star className="w-3 h-3 fill-current" /> {wholesaler.avaliacao || '5.0'}
                 </div>
               </div>
@@ -447,6 +545,52 @@ export function Catalog() {
           ))}
           {filteredWholesalers.length === 0 && (
             <div className="col-span-full flex justify-center py-10 text-white/50 font-medium">Nenhum comprador encontrado com os filtros atuais.</div>
+          )}
+        </div>
+      )}
+
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200">
+          <button 
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-4 right-4 text-white hover:text-app-accent bg-black/50 p-2 rounded-full transition-colors z-50"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          {lightboxImages.length > 1 && (
+            <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setLightboxIndex(c => c === 0 ? lightboxImages.length - 1 : c - 1); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 p-3 rounded-full transition-colors z-50"
+              >
+                <ChevronLeft className="w-8 h-8" />
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setLightboxIndex(c => c === lightboxImages.length - 1 ? 0 : c + 1); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 p-3 rounded-full transition-colors z-50"
+              >
+                <ChevronRight className="w-8 h-8" />
+              </button>
+            </>
+          )}
+
+          <img 
+            src={lightboxImages[lightboxIndex]} 
+            alt="Expanded View" 
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+          />
+          
+          {lightboxImages.length > 1 && (
+             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-50 bg-black/50 px-4 py-2 rounded-full">
+               {lightboxImages.map((_, i) => (
+                 <button 
+                   key={i} 
+                   onClick={() => setLightboxIndex(i)}
+                   className={`w-2.5 h-2.5 rounded-full transition-colors ${i === lightboxIndex ? 'bg-app-accent' : 'bg-white/50 hover:bg-white/80'}`} 
+                 />
+               ))}
+             </div>
           )}
         </div>
       )}

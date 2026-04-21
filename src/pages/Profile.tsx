@@ -113,6 +113,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       if (lower === 'requeijao' || lower === 'requeijão') return 'Requeijão';
       return c;
     }),
+    cheesePrices: profile.cheesePrices || {} as Record<string, string>,
     chargesFreight: profile.chargesFreight ? 'SIM' : 'NAO',
     freightType: profile.freightType || 'FIXO',
     freightValue: profile.freightValue || '',
@@ -265,8 +266,24 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
     if (checked) {
       setFormData({ ...formData, cheeseTypes: [...formData.cheeseTypes, type] });
     } else {
-      setFormData({ ...formData, cheeseTypes: formData.cheeseTypes.filter((t: string) => t !== type) });
+      const newPrices = { ...formData.cheesePrices };
+      delete newPrices[type];
+      setFormData({ 
+        ...formData, 
+        cheeseTypes: formData.cheeseTypes.filter((t: string) => t !== type),
+        cheesePrices: newPrices 
+      });
     }
+  };
+
+  const handlePriceChange = (type: string, value: string) => {
+    setFormData({
+      ...formData,
+      cheesePrices: {
+        ...formData.cheesePrices,
+        [type]: value
+      }
+    });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -373,6 +390,15 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         return;
     }
 
+    if (isProdutor) {
+      for (const cheese of formData.cheeseTypes) {
+        if (!formData.cheesePrices[cheese] || Number(formData.cheesePrices[cheese]) <= 0) {
+          toast.error(`Por favor, informe o preço válido para o queijo ${cheese}.`);
+          return;
+        }
+      }
+    }
+
     setLoading(true);
     try {
       const updates: any = {
@@ -387,6 +413,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         freightType: formData.freightType,
         freightValue: formData.chargesFreight === 'SIM' ? Number(formData.freightValue) : 0,
         cheeseTypes: formData.cheeseTypes,
+        cheesePrices: formData.cheesePrices,
         address: formData.address,
         images: images,
         kycStatus: 'VALIDADO' // Automatically validated since we now require all info
@@ -448,18 +475,32 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
               <div className="space-y-4">
                 <Label className="text-white font-semibold">
-                  {isProdutor ? 'Tipos de Queijo Produzidos' : 'Tipos de Queijo que Compra'}
+                  {isProdutor ? 'Tipos de Queijo Produzidos e Preço (R$/kg)' : 'Tipos de Queijo que Compra'}
                 </Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'].map((type) => (
-                    <div key={type} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`edit-${type}`}
-                        checked={formData.cheeseTypes.includes(type)}
-                        onCheckedChange={(checked) => handleCheckboxChange(type, checked as boolean)}
-                        className="border-white/30 data-[state=checked]:bg-app-accent data-[state=checked]:text-app-bgDark rounded"
-                      />
-                      <Label htmlFor={`edit-${type}`} className="text-sm font-medium text-white/90">{type}</Label>
+                    <div key={type} className="flex flex-col space-y-2 p-3 bg-black/20 border border-white/10 rounded-xl">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`edit-${type}`}
+                          checked={formData.cheeseTypes.includes(type)}
+                          onCheckedChange={(checked) => handleCheckboxChange(type, checked as boolean)}
+                          className="border-white/30 data-[state=checked]:bg-app-accent data-[state=checked]:text-app-bgDark rounded mt-0.5"
+                        />
+                        <Label htmlFor={`edit-${type}`} className="text-sm font-bold text-white/90">{type}</Label>
+                      </div>
+                      {formData.cheeseTypes.includes(type) && isProdutor && (
+                         <div className="pt-1">
+                           <Input
+                             type="number"
+                             step="0.01"
+                             placeholder="Preço R$/kg"
+                             value={formData.cheesePrices[type] || ''}
+                             onChange={(e) => handlePriceChange(type, e.target.value)}
+                             className="bg-black/40 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-md h-9 text-sm px-3"
+                           />
+                         </div>
+                      )}
                     </div>
                   ))}
                 </div>
