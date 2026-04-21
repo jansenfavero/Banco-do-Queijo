@@ -113,7 +113,19 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       if (lower === 'requeijao' || lower === 'requeijão') return 'Requeijão';
       return c;
     }),
-    cheesePrices: profile.cheesePrices || {} as Record<string, string>,
+    cheesePrices: (() => {
+      const prices = profile.cheesePrices || {};
+      const formatted: Record<string, string> = {};
+      for (const [key, value] of Object.entries(prices)) {
+        if (typeof value === 'number') {
+           // format as pt-BR currency without symbol
+           formatted[key] = value.toFixed(2).replace('.', ',');
+        } else {
+           formatted[key] = value as string;
+        }
+      }
+      return formatted;
+    })(),
     chargesFreight: profile.chargesFreight ? 'SIM' : 'NAO',
     freightType: profile.freightType || 'FIXO',
     freightValue: profile.freightValue || '',
@@ -132,6 +144,15 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const formatCurrency = (val: string) => {
+    let v = val.replace(/\D/g, "");
+    if (v === "") return "";
+    v = (parseInt(v) / 100).toFixed(2);
+    v = v.replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    return v;
+  };
 
   const formatCPF = (val: string) => val.replace(/\D/g, "").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})/, "$1-$2").replace(/(-\d{2})\d+?$/, "$1");
   const formatCNPJ = (val: string) => val.replace(/\D/g, "").replace(/(\d{2})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1/$2").replace(/(\d{4})(\d{1,2})/, "$1-$2").replace(/(-\d{2})\d+?$/, "$1");
@@ -392,7 +413,8 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
     if (isProdutor) {
       for (const cheese of formData.cheeseTypes) {
-        if (!formData.cheesePrices[cheese] || Number(formData.cheesePrices[cheese]) <= 0) {
+        const rawValue = formData.cheesePrices[cheese] ? formData.cheesePrices[cheese].toString().replace(/\./g, "").replace(",", ".") : '0';
+        if (!formData.cheesePrices[cheese] || Number(rawValue) <= 0) {
           toast.error(`Por favor, informe o preço válido para o queijo ${cheese}.`);
           return;
         }
@@ -401,6 +423,11 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
     setLoading(true);
     try {
+      const parsedCheesePrices: Record<string, number> = {};
+      for (const cheese of Object.keys(formData.cheesePrices)) {
+        parsedCheesePrices[cheese] = Number(formData.cheesePrices[cheese].toString().replace(/\./g, "").replace(",", "."));
+      }
+
       const updates: any = {
         name: formData.name,
         phone: formData.phone,
@@ -413,7 +440,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         freightType: formData.freightType,
         freightValue: formData.chargesFreight === 'SIM' ? Number(formData.freightValue) : 0,
         cheeseTypes: formData.cheeseTypes,
-        cheesePrices: formData.cheesePrices,
+        cheesePrices: parsedCheesePrices,
         address: formData.address,
         images: images,
         kycStatus: 'VALIDADO' // Automatically validated since we now require all info
@@ -492,11 +519,10 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                       {formData.cheeseTypes.includes(type) && isProdutor && (
                          <div className="pt-1">
                            <Input
-                             type="number"
-                             step="0.01"
+                             type="text"
                              placeholder="Preço R$/kg"
                              value={formData.cheesePrices[type] || ''}
-                             onChange={(e) => handlePriceChange(type, e.target.value)}
+                             onChange={(e) => handlePriceChange(type, formatCurrency(e.target.value))}
                              className="bg-black/40 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-md h-9 text-sm px-3"
                            />
                          </div>

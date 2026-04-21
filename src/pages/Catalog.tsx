@@ -10,7 +10,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
+import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X, Gavel } from 'lucide-react';
 
 const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
 
@@ -525,7 +525,6 @@ export function Catalog() {
               </div>
               <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
                 <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white flex items-center gap-2">
-                  <Store className="w-5 h-5 text-app-accent" />
                   {wholesaler.empresa || wholesaler.name}
                 </h3>
                 <p className="text-sm text-white/70 mb-4 font-medium flex-1">Comprador: {wholesaler.comprador || wholesaler.name}</p>
@@ -533,13 +532,13 @@ export function Catalog() {
                   <MapPin className="w-4 h-4 text-app-accent" />
                   <span>{wholesaler.local || `${wholesaler.city}, ${wholesaler.state}`}</span>
                 </div>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#4a2000]">
-                  <div>
-                    <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">Volume Demandado</span>
+                <div className="flex flex-col mt-auto pt-4 border-t border-[#4a2000] gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-white/50 uppercase tracking-wider">Volume Demandado</span>
                     <span className="font-bold text-lg text-white">{wholesaler.quantidade || wholesaler.weeklyVolume} kg/mês</span>
                   </div>
-                  <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
-                    Oferecer
+                  <button className="w-full h-11 rounded-xl bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm gap-2 mt-1">
+                    <Gavel className="w-4 h-4" /> Fazer Oferta
                   </button>
                 </div>
               </div>
