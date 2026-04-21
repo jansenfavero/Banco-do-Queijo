@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner';
 import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
 
+const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
+
 import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
 import { Link } from 'react-router-dom';
 
