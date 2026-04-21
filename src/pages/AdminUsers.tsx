@@ -7,7 +7,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Shield, ShieldAlert, ShieldCheck, Users, Store, Phone } from 'lucide-react';
+import { Shield, ShieldAlert, ShieldCheck, Users, Store, Phone, MapPin, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Helper for search text normalization
@@ -28,6 +28,7 @@ export function AdminUsers() {
 
   const [textSearch, setTextSearch] = useState('');
   const [locationSearch, setLocationSearch] = useState('');
+  const [roleSearch, setRoleSearch] = useState('todos');
   const [statusSearch, setStatusSearch] = useState('todos');
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
@@ -76,9 +77,13 @@ export function AdminUsers() {
          if (user.kycStatus !== statusSearch) pass = false;
       }
 
+      if (roleSearch !== 'todos') {
+         if (user.role !== roleSearch) pass = false;
+      }
+
       return pass;
     });
-  }, [users, textSearch, locationSearch, statusSearch]);
+  }, [users, textSearch, locationSearch, statusSearch, roleSearch]);
 
   const filteredProducerCount = filteredUsers.filter(u => u.role === 'PRODUTOR').length;
   const filteredWholesalerCount = filteredUsers.filter(u => u.role === 'ATACADISTA').length;
@@ -169,7 +174,7 @@ export function AdminUsers() {
       </div>
 
       {/* Filtros */}
-      <div className="bg-[#703200] p-5 rounded-[24px] border border-[#d36101] shadow-lg grid grid-cols-1 md:grid-cols-3 gap-5 items-end">
+      <div className="bg-[#703200] p-5 rounded-[24px] border border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-end">
         <div className="flex flex-col gap-1.5 w-full">
           <Label className="text-white/80 font-medium text-sm ml-1">
             Buscar (Nome, CNPJ, Whats...)
@@ -193,7 +198,7 @@ export function AdminUsers() {
                 setIsLocationDropdownOpen(true);
               }}
               onFocus={() => setIsLocationDropdownOpen(true)}
-              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px] h-11 px-4 transition-all"
+              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px] h-11 px-4 transition-all pr-10"
             />
             {isLocationDropdownOpen && (
               <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-[#b85200] border border-[#d36101] rounded-[10px] shadow-2xl z-50 max-h-60 overflow-y-auto flex flex-col">
@@ -221,6 +226,23 @@ export function AdminUsers() {
               </div>
             )}
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5 w-full">
+          <Label className="text-white/80 font-medium text-sm ml-1">Perfil</Label>
+          <Select value={roleSearch} onValueChange={setRoleSearch}>
+            <SelectTrigger className="w-full bg-black/20 border-white/10 text-white rounded-[10px] !h-11 px-4 transition-all focus:ring-app-accent focus:border-app-accent">
+              <SelectValue placeholder="Qualquer" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#b85200] border-[#d36101] text-white rounded-[10px] shadow-xl p-0 overflow-hidden outline-none ring-0">
+              <div className="flex flex-col">
+                <SelectItem value="todos" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Qualquer Perfil</SelectItem>
+                <SelectItem value="PRODUTOR" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Produtor</SelectItem>
+                <SelectItem value="ATACADISTA" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none border-b border-[#a64b00]">Atacadista</SelectItem>
+                <SelectItem value="ADMIN" className="px-4 py-2.5 focus:bg-[#d36101] hover:bg-[#d36101] data-[highlighted]:bg-[#d36101] data-[highlighted]:text-white cursor-pointer rounded-none">Admin</SelectItem>
+              </div>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-1.5 w-full">
@@ -267,12 +289,24 @@ export function AdminUsers() {
                     </div>
                   </div>
                   {user.role !== 'ADMIN' && (
-                    <div className="text-left md:text-right">
-                      <p className="text-sm font-medium text-white flex items-center gap-1 md:justify-end">CNPJ/CPF: <span className="font-mono text-white/50">{user.cpfCnpj}</span></p>
+                    <div className="text-left md:text-right flex flex-col md:items-end gap-1.5 mt-2 md:mt-0">
+                      <p className="text-sm font-medium text-white flex items-center justify-start md:justify-end gap-1.5">
+                        <CreditCard className="w-3.5 h-3.5 text-[#FAE678]" /> 
+                        <span className="text-[#FAE678]">CNPJ/CPF:</span> 
+                        <span className="font-mono text-white">{user.cpfCnpj}</span>
+                      </p>
                       {user.phone && (
-                        <p className="text-sm font-medium text-white flex items-center md:justify-end gap-1"><Phone className="w-3 h-3 text-white/50" /> Whatsapp: <span className="font-mono text-white/50">{user.phone}</span></p>
+                        <p className="text-sm font-medium text-white flex items-center justify-start md:justify-end gap-1.5">
+                          <Phone className="w-3.5 h-3.5 text-[#FAE678]" /> 
+                          <span className="text-[#FAE678]">Whatsapp:</span> 
+                          <span className="font-mono text-white">{user.phone}</span>
+                        </p>
                       )}
-                      <p className="text-sm text-white/50 mt-1">{user.city} - {user.state}</p>
+                      <p className="text-sm text-white flex items-center justify-start md:justify-end gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#FAE678]" />
+                        <span className="text-[#FAE678]">Local:</span> 
+                        <span className="text-white">{user.city} - {user.state}</span>
+                      </p>
                     </div>
                   )}
                 </div>
