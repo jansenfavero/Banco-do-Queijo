@@ -457,7 +457,7 @@ export function Catalog() {
                       <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                       <span className="font-bold text-xl text-white">R$ {product.preco.toFixed(2)}</span>
                     </div>
-                    <button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">
+                    <button className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]">
                       Comprar
                     </button>
                   </div>
@@ -481,8 +481,8 @@ export function Catalog() {
                   </div>
                 </div>
                 <div className="p-5 flex flex-col flex-1 bg-[#d36101] rounded-b-[24px]">
-                  <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">Queijo {product._displayCheese}</h3>
-                  <p className="text-sm text-white/70 mb-4 font-medium flex-1 cursor-help group-hover/tooltip hover:text-white" title={`Produção Semanal: ${product.weeklyVolume} kg/sem | Embalagem: ${product.packaging}`}>{product.name}</p>
+                  <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-app-accent transition-colors text-white">{product.name}</h3>
+                  <p className="text-sm text-white/70 mb-4 font-medium flex-1 cursor-help group-hover/tooltip hover:text-white" title={`Produção Semanal: ${product.weeklyVolume} kg/sem | Embalagem: ${product.packaging}`}>Queijo {product._displayCheese}</p>
                   
                   <div className="flex items-center gap-2 text-xs text-white/70 mb-4 bg-[#a64b00] p-2 rounded-[15px] border border-white/10 w-fit">
                     <MapPin className="w-4 h-4 text-app-accent" />
@@ -495,10 +495,10 @@ export function Catalog() {
                     </div>
                     {profile?.id === product.id || profile?.role === 'ADMIN' ? (
                         <Link to="/perfil">
-                            <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full h-10 px-6 font-bold text-sm">Editar</Button>
+                            <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full h-9 px-4 font-bold text-[13px] min-w-[90px]">Editar</Button>
                         </Link>
                     ) : (
-                        <Button className="h-10 px-6 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm">Contatar</Button>
+                        <Button className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]">Comprar</Button>
                     )}
                   </div>
                 </div>
@@ -533,11 +533,11 @@ export function Catalog() {
                   <span>{wholesaler.local || `${wholesaler.city}, ${wholesaler.state}`}</span>
                 </div>
                 <div className="flex flex-col mt-auto pt-4 border-t border-[#4a2000] gap-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-white/50 uppercase tracking-wider">Volume Demandado</span>
-                    <span className="font-bold text-lg text-white">{wholesaler.quantidade || wholesaler.weeklyVolume} kg/mês</span>
+                  <span className="text-[10px] text-[#FAE678] uppercase tracking-wider font-semibold mb-[-8px]">Volume Demandado</span>
+                  <div className="flex items-end justify-between leading-none">
+                    <span className="font-bold text-[28px] text-white leading-none">{wholesaler.quantidade || wholesaler.weeklyVolume} <span className="text-[16px] lowercase">kg/sem</span></span>
                   </div>
-                  <button className="w-full h-11 rounded-xl bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm gap-2 mt-1">
+                  <button className="w-full h-11 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm gap-2 mt-2">
                     <Gavel className="w-4 h-4" /> Fazer Oferta
                   </button>
                 </div>
