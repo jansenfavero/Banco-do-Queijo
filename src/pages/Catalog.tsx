@@ -200,11 +200,19 @@ export function Catalog() {
     // Filter Producers and Unroll into separate cards per cheese (Stored in products state)
     const activeProducers = products.flatMap(owner => {
        return (owner.cheeseTypes || []).map((cheeseType: string) => {
+         
+         // Priority: specific cheese image -> any specific cheese images -> general images -> fallback
+         const specificCheeseImages = owner.cheeseImages?.[cheeseType] || [];
+         const displayImages = specificCheeseImages.length > 0 
+            ? specificCheeseImages 
+            : (owner.images?.length ? owner.images : ['https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600']);
+
          return {
            ...owner,
            _isRealProdCard: true,
            _displayCheese: cheeseType,
            _displayPrice: owner.cheesePrices?.[cheeseType] || 0,
+           _displayImages: displayImages,
            _uniqueId: `${owner.id}-${cheeseType}`
          };
        });
@@ -467,7 +475,7 @@ export function Catalog() {
               <div key={product._uniqueId || product.id} className="group rounded-[24px] bg-[#d36101] shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
                 <div className="relative mx-0 mt-0 aspect-[4/3] rounded-t-[24px] rounded-b-none overflow-hidden">
                   <CardImageCarousel 
-                    images={product.images?.length ? product.images : [product.imagem || 'https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600']} 
+                    images={product._displayImages} 
                     alt={product.empresa || product.name} 
                     onImageClick={openLightbox}
                   />

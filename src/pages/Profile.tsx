@@ -141,6 +141,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
   });
 
   const [images, setImages] = useState<string[]>(profile.images || []);
+  const [cheeseImages, setCheeseImages] = useState<Record<string, string[]>>(profile.cheeseImages || {});
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -307,23 +308,31 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
     });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetType: string = 'general') => {
+    if (!e.target.files?.length) return;
+    const filesArray = Array.from(e.target.files);
 
-    if (images.length + files.length > (profile.role === 'PRODUTOR' ? 5 : 3)) {
-      toast.error(`Você pode enviar no máximo ${profile.role === 'PRODUTOR' ? 5 : 3} imagens.`);
-      return;
+    if (targetType === 'general') {
+        if (images.length + filesArray.length > 3) {
+            toast.error('Você pode enviar no máximo 3 imagens para o comércio.');
+            return;
+        }
+    } else {
+        const currentTypeImages = cheeseImages[targetType] || [];
+        if (currentTypeImages.length + filesArray.length > 3) {
+            toast.error(`Você pode enviar no máximo 3 imagens para o queijo ${targetType}.`);
+            return;
+        }
     }
 
     setUploading(true);
     setUploadProgress(0);
     const storage = getStorage();
-    const newImages = [...images];
+    const newUrls: string[] = [];
 
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      for (let i = 0; i < filesArray.length; i++) {
+        const file = filesArray[i];
         const imageRef = storageRef(storage, `profiles/${profile.id}/${Date.now()}_${file.name}`);
         const uploadTask = uploadBytesResumable(imageRef, file);
         
@@ -331,20 +340,29 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
           uploadTask.on('state_changed', 
             (snapshot) => {
               const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              setUploadProgress(((i * 100) + progress) / files.length);
+              setUploadProgress(((i * 100) + progress) / filesArray.length);
             }, 
             (error) => {
               reject(error);
             }, 
             async () => {
               const url = await getDownloadURL(uploadTask.snapshot.ref);
-              newImages.push(url);
+              newUrls.push(url);
               resolve(null);
             }
           );
         });
       }
-      setImages(newImages);
+      
+      if (targetType === 'general') {
+          setImages([...images, ...newUrls]);
+      } else {
+          setCheeseImages(prev => ({
+              ...prev,
+              [targetType]: [...(prev[targetType] || []), ...newUrls]
+          }));
+      }
+
       toast.success('Imagens enviadas com sucesso!');
     } catch (error) {
       console.error(error);
@@ -443,6 +461,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
         cheesePrices: parsedCheesePrices,
         address: formData.address,
         images: images,
+        cheeseImages: cheeseImages,
         kycStatus: 'VALIDADO' // Automatically validated since we now require all info
       };
       
@@ -663,59 +682,122 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 <div>
                   <Label className="text-white text-lg font-semibold flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-[#f4d763]" />
-                    {isProdutor ? 'Fotos da sua Produção' : 'Fotos do Seu Comércio'}
+                    {isProdutor ? 'Fotos dos Seus Queijos' : 'Fotos do Seu Comércio'}
                   </Label>
                   <p className="text-white/70 text-sm mt-1">
-                    {isProdutor ? 'Adicione até 3 fotos da sua estrutura/produção. Pelo menos 1 foto é obrigatória.' : 'Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.'}
+                    {isProdutor ? 'Adicione fotos correspondentes aos queijos que você produz. (Até 3 por tipo)' : 'Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.'}
                   </p>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {images.map((img, index) => (
-                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-black/20 border border-white/20">
-                      <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+
+                {!isProdutor && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {images.map((img, index) => (
+                      <div key={index} className="relative aspect-square rounded-[20px] overflow-hidden bg-black/20 border border-white/20">
+                        <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    {images.length < 3 && (
                       <button
                         type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                        onClick={() => {
+                          fileInputRef.current!.dataset.type = 'general';
+                          fileInputRef.current?.click();
+                        }}
+                        disabled={uploading}
+                        className="relative aspect-square rounded-[20px] border-2 border-dashed border-white/30 flex flex-col items-center justify-center text-white/70 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-80 overflow-hidden"
                       >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                  {images.length < (isProdutor ? 5 : 3) && (
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="relative aspect-square rounded-[20px] border-2 border-dashed border-white/30 flex flex-col items-center justify-center text-white/70 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-80 overflow-hidden"
-                    >
-                      {uploading ? (
-                        <div className="flex flex-col items-center justify-center z-10 w-full px-4">
-                          <span className="text-sm font-bold text-app-accent mb-2">{Math.round(uploadProgress)}%</span>
-                          <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden">
-                            <div className="h-full bg-app-accent transition-all duration-300 rounded-full" style={{ width: `${uploadProgress}%` }} />
+                        {uploading ? (
+                          <div className="flex flex-col items-center justify-center z-10 w-full px-4">
+                            <span className="text-sm font-bold text-app-accent mb-2">{Math.round(uploadProgress)}%</span>
+                            <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden">
+                              <div className="h-full bg-app-accent transition-all duration-300 rounded-full" style={{ width: `${uploadProgress}%` }} />
+                            </div>
+                            <span className="text-xs text-white/90 mt-2 font-medium">Enviando...</span>
                           </div>
-                          <span className="text-xs text-white/90 mt-2 font-medium">Enviando...</span>
-                        </div>
-                      ) : (
-                        <>
-                          <Upload className="w-6 h-6 mb-2 relative z-10" />
-                          <span className="text-sm font-medium relative z-10">Adicionar Foto</span>
-                        </>
-                      )}
-                      {uploading && (
-                         <div className="absolute inset-0 bg-black/50 z-0" />
-                      )}
-                    </button>
-                  )}
-                </div>
+                        ) : (
+                          <>
+                            <Upload className="w-6 h-6 mb-2 relative z-10" />
+                            <span className="text-sm font-medium relative z-10 text-center px-2">Adicionar Foto</span>
+                          </>
+                        )}
+                        {uploading && (
+                           <div className="absolute inset-0 bg-black/50 z-0" />
+                        )}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {isProdutor && formData.cheeseTypes.map(cheese => {
+                  const currentImages = cheeseImages[cheese] || [];
+                  return (
+                    <div key={cheese} className="mt-4 p-4 border border-white/10 rounded-[20px] bg-black/10">
+                      <Label className="text-white font-semibold flex items-center gap-2 mb-3">
+                        <span className="capitalize">{cheese}</span>
+                        <span className="text-xs text-white/50 font-normal">({currentImages.length}/3 fotos)</span>
+                      </Label>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {currentImages.map((img, index) => (
+                          <div key={index} className="relative aspect-square rounded-[20px] overflow-hidden bg-black/20 border border-white/20">
+                            <img src={img} alt={`Upload ${cheese} ${index + 1}`} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newMap = { ...cheeseImages };
+                                newMap[cheese].splice(index, 1);
+                                setCheeseImages(newMap);
+                              }}
+                              className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                        {currentImages.length < 3 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              fileInputRef.current!.dataset.type = cheese;
+                              fileInputRef.current?.click();
+                            }}
+                            disabled={uploading}
+                            className="relative aspect-square rounded-[20px] border-2 border-dashed border-white/30 flex flex-col items-center justify-center text-white/70 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-80 overflow-hidden"
+                          >
+                            {uploading && fileInputRef.current?.dataset.type === cheese ? (
+                              <div className="flex flex-col items-center justify-center z-10 w-full px-4">
+                                <span className="text-sm font-bold text-app-accent mb-2">{Math.round(uploadProgress)}%</span>
+                                <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden">
+                                  <div className="h-full bg-app-accent transition-all duration-300 rounded-full" style={{ width: `${uploadProgress}%` }} />
+                                </div>
+                                <span className="text-xs text-white/90 mt-2 font-medium">Enviando...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <Upload className="w-6 h-6 mb-2 relative z-10" />
+                                <span className="text-sm font-medium relative z-10 text-center px-2">Adicionar Foto</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
                 <input
                   type="file"
                   accept="image/*"
                   multiple
                   className="hidden"
                   ref={fileInputRef}
-                  onChange={handleImageUpload}
+                  onChange={(e) => handleImageUpload(e, fileInputRef.current?.dataset.type || 'general')}
                 />
               </div>
 
