@@ -21,6 +21,9 @@ export function Messages() {
   const [newMessage, setNewMessage] = useState('');
   const [otherUsersMap, setOtherUsersMap] = useState<Record<string, any>>({});
   
+  const [searchQuery, setSearchQuery] = useState('');
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize active chat if provided via query param
@@ -29,6 +32,22 @@ export function Messages() {
       setActiveChatId(initialChatId);
     }
   }, [initialChatId]);
+
+  // Load available users to start a chat with
+  useEffect(() => {
+    if (!profile) return;
+    const targetRole = profile.role === 'PRODUTOR' ? 'ATACADISTA' : 'PRODUTOR';
+    const q = query(
+      collection(db, 'users'),
+      where('role', '==', targetRole),
+      where('kycStatus', '==', 'VALIDADO')
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAvailableUsers(usersData);
+    });
+    return () => unsubscribe();
+  }, [profile]);
 
   // Load chat list
   useEffect(() => {
@@ -173,19 +192,85 @@ export function Messages() {
       {/* Sidebar List */}
       <Card className={`bg-app-cardDark border-white/10 flex flex-col h-full overflow-hidden w-full md:w-1/3 filter drop-shadow-lg ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-5 border-b border-white/10 shrink-0">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
             <MessageCircle className="w-5 h-5 text-app-accent" />
             Mensagens
           </h2>
+          <Input 
+            placeholder={`Buscar ${profile?.role === 'PRODUTOR' ? 'Atacadistas' : 'Produtores'}...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px]"
+          />
         </div>
         
         <div className="flex-1 overflow-y-auto w-full">
-          {chats.length === 0 ? (
-             <div className="p-8 text-center text-white/50 text-sm">
-                Nenhuma conversa iniciada ainda.
+          {searchQuery.trim() !== '' ? (
+             // Search Results View
+             <div className="flex flex-col">
+               <div className="px-4 py-2 bg-black/20 text-xs font-bold text-white/50 uppercase tracking-wider">
+                  Resultados da Busca
+               </div>
+               {availableUsers
+                 .filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase()))
+                 .map(foundUser => (
+                   <div 
+                      key={foundUser.id}
+                      onClick={async () => {
+                         // Check if chat exists
+                         const existingChat = chats.find(c => c.participants.includes(foundUser.id));
+                         if (existingChat) {
+                            setActiveChatId(existingChat.id);
+                            navigate(`/mensagens?c=${existingChat.id}`, { replace: true });
+                            setSearchQuery('');
+                         } else {
+                            try {
+                               const newChatRef = await addDoc(collection(db, 'chats'), {
+                                  participants: [user?.uid, foundUser.id],
+                                  createdAt: serverTimestamp(),
+                                  updatedAt: serverTimestamp(),
+                                  unreadCount: {}
+                               });
+                               setActiveChatId(newChatRef.id);
+                               navigate(`/mensagens?c=${newChatRef.id}`, { replace: true });
+                               setSearchQuery('');
+                            } catch (error) {
+                               console.error(error);
+                            }
+                         }
+                      }}
+                      className="p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors flex items-center gap-4"
+                   >
+                      <div className="w-10 h-10 shrink-0 bg-app-bgDark rounded-full flex items-center justify-center text-app-accent font-bold text-sm overflow-hidden border border-white/10">
+                         {foundUser?.images?.[0] ? (
+                            <img src={foundUser.images[0]} alt={foundUser.name} className="w-full h-full object-cover" />
+                         ) : (
+                            foundUser?.name?.slice(0,2).toUpperCase() || '?'
+                         )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white font-semibold truncate text-sm">
+                          {foundUser?.nomeFantasia || foundUser?.name}
+                        </h3>
+                        <p className="text-xs text-[#FAE678] truncate">Novo Chat</p>
+                      </div>
+                   </div>
+                 ))}
+                 {availableUsers.filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                    <div className="p-4 text-center text-white/50 text-sm">
+                       Nenhum usuário encontrado.
+                    </div>
+                 )}
              </div>
           ) : (
-            chats.map(chat => {
+             // Existing Chats View
+             <>
+                {chats.length === 0 ? (
+                   <div className="p-8 text-center text-white/50 text-sm">
+                      Nenhuma conversa iniciada ainda. Use a busca acima para encontrar parceiros comerciais ou inicie pela aba Explorar/Vitrine.
+                   </div>
+                ) : (
+                  chats.map(chat => {
               const otherId = chat.participants.find((p: string) => p !== user?.uid);
               const otherUser = otherUsersMap[otherId];
               const unread = chat.unreadCount?.[user?.uid || ''] || 0;
@@ -230,6 +315,8 @@ export function Messages() {
                 </div>
               );
             })
+          )}
+          </>
           )}
         </div>
       </Card>
