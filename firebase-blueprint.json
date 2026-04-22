@@ -103,6 +103,45 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["compradorId", "cheeseType", "quantityKg", "frequency", "region", "paymentMethod", "fachadaPhoto", "active", "createdAt"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "A conversation between a producer and a wholesaler.",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array", "items": { "type": "string" }, "description": "Array of 2 UIDs (producerId and wholesalerId)" },
+        "lastMessage": { "type": "string" },
+        "lastMessageTime": { "type": "string", "format": "date-time" },
+        "unreadCount": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["participants", "createdAt", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A message within a chat.",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "messageType": { "type": "string", "enum": ["text", "offer"] },
+        "offerData": {
+           "type": "object",
+           "properties": {
+             "cheeseType": { "type": "string" },
+             "price": { "type": "number" },
+             "quantityKg": { "type": "number" },
+             "status": { "type": "string", "enum": ["PENDING", "ACCEPTED", "REJECTED"] }
+           }
+        },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderId", "text", "messageType", "createdAt"]
     }
   },
   "firestore": {
@@ -125,6 +164,14 @@
     "demands/{demandId}": {
       "schema": { "$ref": "#/entities/Demand" },
       "description": "Stores buyer demands."
+    },
+    "chats/{chatId}": {
+      "schema": { "$ref": "#/entities/Chat" },
+      "description": "Stores chat sessions between users."
+    },
+    "chats/{chatId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Stores messages within a chat. Sub-collection to ensure relational security limit."
     }
   }
 }

@@ -208,6 +208,27 @@ service cloud.firestore {
              data.createdAt is timestamp;
     }
 
+    function isValidChat(data) {
+      return hasRequiredFields(['participants', 'createdAt', 'updatedAt']) &&
+             data.participants is list && data.participants.size() == 2 &&
+             request.auth.uid in data.participants &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp &&
+             (!('lastMessage' in data) || isValidString(data.lastMessage, 0, 1000)) &&
+             (!('lastMessageTime' in data) || data.lastMessageTime is timestamp) &&
+             (!('unreadCount' in data) || data.unreadCount is map);
+    }
+
+    function isValidMessage(data) {
+      return hasRequiredFields(['senderId', 'text', 'messageType', 'createdAt']) &&
+             data.senderId == request.auth.uid &&
+             isValidString(data.text, 0, 5000) &&
+             data.messageType in ['text', 'offer'] &&
+             data.createdAt is timestamp &&
+             (!('read' in data) || data.read is bool) &&
+             (!('offerData' in data) || (data.offerData is map && 'status' in data.offerData));
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -273,6 +294,29 @@ service cloud.firestore {
       
       // Buyers can update their own demands (e.g., set to inactive).
       allow update: if isAuthenticated() && resource.data.compradorId == request.auth.uid && areImmutableFieldsUnchanged(['compradorId', 'createdAt']);
+    }
+
+    match /chats/{chatId} {
+      allow read: if isAuthenticated() && request.auth.uid in resource.data.participants;
+      allow create: if isAuthenticated() && isValidChat(request.resource.data);
+      allow update: if isAuthenticated() && request.auth.uid in resource.data.participants && areImmutableFieldsUnchanged(['participants', 'createdAt']);
+      
+      match /messages/{messageId} {
+        // Read: A user can read messages if they are part of the parent chat.
+        // We use get() on the parent chat document to verify participation.
+        allow read: if isAuthenticated() && 
+                    request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+                    
+        // Create: Same condition as read, PLUS validate the message payload.
+        allow create: if isAuthenticated() && 
+                      request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants &&
+                      isValidMessage(request.resource.data);
+                      
+        // Update: E.g. marking as read or accepting an offer.
+        allow update: if isAuthenticated() && 
+                      request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants &&
+                      areImmutableFieldsUnchanged(['senderId', 'createdAt', 'messageType']);
+      }
     }
   }
 }

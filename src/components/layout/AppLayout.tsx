@@ -14,16 +14,39 @@ import {
   Shield,
   Settings,
   User,
-  Slice
+  Slice,
+  MessageCircle
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Footer } from './Footer';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 export function AppLayout() {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const q = query(
+      collection(db, 'chats'),
+      where('participants', 'array-contains', user.uid)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let count = 0;
+      snapshot.forEach(doc => {
+         const chat = doc.data();
+         if (chat.unreadCount && chat.unreadCount[user.uid]) {
+            count += chat.unreadCount[user.uid];
+         }
+      });
+      setUnreadCount(count);
+    });
+    return () => unsubscribe();
+  }, [user]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -34,6 +57,7 @@ export function AppLayout() {
     { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Painel Admin', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
+    { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
     { name: 'Perfis e Permissões', path: '/admin/usuarios', icon: Shield },
     { name: 'Todas as Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Todos os Pedidos', path: '/pedidos', icon: ShoppingCart },
@@ -42,6 +66,7 @@ export function AppLayout() {
     { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
+    { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
     { name: 'Pedidos Recebidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Painel de Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
@@ -49,6 +74,7 @@ export function AppLayout() {
     { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
+    { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
     { name: 'Meus Pedidos', path: '/pedidos', icon: ShoppingCart },
     { name: 'Minhas Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
@@ -100,7 +126,12 @@ export function AppLayout() {
                 }`}
               >
                 <Icon size={20} className={isActive ? "text-[#d36101]" : "opacity-80"} />
-                {item.name}
+                <span className="flex-1">{item.name}</span>
+                {item.badge ? (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {item.badge}
+                  </span>
+                ) : null}
               </Link>
             );
           })}

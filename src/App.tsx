@@ -11,6 +11,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Catalog } from './pages/Catalog';
 import { Orders } from './pages/Orders';
 import { Demands } from './pages/Demands';
+import { Messages } from './pages/Messages';
 import { AdminUsers } from './pages/AdminUsers';
 import { Settings } from './pages/Settings';
 import { Profile } from './pages/Profile';
@@ -67,6 +68,11 @@ export default function App() {
           <Route path="/pedidos" element={
             <ProtectedRoute>
               <Orders />
+            </ProtectedRoute>
+          } />
+          <Route path="/mensagens" element={
+            <ProtectedRoute>
+              <Messages />
             </ProtectedRoute>
           } />
           <Route path="/demandas" element={

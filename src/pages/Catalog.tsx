@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, onSnapshot, where, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, onSnapshot, where, addDoc, serverTimestamp, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
@@ -10,12 +10,12 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X, Gavel } from 'lucide-react';
+import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X, Gavel, MessageCircle } from 'lucide-react';
 
 const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
 
 import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { CatalogMetrics } from './CatalogMetrics';
 
@@ -95,6 +95,39 @@ export function Catalog() {
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState<number>(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleStartChat = async (otherUserId: string) => {
+    if (!profile || !profile.id) return toast.error("Você precisa estar logado para iniciar uma conversa.");
+    if (profile.id === otherUserId) return toast.error("Você não pode iniciar uma conversa consigo mesmo.");
+    
+    // Check if chat already exists
+    const q1 = query(collection(db, 'chats'), where('participants', 'array-contains', profile.id));
+    const snapshot = await getDocs(q1);
+    let existingChatId = null;
+    snapshot.forEach(doc => {
+       if (doc.data().participants.includes(otherUserId)) {
+          existingChatId = doc.id;
+       }
+    });
+
+    if (existingChatId) {
+       navigate(`/mensagens?c=${existingChatId}`);
+    } else {
+       try {
+         const newChatRef = await addDoc(collection(db, 'chats'), {
+            participants: [profile.id, otherUserId],
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            unreadCount: {}
+         });
+         navigate(`/mensagens?c=${newChatRef.id}`);
+       } catch (error) {
+         console.error("Error creating chat", error);
+         toast.error("Erro ao iniciar conversa.");
+       }
+    }
+  };
 
   const openLightbox = (images: string[], index: number = 0) => {
     setLightboxImages(images);
@@ -501,12 +534,23 @@ export function Catalog() {
                       <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                       <span className="font-bold text-xl text-white">R$ {Number(product._displayPrice || 0).toFixed(2)}</span>
                     </div>
-                    {profile?.id === product.id || profile?.role === 'ADMIN' ? (
+                    {profile?.id === (product.produtorId || product.id) || profile?.role === 'ADMIN' ? (
                         <Link to="/perfil">
                             <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full h-9 px-4 font-bold text-[13px] min-w-[90px]">Editar</Button>
                         </Link>
                     ) : (
-                        <Button className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]">Comprar</Button>
+                        <Button 
+                          onClick={() => {
+                            if (product.produtor || product.mock) {
+                              toast.error('Este é um perfil de demonstração.');
+                            } else {
+                              handleStartChat(product.produtorId || product.id);
+                            }
+                          }}
+                          className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
+                        >
+                          Comprar
+                        </Button>
                     )}
                   </div>
                 </div>
@@ -545,7 +589,16 @@ export function Catalog() {
                   <div className="flex items-end justify-between leading-none">
                     <span className="font-bold text-[28px] text-white leading-none">{wholesaler.quantidade || wholesaler.weeklyVolume} <span className="text-[16px] lowercase">kg/sem</span></span>
                   </div>
-                  <button className="w-full h-11 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm gap-2 mt-2">
+                  <button 
+                    onClick={() => {
+                       if (wholesaler.comprador || wholesaler.mock) {
+                         toast.error('Este é um perfil de demonstração.');
+                       } else {
+                         handleStartChat(wholesaler.id);
+                       }
+                    }}
+                    className="w-full h-11 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm gap-2 mt-2"
+                  >
                     <Gavel className="w-4 h-4" /> Fazer Oferta
                   </button>
                 </div>
