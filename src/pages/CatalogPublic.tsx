@@ -5,108 +5,108 @@ import { Footer } from '../components/layout/Footer';
 
 export const MOCK_PRODUCTS = [
   // Coalho
-  { id: 1, nome: "Queijo Coalho Artesanal", produtor: "Laticínio Nordeste", local: "Quixadá, CE", preco: 45.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.7 },
-  { id: 2, nome: "Queijo Coalho com Orégano", produtor: "Sítio do Sol", local: "Jaguaribe, CE", preco: 48.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.8 },
-  { id: 3, nome: "Queijo Coalho Defumado", produtor: "Fazenda Sertão", local: "Morada Nova, CE", preco: 52.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.9 },
-  { id: 4, nome: "Queijo Coalho Tradicional", produtor: "Laticínio Sertanejo", local: "Iguatu, CE", preco: 43.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.6 },
+  { id: 1, nome: "Queijo Coalho Artesanal", produtor: "Laticínio Nordeste", local: "Quixadá, CE", preco: 45.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.7, mock: true },
+  { id: 2, nome: "Queijo Coalho com Orégano", produtor: "Sítio do Sol", local: "Jaguaribe, CE", preco: 48.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.8, mock: true },
+  { id: 3, nome: "Queijo Coalho Defumado", produtor: "Fazenda Sertão", local: "Morada Nova, CE", preco: 52.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.9, mock: true },
+  { id: 4, nome: "Queijo Coalho Tradicional", produtor: "Laticínio Sertanejo", local: "Iguatu, CE", preco: 43.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.6, mock: true },
 
   // Mussarela
-  { id: 5, nome: "Mussarela Trança", produtor: "Fazenda Leiteira", local: "São Paulo, SP", preco: 55.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.6 },
-  { id: 6, nome: "Mussarela Bolinha", produtor: "Laticínio Bella", local: "Campinas, SP", preco: 58.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.7 },
-  { id: 7, nome: "Mussarela Fatiada Premium", produtor: "Queijaria Ouro", local: "Bauru, SP", preco: 49.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.5 },
-  { id: 8, nome: "Mussarela de Búfala", produtor: "Sítio das Águas", local: "Sorocaba, SP", preco: 75.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.9 },
+  { id: 5, nome: "Mussarela Trança", produtor: "Fazenda Leiteira", local: "São Paulo, SP", preco: 55.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.6, mock: true },
+  { id: 6, nome: "Mussarela Bolinha", produtor: "Laticínio Bella", local: "Campinas, SP", preco: 58.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.7, mock: true },
+  { id: 7, nome: "Mussarela Fatiada Premium", produtor: "Queijaria Ouro", local: "Bauru, SP", preco: 49.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.5, mock: true },
+  { id: 8, nome: "Mussarela de Búfala", produtor: "Sítio das Águas", local: "Sorocaba, SP", preco: 75.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.9, mock: true },
 
   // Parmesão
-  { id: 9, nome: "Parmesão Curado 12 Meses", produtor: "Queijaria do Vale", local: "Alagoa, MG", preco: 120.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 5.0 },
-  { id: 10, nome: "Parmesão Capa Preta", produtor: "Fazenda Mantiqueira", local: "Itamonte, MG", preco: 135.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.9 },
-  { id: 11, nome: "Parmesão Ralado Fresco", produtor: "Laticínio Serrano", local: "Pouso Alto, MG", preco: 95.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.7 },
-  { id: 12, nome: "Parmesão Meia Cura", produtor: "Sítio Alto da Serra", local: "Cruzília, MG", preco: 105.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.8 },
+  { id: 9, nome: "Parmesão Curado 12 Meses", produtor: "Queijaria do Vale", local: "Alagoa, MG", preco: 120.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 5.0, mock: true },
+  { id: 10, nome: "Parmesão Capa Preta", produtor: "Fazenda Mantiqueira", local: "Itamonte, MG", preco: 135.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.9, mock: true },
+  { id: 11, nome: "Parmesão Ralado Fresco", produtor: "Laticínio Serrano", local: "Pouso Alto, MG", preco: 95.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.7, mock: true },
+  { id: 12, nome: "Parmesão Meia Cura", produtor: "Sítio Alto da Serra", local: "Cruzília, MG", preco: 105.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.8, mock: true },
 
   // Prato
-  { id: 13, nome: "Queijo Prato Lanche", produtor: "Laticínios Sul", local: "Chapecó, SC", preco: 42.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.5 },
-  { id: 14, nome: "Queijo Prato Esférico", produtor: "Fazenda do Sul", local: "Lages, SC", preco: 46.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.6 },
-  { id: 15, nome: "Queijo Prato Cobocó", produtor: "Queijaria Catarinense", local: "Joinville, SC", preco: 44.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.7 },
-  { id: 16, nome: "Queijo Prato Fatiado", produtor: "Laticínio Vale", local: "Blumenau, SC", preco: 40.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.4 },
+  { id: 13, nome: "Queijo Prato Lanche", produtor: "Laticínios Sul", local: "Chapecó, SC", preco: 42.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.5, mock: true },
+  { id: 14, nome: "Queijo Prato Esférico", produtor: "Fazenda do Sul", local: "Lages, SC", preco: 46.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.6, mock: true },
+  { id: 15, nome: "Queijo Prato Cobocó", produtor: "Queijaria Catarinense", local: "Joinville, SC", preco: 44.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.7, mock: true },
+  { id: 16, nome: "Queijo Prato Fatiado", produtor: "Laticínio Vale", local: "Blumenau, SC", preco: 40.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.4, mock: true },
 
   // Gorgonzola
-  { id: 17, nome: "Gorgonzola Cremoso", produtor: "Vale dos Queijos", local: "Cruzília, MG", preco: 89.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.9 },
-  { id: 18, nome: "Gorgonzola Tradicional", produtor: "Fazenda Azul", local: "São Lourenço, MG", preco: 85.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.8 },
-  { id: 19, nome: "Gorgonzola Premium", produtor: "Queijaria Fina", local: "Tiradentes, MG", preco: 95.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 5.0 },
-  { id: 20, nome: "Gorgonzola Pedaço", produtor: "Laticínio de Minas", local: "Caxambu, MG", preco: 82.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.7 },
+  { id: 17, nome: "Gorgonzola Cremoso", produtor: "Vale dos Queijos", local: "Cruzília, MG", preco: 89.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.9, mock: true },
+  { id: 18, nome: "Gorgonzola Tradicional", produtor: "Fazenda Azul", local: "São Lourenço, MG", preco: 85.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.8, mock: true },
+  { id: 19, nome: "Gorgonzola Premium", produtor: "Queijaria Fina", local: "Tiradentes, MG", preco: 95.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 5.0, mock: true },
+  { id: 20, nome: "Gorgonzola Pedaço", produtor: "Laticínio de Minas", local: "Caxambu, MG", preco: 82.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.7, mock: true },
 
   // Canastra
-  { id: 21, nome: "Queijo Canastra Tradicional", produtor: "Fazenda São João", local: "São Roque de Minas, MG", preco: 85.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.9 },
-  { id: 22, nome: "Canastra Meia Cura", produtor: "Sítio do Zé", local: "Medeiros, MG", preco: 78.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.8 },
-  { id: 23, nome: "Canastra Curado", produtor: "Queijaria da Serra", local: "Vargem Bonita, MG", preco: 95.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 5.0 },
-  { id: 24, nome: "Canastra Real", produtor: "Fazenda Ouro Branco", local: "Tapiraí, MG", preco: 110.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.9 },
+  { id: 21, nome: "Queijo Canastra Tradicional", produtor: "Fazenda São João", local: "São Roque de Minas, MG", preco: 85.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.9, mock: true },
+  { id: 22, nome: "Canastra Meia Cura", produtor: "Sítio do Zé", local: "Medeiros, MG", preco: 78.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.8, mock: true },
+  { id: 23, nome: "Canastra Curado", produtor: "Queijaria da Serra", local: "Vargem Bonita, MG", preco: 95.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 5.0, mock: true },
+  { id: 24, nome: "Canastra Real", produtor: "Fazenda Ouro Branco", local: "Tapiraí, MG", preco: 110.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.9, mock: true },
 
   // Minas
-  { id: 25, nome: "Queijo Minas Padrão", produtor: "Sítio das Vaquinhas", local: "Passos, MG", preco: 60.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.8 },
-  { id: 26, nome: "Minas Frescal", produtor: "Laticínio Bom Dia", local: "Belo Horizonte, MG", preco: 45.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.7 },
-  { id: 27, nome: "Minas Padrão Curado", produtor: "Fazenda do Leite", local: "Uberlândia, MG", preco: 65.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.9 },
-  { id: 28, nome: "Minas Frescal Light", produtor: "Queijaria Saudável", local: "Juiz de Fora, MG", preco: 48.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.6 },
+  { id: 25, nome: "Queijo Minas Padrão", produtor: "Sítio das Vaquinhas", local: "Passos, MG", preco: 60.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.8, mock: true },
+  { id: 26, nome: "Minas Frescal", produtor: "Laticínio Bom Dia", local: "Belo Horizonte, MG", preco: 45.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.7, mock: true },
+  { id: 27, nome: "Minas Padrão Curado", produtor: "Fazenda do Leite", local: "Uberlândia, MG", preco: 65.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.9, mock: true },
+  { id: 28, nome: "Minas Frescal Light", produtor: "Queijaria Saudável", local: "Juiz de Fora, MG", preco: 48.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.6, mock: true },
 ];
 
 export const MOCK_WHOLESALERS = [
   // São Paulo / SP
-  { id: 101, empresa: "Atacadista Leiteira", comprador: "Carlos Santos", local: "São Paulo, SP", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.9 },
-  { id: 102, empresa: "Empório Paulista", comprador: "Roberto Almeida", local: "São Paulo, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.8 },
-  { id: 103, empresa: "Distribuidora Central SP", comprador: "Marcos Silva", local: "São Paulo, SP", quantidade: 1200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.7 },
-  { id: 104, empresa: "Queijos & Cia Atacado", comprador: "Ana Paula", local: "São Paulo, SP", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.6 },
+  { id: 101, empresa: "Atacadista Leiteira", comprador: "Carlos Santos", local: "São Paulo, SP", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.9, mock: true },
+  { id: 102, empresa: "Empório Paulista", comprador: "Roberto Almeida", local: "São Paulo, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.8, mock: true },
+  { id: 103, empresa: "Distribuidora Central SP", comprador: "Marcos Silva", local: "São Paulo, SP", quantidade: 1200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.7, mock: true },
+  { id: 104, empresa: "Queijos & Cia Atacado", comprador: "Ana Paula", local: "São Paulo, SP", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.6, mock: true },
 
   // Belo Horizonte / MG
-  { id: 105, empresa: "Atacadão do Vale", comprador: "Pedro Alves", local: "Belo Horizonte, MG", quantidade: 1200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 5.0 },
-  { id: 106, empresa: "Distribuidora Mineira", comprador: "João Pedro", local: "Belo Horizonte, MG", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.8 },
-  { id: 107, empresa: "Rei do Queijo BH", comprador: "Lucas Martins", local: "Belo Horizonte, MG", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.9 },
-  { id: 108, empresa: "Central de Laticínios MG", comprador: "Mariana Costa", local: "Belo Horizonte, MG", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.7 },
+  { id: 105, empresa: "Atacadão do Vale", comprador: "Pedro Alves", local: "Belo Horizonte, MG", quantidade: 1200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 5.0, mock: true },
+  { id: 106, empresa: "Distribuidora Mineira", comprador: "João Pedro", local: "Belo Horizonte, MG", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.8, mock: true },
+  { id: 107, empresa: "Rei do Queijo BH", comprador: "Lucas Martins", local: "Belo Horizonte, MG", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.9, mock: true },
+  { id: 108, empresa: "Central de Laticínios MG", comprador: "Mariana Costa", local: "Belo Horizonte, MG", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.7, mock: true },
 
   // Fortaleza / CE
-  { id: 109, empresa: "Distribuidora Nordeste", comprador: "João Silva", local: "Fortaleza, CE", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.8 },
-  { id: 110, empresa: "Atacadista Cearense", comprador: "Francisco Lima", local: "Fortaleza, CE", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.7 },
-  { id: 111, empresa: "Armazém do Queijo CE", comprador: "José Santos", local: "Fortaleza, CE", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.6 },
-  { id: 112, empresa: "Laticínios Fortaleza", comprador: "Maria Clara", local: "Fortaleza, CE", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.9 },
+  { id: 109, empresa: "Distribuidora Nordeste", comprador: "João Silva", local: "Fortaleza, CE", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.8, mock: true },
+  { id: 110, empresa: "Atacadista Cearense", comprador: "Francisco Lima", local: "Fortaleza, CE", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.7, mock: true },
+  { id: 111, empresa: "Armazém do Queijo CE", comprador: "José Santos", local: "Fortaleza, CE", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.6, mock: true },
+  { id: 112, empresa: "Laticínios Fortaleza", comprador: "Maria Clara", local: "Fortaleza, CE", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.9, mock: true },
 
   // Florianópolis / SC
-  { id: 113, empresa: "Distribuidora Sul", comprador: "Ricardo Gomes", local: "Florianópolis, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.7 },
-  { id: 114, empresa: "Atacadão Ilha da Magia", comprador: "Fernando Costa", local: "Florianópolis, SC", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.8 },
-  { id: 115, empresa: "Sul Laticínios", comprador: "Amanda Rocha", local: "Florianópolis, SC", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.6 },
-  { id: 116, empresa: "Empório Floripa", comprador: "Carlos Eduardo", local: "Florianópolis, SC", quantidade: 150, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.9 },
+  { id: 113, empresa: "Distribuidora Sul", comprador: "Ricardo Gomes", local: "Florianópolis, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.7, mock: true },
+  { id: 114, empresa: "Atacadão Ilha da Magia", comprador: "Fernando Costa", local: "Florianópolis, SC", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.8, mock: true },
+  { id: 115, empresa: "Sul Laticínios", comprador: "Amanda Rocha", local: "Florianópolis, SC", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.6, mock: true },
+  { id: 116, empresa: "Empório Floripa", comprador: "Carlos Eduardo", local: "Florianópolis, SC", quantidade: 150, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.9, mock: true },
 
   // Campinas / SP
-  { id: 117, empresa: "Distribuidora Bella", comprador: "Ana Costa", local: "Campinas, SP", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.6 },
-  { id: 118, empresa: "Atacadista Campinas", comprador: "Roberto Justos", local: "Campinas, SP", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.8 },
-  { id: 119, empresa: "Interior Queijos", comprador: "Paula Fernandes", local: "Campinas, SP", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.7 },
-  { id: 120, empresa: "Rota do Leite Campinas", comprador: "Marcos Vinícius", local: "Campinas, SP", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.9 },
+  { id: 117, empresa: "Distribuidora Bella", comprador: "Ana Costa", local: "Campinas, SP", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.6, mock: true },
+  { id: 118, empresa: "Atacadista Campinas", comprador: "Roberto Justos", local: "Campinas, SP", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.8, mock: true },
+  { id: 119, empresa: "Interior Queijos", comprador: "Paula Fernandes", local: "Campinas, SP", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.7, mock: true },
+  { id: 120, empresa: "Rota do Leite Campinas", comprador: "Marcos Vinícius", local: "Campinas, SP", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.9, mock: true },
 
   // Ribeirão Preto / SP
-  { id: 121, empresa: "Distribuidora das Vaquinhas", comprador: "Lucia Mendes", local: "Ribeirão Preto, SP", quantidade: 700, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.7 },
-  { id: 122, empresa: "Atacadão Ribeirão", comprador: "Carlos Alberto", local: "Ribeirão Preto, SP", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.8 },
-  { id: 123, empresa: "Queijos do Interior SP", comprador: "Juliana Silva", local: "Ribeirão Preto, SP", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.6 },
-  { id: 124, empresa: "Laticínios RP", comprador: "Fernando Henrique", local: "Ribeirão Preto, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.9 },
+  { id: 121, empresa: "Distribuidora das Vaquinhas", comprador: "Lucia Mendes", local: "Ribeirão Preto, SP", quantidade: 700, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.7, mock: true },
+  { id: 122, empresa: "Atacadão Ribeirão", comprador: "Carlos Alberto", local: "Ribeirão Preto, SP", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.8, mock: true },
+  { id: 123, empresa: "Queijos do Interior SP", comprador: "Juliana Silva", local: "Ribeirão Preto, SP", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.6, mock: true },
+  { id: 124, empresa: "Laticínios RP", comprador: "Fernando Henrique", local: "Ribeirão Preto, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.9, mock: true },
 
   // Franca / SP
-  { id: 125, empresa: "Atacadão São João", comprador: "Marcos Paulo", local: "Franca, SP", quantidade: 550, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.8 },
-  { id: 126, empresa: "Distribuidora Franca", comprador: "Roberto Carlos", local: "Franca, SP", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.7 },
-  { id: 127, empresa: "Empório do Queijo Franca", comprador: "Ana Luiza", local: "Franca, SP", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.6 },
-  { id: 128, empresa: "Laticínios Alta Mogiana", comprador: "Pedro Henrique", local: "Franca, SP", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.9 },
+  { id: 125, empresa: "Atacadão São João", comprador: "Marcos Paulo", local: "Franca, SP", quantidade: 550, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.8, mock: true },
+  { id: 126, empresa: "Distribuidora Franca", comprador: "Roberto Carlos", local: "Franca, SP", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.7, mock: true },
+  { id: 127, empresa: "Empório do Queijo Franca", comprador: "Ana Luiza", local: "Franca, SP", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.6, mock: true },
+  { id: 128, empresa: "Laticínios Alta Mogiana", comprador: "Pedro Henrique", local: "Franca, SP", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.9, mock: true },
 
   // Pouso Alegre / MG
-  { id: 129, empresa: "Distribuidora Mantiqueira", comprador: "Fernanda Lima", local: "Pouso Alegre, MG", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.8 },
-  { id: 130, empresa: "Atacadista Sul de Minas", comprador: "João Gabriel", local: "Pouso Alegre, MG", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.7 },
-  { id: 131, empresa: "Queijos Pouso Alegre", comprador: "Maria Fernanda", local: "Pouso Alegre, MG", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.9 },
-  { id: 132, empresa: "Armazém Mineiro PA", comprador: "Lucas Silva", local: "Pouso Alegre, MG", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.6 },
+  { id: 129, empresa: "Distribuidora Mantiqueira", comprador: "Fernanda Lima", local: "Pouso Alegre, MG", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.8, mock: true },
+  { id: 130, empresa: "Atacadista Sul de Minas", comprador: "João Gabriel", local: "Pouso Alegre, MG", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.7, mock: true },
+  { id: 131, empresa: "Queijos Pouso Alegre", comprador: "Maria Fernanda", local: "Pouso Alegre, MG", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.9, mock: true },
+  { id: 132, empresa: "Armazém Mineiro PA", comprador: "Lucas Silva", local: "Pouso Alegre, MG", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.6, mock: true },
 
   // Juazeiro do Norte / CE
-  { id: 133, empresa: "Atacadão do Sol", comprador: "Maria Oliveira", local: "Juazeiro do Norte, CE", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.7 },
-  { id: 134, empresa: "Distribuidora Cariri", comprador: "Francisco Assis", local: "Juazeiro do Norte, CE", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.8 },
-  { id: 135, empresa: "Queijos Juazeiro", comprador: "Cícero Romão", local: "Juazeiro do Norte, CE", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.6 },
-  { id: 136, empresa: "Laticínios Padre Cícero", comprador: "Ana Maria", local: "Juazeiro do Norte, CE", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.9 },
+  { id: 133, empresa: "Atacadão do Sol", comprador: "Maria Oliveira", local: "Juazeiro do Norte, CE", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.7, mock: true },
+  { id: 134, empresa: "Distribuidora Cariri", comprador: "Francisco Assis", local: "Juazeiro do Norte, CE", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.8, mock: true },
+  { id: 135, empresa: "Queijos Juazeiro", comprador: "Cícero Romão", local: "Juazeiro do Norte, CE", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.6, mock: true },
+  { id: 136, empresa: "Laticínios Padre Cícero", comprador: "Ana Maria", local: "Juazeiro do Norte, CE", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.9, mock: true },
 
   // Joinville / SC
-  { id: 137, empresa: "Atacadista do Sul", comprador: "Juliana Castro", local: "Joinville, SC", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.5 },
-  { id: 138, empresa: "Distribuidora Joinville", comprador: "Ricardo Silva", local: "Joinville, SC", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.8 },
-  { id: 139, empresa: "Empório Norte Catarinense", comprador: "Fernando Souza", local: "Joinville, SC", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.7 },
-  { id: 140, empresa: "Laticínios SC", comprador: "Mariana Lima", local: "Joinville, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.9 },
+  { id: 137, empresa: "Atacadista do Sul", comprador: "Juliana Castro", local: "Joinville, SC", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.5, mock: true },
+  { id: 138, empresa: "Distribuidora Joinville", comprador: "Ricardo Silva", local: "Joinville, SC", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.8, mock: true },
+  { id: 139, empresa: "Empório Norte Catarinense", comprador: "Fernando Souza", local: "Joinville, SC", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.7, mock: true },
+  { id: 140, empresa: "Laticínios SC", comprador: "Mariana Lima", local: "Joinville, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.9, mock: true },
 ];
 
 export const WHOLESALER_CATEGORIES = [

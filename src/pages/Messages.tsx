@@ -22,6 +22,7 @@ export function Messages() {
   const [otherUsersMap, setOtherUsersMap] = useState<Record<string, any>>({});
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'TODOS' | 'PRODUTOR' | 'ATACADISTA'>('TODOS');
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -36,14 +37,12 @@ export function Messages() {
   // Load available users to start a chat with
   useEffect(() => {
     if (!profile) return;
-    const targetRole = profile.role === 'PRODUTOR' ? 'ATACADISTA' : 'PRODUTOR';
     const q = query(
       collection(db, 'users'),
-      where('role', '==', targetRole),
       where('kycStatus', '==', 'VALIDADO')
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(u => u.id !== profile.id && (u.role === 'PRODUTOR' || u.role === 'ATACADISTA'));
       setAvailableUsers(usersData);
     });
     return () => unsubscribe();
@@ -196,22 +195,34 @@ export function Messages() {
             <MessageCircle className="w-5 h-5 text-app-accent" />
             Mensagens
           </h2>
-          <Input 
-            placeholder={`Buscar ${profile?.role === 'PRODUTOR' ? 'Atacadistas' : 'Produtores'}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px]"
-          />
+          <div className="flex gap-2">
+            <Input 
+              placeholder={`Buscar por nome ou empresa...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px]"
+            />
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value as any)}
+              className="bg-black/20 border-white/10 text-white/70 focus:ring-app-accent focus:border-app-accent rounded-[10px] px-3 border outline-none text-sm w-[130px] shrink-0"
+            >
+              <option value="TODOS">Todos</option>
+              <option value="PRODUTOR">Produtores</option>
+              <option value="ATACADISTA">Atacadistas</option>
+            </select>
+          </div>
         </div>
         
         <div className="flex-1 overflow-y-auto w-full">
-          {searchQuery.trim() !== '' ? (
+          {searchQuery.trim() !== '' || roleFilter !== 'TODOS' ? (
              // Search Results View
              <div className="flex flex-col">
                <div className="px-4 py-2 bg-black/20 text-xs font-bold text-white/50 uppercase tracking-wider">
                   Resultados da Busca
                </div>
                {availableUsers
+                 .filter(u => roleFilter === 'TODOS' || u.role === roleFilter)
                  .filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase()))
                  .map(foundUser => (
                    <div 
@@ -249,16 +260,18 @@ export function Messages() {
                          )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-semibold truncate text-sm">
-                          {foundUser?.nomeFantasia || foundUser?.name}
-                        </h3>
-                        <p className="text-xs text-[#FAE678] truncate">Novo Chat</p>
+                        <div className="flex justify-between items-baseline mb-1">
+                          <h3 className="text-white font-semibold truncate text-sm">
+                            {foundUser?.nomeFantasia || foundUser?.name}
+                          </h3>
+                        </div>
+                        <p className="text-xs text-[#FAE678] truncate">{foundUser.role === 'PRODUTOR' ? 'Produtor' : 'Atacadista'} • Iniciar Chat</p>
                       </div>
                    </div>
                  ))}
-                 {availableUsers.filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                 {availableUsers.filter(u => roleFilter === 'TODOS' || u.role === roleFilter).filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                     <div className="p-4 text-center text-white/50 text-sm">
-                       Nenhum usuário encontrado.
+                       Nenhum usuário encontrado com os filtros atuais.
                     </div>
                  )}
              </div>

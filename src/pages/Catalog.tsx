@@ -97,16 +97,21 @@ export function Catalog() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleStartChat = async (otherUserId: string) => {
+  const handleStartChat = async (otherUserId: string | number) => {
     if (!profile || !profile.id) return toast.error("Você precisa estar logado para iniciar uma conversa.");
-    if (profile.id === otherUserId) return toast.error("Você não pode iniciar uma conversa consigo mesmo.");
+    
+    // Convert to string and Resolve correct otherUserId (if it's a concatenated unique ID, split it)
+    const strOtherId = String(otherUserId);
+    const resolvedOtherId = strOtherId.includes('-') ? strOtherId.split('-')[0] : strOtherId;
+    
+    if (profile.id === resolvedOtherId) return toast.error("Você não pode iniciar uma conversa consigo mesmo.");
     
     // Check if chat already exists
     const q1 = query(collection(db, 'chats'), where('participants', 'array-contains', profile.id));
     const snapshot = await getDocs(q1);
     let existingChatId = null;
     snapshot.forEach(doc => {
-       if (doc.data().participants.includes(otherUserId)) {
+       if (doc.data().participants.includes(resolvedOtherId)) {
           existingChatId = doc.id;
        }
     });
@@ -116,7 +121,7 @@ export function Catalog() {
     } else {
        try {
          const newChatRef = await addDoc(collection(db, 'chats'), {
-            participants: [profile.id, otherUserId],
+            participants: [profile.id, resolvedOtherId],
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             unreadCount: {}
@@ -498,7 +503,12 @@ export function Catalog() {
                       <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                       <span className="font-bold text-xl text-white">R$ {product.preco.toFixed(2)}</span>
                     </div>
-                    <button className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]">
+                    <button 
+                      onClick={() => {
+                        toast.error('Este é um perfil de demonstração.');
+                      }}
+                      className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
+                    >
                       Comprar
                     </button>
                   </div>
@@ -534,17 +544,17 @@ export function Catalog() {
                       <span className="text-xs text-white/50 uppercase tracking-wider block mb-0.5">R$ / Kg</span>
                       <span className="font-bold text-xl text-white">R$ {Number(product._displayPrice || 0).toFixed(2)}</span>
                     </div>
-                    {profile?.id === (product.produtorId || product.id) || profile?.role === 'ADMIN' ? (
+                    {profile?.id === product.id || profile?.role === 'ADMIN' ? (
                         <Link to="/perfil">
                             <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 rounded-full h-9 px-4 font-bold text-[13px] min-w-[90px]">Editar</Button>
                         </Link>
                     ) : (
                         <Button 
                           onClick={() => {
-                            if (product.produtor || product.mock) {
-                              toast.error('Este é um perfil de demonstração.');
+                            if (product.produtor || product.mock || product._isRealProdCard !== true || !product.id || String(product.id).length < 5) {
+                               toast.error('Este é um perfil de demonstração.');
                             } else {
-                              handleStartChat(product.produtorId || product.id);
+                               handleStartChat(product.id);
                             }
                           }}
                           className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
@@ -591,7 +601,7 @@ export function Catalog() {
                   </div>
                   <button 
                     onClick={() => {
-                       if (wholesaler.comprador || wholesaler.mock) {
+                       if (wholesaler.comprador || wholesaler.mock || !wholesaler.id || String(wholesaler.id).length < 5) {
                          toast.error('Este é um perfil de demonstração.');
                        } else {
                          handleStartChat(wholesaler.id);

@@ -310,7 +310,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetType: string = 'general') => {
     if (!e.target.files?.length) return;
-    const filesArray = Array.from(e.target.files);
+    const filesArray = Array.from(e.target.files) as File[];
 
     if (targetType === 'general') {
         if (images.length + filesArray.length > 3) {
@@ -399,7 +399,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
       toast.error('Selecione pelo menos um tipo de queijo.');
       return;
     }
-    if (images.length === 0 && (!isProdutor || Object.values(cheeseImages).every((arr) => arr.length === 0))) {
+    if (images.length === 0 && (!isProdutor || (Object.values(cheeseImages) as string[][]).every((arr) => arr.length === 0))) {
       toast.error(`Pelo menos uma foto ${isProdutor ? 'do seu queijo/comércio' : 'do seu comércio'} é obrigatória.`);
       return;
     }
