@@ -372,9 +372,14 @@ export function CatalogPublic() {
                                         <span className="text-xs font-bold text-white truncate max-w-[120px] md:max-w-[150px]">{product.local}</span>
                                     </div>
                                 </div>
-                                <Link to="/login" className="w-10 h-10 rounded-full bg-app-accent hover:bg-app-accentHover text-app-bgDark flex items-center justify-center shadow-lg shadow-app-accent/30 transition-transform active:scale-95 shrink-0">
-                                    <ArrowRight className="w-4 h-4" />
-                                </Link>
+                                <button
+                                    onClick={() => {
+                                        alert("Este é um perfil de demonstração.");
+                                    }}
+                                    className="h-10 px-4 rounded-full bg-app-accent hover:bg-app-accentHover text-app-bgDark flex items-center justify-center shadow-lg shadow-app-accent/30 transition-transform active:scale-95 shrink-0 font-bold text-sm whitespace-nowrap"
+                                >
+                                     Falar com {catalogType === 'produtores' ? 'Produtor' : 'Comprador'}
+                                </button>
                             </div>
                         </div>
                       </div>

@@ -22,7 +22,6 @@ export function Messages() {
   const [otherUsersMap, setOtherUsersMap] = useState<Record<string, any>>({});
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [roleFilter, setRoleFilter] = useState<'TODOS' | 'PRODUTOR' | 'ATACADISTA'>('TODOS');
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -195,34 +194,22 @@ export function Messages() {
             <MessageCircle className="w-5 h-5 text-app-accent" />
             Mensagens
           </h2>
-          <div className="flex gap-2">
-            <Input 
-              placeholder={`Buscar por nome ou empresa...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px]"
-            />
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value as any)}
-              className="bg-black/20 border-white/10 text-white/70 focus:ring-app-accent focus:border-app-accent rounded-[10px] px-3 border outline-none text-sm w-[130px] shrink-0"
-            >
-              <option value="TODOS">Todos</option>
-              <option value="PRODUTOR">Produtores</option>
-              <option value="ATACADISTA">Atacadistas</option>
-            </select>
-          </div>
+          <Input 
+            placeholder={`Buscar por nome ou empresa...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-black/20 border-white/10 text-white placeholder:text-white/40 focus:ring-app-accent focus:border-app-accent rounded-[10px]"
+          />
         </div>
         
         <div className="flex-1 overflow-y-auto w-full">
-          {searchQuery.trim() !== '' || roleFilter !== 'TODOS' ? (
+          {searchQuery.trim() !== '' ? (
              // Search Results View
              <div className="flex flex-col">
                <div className="px-4 py-2 bg-black/20 text-xs font-bold text-white/50 uppercase tracking-wider">
                   Resultados da Busca
                </div>
                {availableUsers
-                 .filter(u => roleFilter === 'TODOS' || u.role === roleFilter)
                  .filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase()))
                  .map(foundUser => (
                    <div 
