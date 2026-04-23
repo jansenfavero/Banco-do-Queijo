@@ -100,9 +100,7 @@ export function Catalog() {
   const handleStartChat = async (otherUserId: string | number) => {
     if (!profile || !profile.id) return toast.error("Você precisa estar logado para iniciar uma conversa.");
     
-    // Convert to string and Resolve correct otherUserId (if it's a concatenated unique ID, split it)
-    const strOtherId = String(otherUserId);
-    const resolvedOtherId = strOtherId.includes('-') ? strOtherId.split('-')[0] : strOtherId;
+    const resolvedOtherId = String(otherUserId);
     
     if (profile.id === resolvedOtherId) return toast.error("Você não pode iniciar uma conversa consigo mesmo.");
     
