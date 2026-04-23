@@ -505,7 +505,7 @@ export function Catalog() {
                       <span className="font-bold text-xl text-white">R$ {product.preco.toFixed(2)}</span>
                     </div>
                     <button 
-                      onClick={() => handleStartChat(product.id)}
+                      onClick={() => handleStartChat(product.produtorId || product.produtor || product.id)}
                       className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
                     >
                       Comprar
@@ -549,7 +549,7 @@ export function Catalog() {
                         </Link>
                     ) : (
                         <Button 
-                          onClick={() => handleStartChat(product.id)}
+                          onClick={() => handleStartChat(product.produtorId || product.produtor || product.id)}
                           className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
                         >
                           Comprar
