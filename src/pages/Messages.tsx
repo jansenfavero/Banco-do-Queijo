@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Send, ArrowLeft, MessageCircle } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { removeAccents } from '../lib/utils';
 
 export function Messages() {
   const { user, profile } = useAuth();
@@ -215,34 +216,36 @@ export function Messages() {
                   Resultados da Busca
                </div>
                {availableUsers
-                 .filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase()))
+                 .filter(u => removeAccents(`${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`).toLowerCase().includes(removeAccents(searchQuery.toLowerCase())))
                   .map(foundUser => (
                    <div 
                       key={foundUser.id}
                       onClick={async () => {
-                         // Check if chat exists
-                         const existingChat = chats.find(c => c.participants.includes(foundUser.id));
-                         if (existingChat) {
-                            setActiveChatId(existingChat.id);
-                            navigate(`/mensagens?c=${existingChat.id}`, { replace: true });
-                            setSearchQuery('');
-                         } else {
-                            try {
-                               const newChatRef = await addDoc(collection(db, 'chats'), {
-                                  participants: [user?.uid, foundUser.id],
-                                  createdAt: serverTimestamp(),
-                                  updatedAt: serverTimestamp(),
-                                  unreadCount: {}
-                               });
-                               setActiveChatId(newChatRef.id);
-                               navigate(`/mensagens?c=${newChatRef.id}`, { replace: true });
-                               setSearchQuery('');
-                            } catch (error) {
-                               console.error(error);
-                            }
+                         try {
+                           // Check if chat exists
+                           const targetId = String(foundUser.id);
+                           const existingChat = chats.find(c => c.participants && c.participants.includes(targetId));
+                           if (existingChat) {
+                              setActiveChatId(existingChat.id);
+                              navigate(`/mensagens?c=${existingChat.id}`, { replace: true });
+                              setSearchQuery('');
+                           } else {
+                              const newChatRef = await addDoc(collection(db, 'chats'), {
+                                 participants: [String(user?.uid), targetId],
+                                 createdAt: serverTimestamp(),
+                                 updatedAt: serverTimestamp(),
+                                 unreadCount: {}
+                              });
+                              setActiveChatId(newChatRef.id);
+                              navigate(`/mensagens?c=${newChatRef.id}`, { replace: true });
+                              setSearchQuery('');
+                           }
+                         } catch (error: any) {
+                           console.error(error);
+                           import('sonner').then(m => m.toast.error("Erro ao processar clique: " + error.message));
                          }
                       }}
-                      className="p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors flex items-center gap-4"
+                      className="p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors flex items-center gap-4 group"
                    >
                       <div className="w-10 h-10 shrink-0 bg-app-bgDark rounded-full flex items-center justify-center text-app-accent font-bold text-sm overflow-hidden border border-white/10">
                          {foundUser?.images?.[0] ? (
@@ -253,15 +256,15 @@ export function Messages() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-baseline mb-1">
-                          <h3 className="text-white font-semibold truncate text-sm">
+                          <h3 className="text-white font-semibold truncate text-sm group-hover:text-app-accent transition-colors">
                             {foundUser?.nomeFantasia || foundUser?.name}
                           </h3>
                         </div>
-                        <p className="text-xs text-[#FAE678] truncate">{foundUser.role === 'PRODUTOR' ? 'Produtor' : 'Atacadista'} • Iniciar Chat</p>
+                        <p className="text-xs text-[#FAE678] truncate">{foundUser.role === 'PRODUTOR' ? 'Produtor' : 'Atacadista'} • Clique para Iniciar Chat</p>
                       </div>
                    </div>
                  ))}
-                 {availableUsers.filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                 {availableUsers.filter(u => removeAccents(`${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`).toLowerCase().includes(removeAccents(searchQuery.toLowerCase()))).length === 0 && (
                     <div className="p-4 text-center text-white/50 text-sm">
                        Nenhum usuário encontrado com a busca atual.
                     </div>

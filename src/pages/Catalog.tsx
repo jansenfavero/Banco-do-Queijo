@@ -111,7 +111,8 @@ export function Catalog() {
     const snapshot = await getDocs(q1);
     let existingChatId = null;
     snapshot.forEach(doc => {
-       if (doc.data().participants.includes(resolvedOtherId)) {
+       const data = doc.data();
+       if (data.participants && data.participants.includes(resolvedOtherId)) {
           existingChatId = doc.id;
        }
     });
@@ -121,15 +122,15 @@ export function Catalog() {
     } else {
        try {
          const newChatRef = await addDoc(collection(db, 'chats'), {
-            participants: [profile.id, resolvedOtherId],
+            participants: [String(profile.id), String(resolvedOtherId)],
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             unreadCount: {}
          });
          navigate(`/mensagens?c=${newChatRef.id}`);
-       } catch (error) {
+       } catch (error: any) {
          console.error("Error creating chat", error);
-         toast.error("Erro ao iniciar conversa.");
+         import('sonner').then(m => m.toast.error("Erro ao iniciar conversa: " + error.message));
        }
     }
   };
@@ -504,9 +505,7 @@ export function Catalog() {
                       <span className="font-bold text-xl text-white">R$ {product.preco.toFixed(2)}</span>
                     </div>
                     <button 
-                      onClick={() => {
-                        toast.error('Este é um perfil de demonstração.');
-                      }}
+                      onClick={() => handleStartChat(product.id)}
                       className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
                     >
                       Comprar
@@ -550,13 +549,7 @@ export function Catalog() {
                         </Link>
                     ) : (
                         <Button 
-                          onClick={() => {
-                            if (product.produtor || product.mock || product._isRealProdCard !== true || !product.id || String(product.id).length < 5) {
-                               toast.error('Este é um perfil de demonstração.');
-                            } else {
-                               handleStartChat(product.id);
-                            }
-                          }}
+                          onClick={() => handleStartChat(product.id)}
                           className="h-9 px-4 rounded-full bg-app-accent flex justify-center items-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-[13px] min-w-[100px]"
                         >
                           Comprar
@@ -600,13 +593,7 @@ export function Catalog() {
                     <span className="font-bold text-[28px] text-white leading-none">{wholesaler.quantidade || wholesaler.weeklyVolume} <span className="text-[16px] lowercase">kg/sem</span></span>
                   </div>
                   <button 
-                    onClick={() => {
-                       if (wholesaler.comprador || wholesaler.mock || !wholesaler.id || String(wholesaler.id).length < 5) {
-                         toast.error('Este é um perfil de demonstração.');
-                       } else {
-                         handleStartChat(wholesaler.id);
-                       }
-                    }}
+                    onClick={() => handleStartChat(wholesaler.id)}
                     className="w-full h-11 rounded-full bg-app-accent flex items-center justify-center text-app-bgDark hover:bg-app-accentHover transition-colors font-bold text-sm gap-2 mt-2"
                   >
                     <Gavel className="w-4 h-4" /> Fazer Oferta
