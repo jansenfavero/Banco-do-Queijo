@@ -305,15 +305,18 @@ service cloud.firestore {
         // Read: A user can read messages if they are part of the parent chat.
         // We use get() on the parent chat document to verify participation.
         allow read: if isAuthenticated() && 
+                    exists(/databases/$(database)/documents/chats/$(chatId)) &&
                     request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
                     
         // Create: Same condition as read, PLUS validate the message payload.
         allow create: if isAuthenticated() && 
+                      exists(/databases/$(database)/documents/chats/$(chatId)) &&
                       request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants &&
                       isValidMessage(request.resource.data);
                       
         // Update: E.g. marking as read or accepting an offer.
         allow update: if isAuthenticated() && 
+                      exists(/databases/$(database)/documents/chats/$(chatId)) &&
                       request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants &&
                       areImmutableFieldsUnchanged(['senderId', 'createdAt', 'messageType']);
       }

@@ -59,12 +59,17 @@ export function Messages() {
     
     const q = query(
       collection(db, 'chats'),
-      where('participants', 'array-contains', user.uid),
-      orderBy('updatedAt', 'desc')
+      where('participants', 'array-contains', user.uid)
     );
     
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const chatsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const chatsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+      // Sort locally to avoid complex query indexing issues
+      chatsData.sort((a, b) => {
+         const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
+         const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
+         return timeB - timeA;
+      });
       setChats(chatsData);
       
       // Fetch user details for the other participants
