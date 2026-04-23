@@ -41,7 +41,12 @@ export function Messages() {
       where('kycStatus', '==', 'VALIDADO')
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(u => u.id !== profile.id && (u.role === 'PRODUTOR' || u.role === 'ATACADISTA'));
+      let targetRoles: string[] = [];
+      if (profile.role === 'PRODUTOR') targetRoles = ['ATACADISTA'];
+      else if (profile.role === 'ATACADISTA') targetRoles = ['PRODUTOR'];
+      else targetRoles = ['PRODUTOR', 'ATACADISTA'];
+      
+      const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)).filter((u: any) => u.id !== profile.id && targetRoles.includes(u.role));
       setAvailableUsers(usersData);
     });
     return () => unsubscribe();
@@ -211,7 +216,7 @@ export function Messages() {
                </div>
                {availableUsers
                  .filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase()))
-                 .map(foundUser => (
+                  .map(foundUser => (
                    <div 
                       key={foundUser.id}
                       onClick={async () => {
@@ -256,9 +261,9 @@ export function Messages() {
                       </div>
                    </div>
                  ))}
-                 {availableUsers.filter(u => roleFilter === 'TODOS' || u.role === roleFilter).filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                 {availableUsers.filter(u => `${u.name} ${u.nomeFantasia || ''} ${u.razaoSocial || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                     <div className="p-4 text-center text-white/50 text-sm">
-                       Nenhum usuário encontrado com os filtros atuais.
+                       Nenhum usuário encontrado com a busca atual.
                     </div>
                  )}
              </div>
