@@ -100,25 +100,31 @@ export function Catalog() {
   const handleStartChat = async (otherUserId: string | number) => {
     if (!profile || !profile.id) return toast.error("Você precisa estar logado para iniciar uma conversa.");
     
-    const resolvedOtherId = String(otherUserId);
+    // Ensure mock users are prefixed correctly so Messages can render them
+    let resolvedOtherId = String(otherUserId);
+    if (!isNaN(Number(resolvedOtherId)) || resolvedOtherId === "Laticínio Nordeste" || resolvedOtherId === "Sítio do Sol" || resolvedOtherId === "Fazenda Sertão" || resolvedOtherId === "Queijaria Ouro" || resolvedOtherId === "Distribuidora Sul") {
+       if (!resolvedOtherId.startsWith('mock-')) {
+          resolvedOtherId = `mock-${activeTab === 'produtores' ? 'prod' : 'atac'}-${resolvedOtherId}`;
+       }
+    }
     
     if (profile.id === resolvedOtherId) return toast.error("Você não pode iniciar uma conversa consigo mesmo.");
     
-    // Check if chat already exists
-    const q1 = query(collection(db, 'chats'), where('participants', 'array-contains', profile.id));
-    const snapshot = await getDocs(q1);
-    let existingChatId = null;
-    snapshot.forEach(doc => {
-       const data = doc.data();
-       if (data.participants && data.participants.includes(resolvedOtherId)) {
-          existingChatId = doc.id;
-       }
-    });
+    try {
+      // Check if chat already exists
+      const q1 = query(collection(db, 'chats'), where('participants', 'array-contains', profile.id));
+      const snapshot = await getDocs(q1);
+      let existingChatId = null;
+      snapshot.forEach(doc => {
+         const data = doc.data();
+         if (data.participants && data.participants.includes(resolvedOtherId)) {
+            existingChatId = doc.id;
+         }
+      });
 
-    if (existingChatId) {
-       navigate(`/mensagens?c=${existingChatId}`);
-    } else {
-       try {
+      if (existingChatId) {
+         navigate(`/mensagens?c=${existingChatId}`);
+      } else {
          const newChatRef = await addDoc(collection(db, 'chats'), {
             participants: [String(profile.id), String(resolvedOtherId)],
             createdAt: serverTimestamp(),
@@ -126,10 +132,10 @@ export function Catalog() {
             unreadCount: {}
          });
          navigate(`/mensagens?c=${newChatRef.id}`);
-       } catch (error: any) {
-         console.error("Error creating chat", error);
-         import('sonner').then(m => m.toast.error("Erro ao iniciar conversa: " + error.message));
-       }
+      }
+    } catch (error: any) {
+      console.error("Error creating chat", error);
+      toast.error("Bloqueio de Permissão! Acesse seu Firebase Console > Firestore Database > Rules e atualize as regras para liberar a rota /chats/ ou cole o firestore.rules atualizado lá.");
     }
   };
 

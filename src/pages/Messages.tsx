@@ -83,13 +83,13 @@ export function Messages() {
       
       for (const id of Array.from(usersToFetch)) {
         try {
-          if (id.startsWith('mock-')) {
+          if (String(id).startsWith('mock-')) {
              setOtherUsersMap(prev => ({ 
                 ...prev, 
                 [id]: {
                    id,
-                   name: id.includes('prod') ? 'Queijaria Exemplo (Demonstração)' : 'Atacadista Exemplo (Demonstração)',
-                   role: id.includes('prod') ? 'PRODUTOR' : 'ATACADISTA',
+                   name: String(id).includes('prod') ? 'Queijaria Exemplo (Demonstração)' : 'Atacadista Exemplo (Demonstração)',
+                   role: String(id).includes('prod') ? 'PRODUTOR' : 'ATACADISTA',
                    images: []
                 }
              }));
@@ -98,6 +98,17 @@ export function Messages() {
           const userDoc = await getDoc(doc(db, 'users', id));
           if (userDoc.exists()) {
             setOtherUsersMap(prev => ({ ...prev, [id]: userDoc.data() }));
+          } else {
+             // Fallback for mock IDs that don't start with mock-, or deleted users
+             setOtherUsersMap(prev => ({ 
+                ...prev, 
+                [id]: {
+                   id,
+                   name: isNaN(Number(id)) ? id : `Contato Exemplo ${id}`, // If it's "Laticínio Nordeste", use that name
+                   role: 'PRODUTOR',
+                   images: []
+                }
+             }));
           }
         } catch (error) {
           console.error("Error fetching user", id, error);
@@ -196,8 +207,9 @@ export function Messages() {
         // We know `activeChat` has current state
         [`unreadCount.${otherParticipantId}`]: (activeChat?.unreadCount?.[otherParticipantId] || 0) + 1
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error sending message", error);
+      import('sonner').then(m => m.toast.error("Erro ao enviar. Verifique as regras (Rules) de Escrita e Leitura no Console do Firebase."));
     }
   };
 
@@ -259,7 +271,7 @@ export function Messages() {
                            }
                          } catch (error: any) {
                            console.error(error);
-                           import('sonner').then(m => m.toast.error("Erro ao processar clique: " + error.message));
+                           import('sonner').then(m => m.toast.error("Bloqueio de Permissão! Acesse seu Firebase Console > Firestore Database > Rules e atualize as regras para liberar a rota /chats/ e /messages/ ou cole o firestore.rules lá."));
                          }
                       }}
                       className="p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors flex items-center gap-4 group"
