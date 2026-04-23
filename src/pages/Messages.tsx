@@ -5,7 +5,7 @@ import { collection, query, where, onSnapshot, orderBy, addDoc, updateDoc, doc, 
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
-import { Send, ArrowLeft, MessageCircle } from 'lucide-react';
+import { Send, ArrowLeft, MessageCircle, Mic } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { removeAccents } from '../lib/utils';
 
@@ -83,6 +83,18 @@ export function Messages() {
       
       for (const id of Array.from(usersToFetch)) {
         try {
+          if (id.startsWith('mock-')) {
+             setOtherUsersMap(prev => ({ 
+                ...prev, 
+                [id]: {
+                   id,
+                   name: id.includes('prod') ? 'Queijaria Exemplo (Demonstração)' : 'Atacadista Exemplo (Demonstração)',
+                   role: id.includes('prod') ? 'PRODUTOR' : 'ATACADISTA',
+                   images: []
+                }
+             }));
+             continue;
+          }
           const userDoc = await getDoc(doc(db, 'users', id));
           if (userDoc.exists()) {
             setOtherUsersMap(prev => ({ ...prev, [id]: userDoc.data() }));
@@ -422,9 +434,12 @@ export function Messages() {
                  <Input 
                    value={newMessage}
                    onChange={e => setNewMessage(e.target.value)}
-                   placeholder="Digite uma mensagem..."
+                   placeholder="Mensagem de texto ou áudio..."
                    className="flex-1 bg-black/30 border-white/10 text-white placeholder:text-white/40 focus:ring-[#d36101] focus:border-[#d36101] h-12 rounded-xl"
                  />
+                 <Button type="button" onClick={() => import('sonner').then(m => m.toast.info("Audio capture is not implemented yet."))} className="h-12 w-12 p-0 rounded-xl bg-black/30 hover:bg-black/50 text-white shrink-0 border border-white/10">
+                    <Mic className="w-5 h-5 text-white/70" />
+                 </Button>
                  <Button type="submit" disabled={!newMessage.trim()} className="h-12 w-12 p-0 rounded-xl bg-[#d36101] hover:bg-[#b85200] text-white shrink-0">
                    <Send className="w-5 h-5 -ml-1" />
                  </Button>

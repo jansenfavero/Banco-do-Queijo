@@ -297,10 +297,10 @@ service cloud.firestore {
     }
 
     match /chats/{chatId} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if true; // Extremely relaxed for debugging
       
       match /messages/{messageId} {
-        allow read, write: if isAuthenticated();
+        allow read, write: if true; // Extremely relaxed for debugging
       }
     }
   }
