@@ -81,9 +81,9 @@ export function AppLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-app-cardDark flex flex-col md:flex-row">
+    <div className="h-[100dvh] bg-app-cardDark flex flex-col md:flex-row overflow-hidden">
       {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-[#d36101] border-b border-[#a64b00] shadow-2xl z-50 sticky top-0">
+      <div className="md:hidden flex shrink-0 items-center justify-between p-4 bg-[#d36101] border-b border-[#a64b00] shadow-2xl z-50">
         <div className="flex items-center gap-3 font-bold text-app-accent text-2xl whitespace-nowrap">
           <div className="w-14 h-14 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
@@ -156,8 +156,8 @@ export function AppLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-[#2b1400] flex flex-col">
-        <div className="flex-1">
+      <main className="flex-1 overflow-y-auto bg-[#2b1400] flex flex-col min-h-0 relative">
+        <div className="flex-1 flex flex-col min-h-0">
           <Outlet />
         </div>
         <Footer />
