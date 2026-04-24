@@ -26,6 +26,58 @@ export function Messages() {
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const [isRecording, setIsRecording] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const rec = new SpeechRecognition();
+        rec.continuous = false;
+        rec.interimResults = true;
+        rec.lang = 'pt-BR';
+
+        rec.onresult = (event: any) => {
+          const transcript = Array.from(event.results)
+            .map((result: any) => result[0])
+            .map((result: any) => result.transcript)
+            .join('');
+            
+          setNewMessage(transcript);
+        };
+
+        rec.onerror = (event: any) => {
+          console.error("Speech recognition error", event.error);
+          setIsRecording(false);
+        };
+
+        rec.onend = () => {
+          setIsRecording(false);
+        };
+
+        setRecognition(rec);
+      }
+    }
+  }, []);
+
+  const toggleRecording = () => {
+    if (!recognition) {
+        import('sonner').then(m => m.toast.error("O Google Chrome não autorizou ou seu navegador não suporta reconhecimento de voz direto."));
+        return;
+    }
+    
+    if (isRecording) {
+      recognition.stop();
+      setIsRecording(false);
+    } else {
+      setNewMessage('');
+      recognition.start();
+      setIsRecording(true);
+      import('sonner').then(m => m.toast.info("Grave seu áudio... Fale agora."));
+    }
+  };
 
   // Initialize active chat if provided via query param
   useEffect(() => {
@@ -368,7 +420,7 @@ export function Messages() {
         ) : (
           <>
             {/* Header */}
-            <div className="p-4 border-b border-white/10 bg-app-bgDark/30 flex items-center gap-3 shrink-0">
+            <div className="p-4 border-b border-[#a64b00] bg-[#d36101] rounded-t-xl flex items-center gap-3 shrink-0">
               <button 
                 onClick={() => {
                    setActiveChatId(null);
@@ -419,7 +471,7 @@ export function Messages() {
                    const isMine = msg.senderId === user?.uid;
                    return (
                      <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                       <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-2.5 ${isMine ? 'bg-[#d36101] text-white rounded-br-none' : 'bg-[#4a2000] text-white rounded-bl-none border border-white/5'}`}>
+                       <div className={`max-w-[85%] md:max-w-[70%] rounded-[20px] px-4 py-2.5 ${isMine ? 'bg-app-accent text-[#361500] font-medium rounded-br-none' : 'bg-[#d36101] text-white font-medium rounded-bl-none border border-[#a64b00]'}`}>
                           {msg.messageType === 'offer' && msg.offerData ? (
                              <div className="bg-black/20 p-3 rounded-lg mb-2 text-sm border border-white/10">
                                <p className="font-bold text-app-accent mb-1">📦 Oferta Comercial</p>
@@ -429,7 +481,7 @@ export function Messages() {
                              </div>
                           ) : null}
                           <p className="text-sm whitespace-pre-wrap word-break-words">{msg.text}</p>
-                          <p className={`text-[10px] mt-1 text-right ${isMine ? 'text-white/70' : 'text-white/50'}`}>
+                          <p className={`text-[10px] mt-1 text-right ${isMine ? 'text-app-bgDark/60 font-bold' : 'text-white/60 font-bold'}`}>
                              {formatTime(msg.createdAt)}
                           </p>
                        </div>
@@ -440,19 +492,19 @@ export function Messages() {
                <div ref={messagesEndRef} />
             </div>
             
-            {/* Inpue Area */}
-            <div className="p-4 border-t border-white/10 bg-app-bgDark/20 shrink-0">
+            {/* Input Area */}
+            <div className="p-4 border-t border-[#a64b00] bg-[#d36101] rounded-b-xl shrink-0">
                <form onSubmit={handleSendMessage} className="flex gap-3">
                  <Input 
                    value={newMessage}
                    onChange={e => setNewMessage(e.target.value)}
                    placeholder="Mensagem de texto ou áudio..."
-                   className="flex-1 bg-black/30 border-white/10 text-white placeholder:text-white/40 focus:ring-[#d36101] focus:border-[#d36101] h-12 rounded-xl"
+                   className="flex-1 bg-black/20 border-[#a64b00] text-white placeholder:text-white/60 focus:ring-black/40 focus:border-black/40 h-12 rounded-xl"
                  />
-                 <Button type="button" onClick={() => import('sonner').then(m => m.toast.info("Audio capture is not implemented yet."))} className="h-12 w-12 p-0 rounded-xl bg-black/30 hover:bg-black/50 text-white shrink-0 border border-white/10">
-                    <Mic className="w-5 h-5 text-white/70" />
+                 <Button type="button" onClick={toggleRecording} className={`h-12 w-12 p-0 rounded-xl transition-colors shrink-0 border border-[#a64b00] ${isRecording ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' : 'bg-[#a64b00] hover:bg-black/20 text-white'}`}>
+                    <Mic className="w-5 h-5" />
                  </Button>
-                 <Button type="submit" disabled={!newMessage.trim()} className="h-12 w-12 p-0 rounded-xl bg-[#d36101] hover:bg-[#b85200] text-white shrink-0">
+                 <Button type="submit" disabled={!newMessage.trim()} className="h-12 w-12 p-0 rounded-xl bg-app-accent hover:bg-app-accentHover text-[#361500] shrink-0 border border-app-accent disabled:opacity-50 disabled:bg-[#a64b00] disabled:text-white/50 disabled:border-[#a64b00]">
                    <Send className="w-5 h-5 -ml-1" />
                  </Button>
                </form>

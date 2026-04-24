@@ -128,7 +128,7 @@ export function AppLayout() {
                 <Icon size={20} className={isActive ? "text-[#d36101]" : "opacity-80"} />
                 <span className="flex-1">{item.name}</span>
                 {item.badge ? (
-                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-app-accent text-app-bgDark text-[10px] font-bold px-2 py-0.5 rounded-full">
                     {item.badge}
                   </span>
                 ) : null}
