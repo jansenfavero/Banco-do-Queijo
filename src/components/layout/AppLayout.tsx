@@ -60,14 +60,14 @@ export function AppLayout() {
     { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
     { name: 'Perfis e Permissões', path: '/admin/usuarios', icon: Shield },
     { name: 'Todas as Demandas', path: '/demandas', icon: Megaphone },
-    { name: 'Todos os Pedidos', path: '/pedidos', icon: ShoppingCart },
+    { name: 'Todos os Pedidos', path: '/compras', icon: ShoppingCart },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : profile?.role === 'PRODUTOR' ? [
     { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
     { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
-    { name: 'Pedidos Recebidos', path: '/pedidos', icon: ShoppingCart },
+    { name: 'Pedidos Recebidos', path: '/compras', icon: ShoppingCart },
     { name: 'Painel de Demandas', path: '/demandas', icon: Megaphone },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ] : [
@@ -75,7 +75,7 @@ export function AppLayout() {
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
     { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
-    { name: 'Minhas Compras', path: '/pedidos', icon: ShoppingCart },
+    { name: 'Minhas Compras', path: '/compras', icon: ShoppingCart },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ];
 

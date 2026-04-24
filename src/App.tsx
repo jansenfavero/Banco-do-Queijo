@@ -70,7 +70,7 @@ export default function App() {
               <Catalog />
             </ProtectedRoute>
           } />
-          <Route path="/pedidos" element={
+          <Route path="/compras" element={
             <ProtectedRoute>
               <Orders />
             </ProtectedRoute>

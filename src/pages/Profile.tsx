@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -19,6 +19,13 @@ import { Switch } from '../components/ui/switch';
 export function Profile() {
   const { profile } = useAuth();
   const [isPublic, setIsPublic] = useState(profile?.isPublic !== false);
+
+  // Sync isPublic from Firestore whenever profile reloads (persists 'Oculto' status after logout/login)
+  useEffect(() => {
+    if (profile) {
+      setIsPublic(profile.isPublic !== false);
+    }
+  }, [profile]);
   
   if (!profile) {
     return <div>Carregando...</div>;

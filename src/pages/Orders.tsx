@@ -70,9 +70,11 @@ export function Orders() {
         <div className="flex justify-center py-10 text-white">Carregando pedidos...</div>
       ) : orders.length === 0 ? (
         <div className="text-center py-20 bg-app-cardDark text-white rounded-[24px] border-2 border-[#d36101] shadow-2xl">
-          <h3 className="text-lg font-bold">Nenhum pedido encontrado</h3>
+          <h3 className="text-lg font-bold">
+            {profile?.role === 'ATACADISTA' ? 'Nenhuma compra encontrada' : 'Nenhum pedido encontrado'}
+          </h3>
           <p className="text-white/70 mt-1">
-            Você ainda não possui histórico de pedidos.
+            {profile?.role === 'ATACADISTA' ? 'Você ainda não possui histórico de compras.' : 'Você ainda não possui histórico de pedidos.'}
           </p>
         </div>
       ) : (
