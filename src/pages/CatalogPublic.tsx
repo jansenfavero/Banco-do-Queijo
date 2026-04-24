@@ -159,7 +159,7 @@ export function CatalogPublic() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-app-bgDark text-gray-100">
+    <div className="h-[100dvh] flex flex-col bg-app-bgDark text-gray-100 overflow-hidden">
       
       {/* Hero Background */}
       <div className="absolute top-0 left-0 w-full h-[70vh] md:h-[90vh] z-0 overflow-hidden pointer-events-none bg-[#2b1400]">
@@ -175,7 +175,8 @@ export function CatalogPublic() {
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-app-bgDark via-app-bgDark/90 to-transparent"></div>
       </div>
 
-      <header className="relative z-30 pt-6 pb-4 px-4 md:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto w-full flex justify-between items-center bg-transparent">
+      <div className="flex-1 overflow-y-auto flex flex-col pt-0 w-full">
+        <header className="relative z-30 pt-6 pb-4 px-4 md:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto w-full flex justify-between items-center bg-transparent">
         <Link to="/" className="flex items-center gap-3 md:gap-4 hover:opacity-90 transition-opacity">
           <div className="w-16 h-16 md:w-20 md:h-20 shrink-0 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
@@ -188,10 +189,10 @@ export function CatalogPublic() {
           <Link to="/login" className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-app-cardDark/90 backdrop-blur-md shadow-lg flex items-center justify-center text-white hover:bg-[#5a2800] border border-[#5a2800] transition-all active:scale-95" title="Entrar">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinelinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </Link>
-        </div>
-      </header>
+          </div>
+        </header>
 
-      <main className="flex-grow w-full relative flex flex-col">
+        <main className="flex-1 w-full relative flex flex-col">
         
         {/* Título Hero Section */}
         <div className="px-4 sm:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto mt-[4vh] md:mt-[15vh] mb-16 md:mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-30 text-left md:text-center flex flex-col items-start md:items-center">
@@ -338,7 +339,7 @@ export function CatalogPublic() {
                   <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 overflow-x-auto md:overflow-visible gap-6 pb-6 px-4 sm:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto no-scrollbar snap-x md:snap-none relative z-20">
                     
                     {categoryProducts.map((product: any) => (
-                      <div key={product.id} className={`w-[85vw] sm:w-[320px] md:w-auto shrink-0 md:shrink flex-col snap-start md:snap-align-none ${catalogType === 'produtores' ? 'bg-app-cardDark' : 'bg-[#703200]'} rounded-[2rem] shadow-lg border border-[#d36101]/30 overflow-hidden flex group relative cursor-pointer glow-hover transition-colors duration-500`}>
+                      <div key={product.id} className={`w-[85vw] sm:w-[320px] md:w-auto shrink-0 md:shrink flex-col snap-start md:snap-align-none ${catalogType === 'produtores' ? 'bg-app-cardDark' : 'bg-[#703200]'} rounded-[2rem] shadow-lg border-2 border-[#d36101] overflow-hidden flex group relative cursor-pointer glow-hover transition-colors duration-500`}>
                         <div className="relative h-48 sm:h-52 w-full overflow-hidden shrink-0">
                             <img src={product.imagem} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={product.nome} />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
@@ -394,8 +395,11 @@ export function CatalogPublic() {
           </div>
         </div>
       </main>
+      </div>
       
-      <Footer />
+      <div className="shrink-0 relative z-50">
+        <Footer />
+      </div>
     </div>
   );
 }

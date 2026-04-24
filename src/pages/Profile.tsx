@@ -39,7 +39,7 @@ export function Profile() {
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+          <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
             <User className="h-8 w-8 text-app-accent" />
           </div>
           <div>

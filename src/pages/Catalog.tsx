@@ -129,8 +129,21 @@ export function Catalog() {
             participants: [String(profile.id), String(resolvedOtherId)],
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
-            unreadCount: {}
+            unreadCount: {
+               [resolvedOtherId]: 1
+            },
+            lastMessage: "Olá! Vi seu perfil na vitrine e tenho interesse em negociar.",
+            lastMessageTime: serverTimestamp()
          });
+         
+         await addDoc(collection(db, `chats/${newChatRef.id}/messages`), {
+             senderId: profile.id,
+             text: "Olá! Vi seu perfil na vitrine e tenho interesse em negociar.",
+             messageType: 'text',
+             read: false,
+             createdAt: serverTimestamp()
+         });
+         
          navigate(`/mensagens?c=${newChatRef.id}`);
       }
     } catch (error: any) {
@@ -325,7 +338,7 @@ export function Catalog() {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+          <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
             <Store className="h-8 w-8 text-app-accent" />
           </div>
           <div>
@@ -349,7 +362,7 @@ export function Catalog() {
       </div>
 
       {(!profile || profile.role === 'ADMIN') && (
-        <div className="flex bg-app-cardDark p-1.5 rounded-[24px] border border-[#4a2000] w-fit shadow-lg">
+        <div className="flex bg-app-cardDark p-1.5 rounded-[24px] border-2 border-[#d36101] w-fit shadow-lg">
           <button
             onClick={() => setActiveTab('produtores')}
             className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}

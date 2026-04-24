@@ -25,10 +25,10 @@ const CheeseIcon = ({ className }: { className?: string }) => (
 
 export function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-app-bgDark text-gray-100">
+    <div className="h-[100dvh] flex flex-col bg-app-bgDark text-gray-100 overflow-hidden">
       
       {/* Hero Background */}
-      <div className="absolute top-0 left-0 w-full h-screen z-0 overflow-hidden pointer-events-none bg-[#2b1400]">
+      <div className="absolute top-0 left-0 w-full h-[100dvh] z-0 overflow-hidden pointer-events-none bg-[#2b1400]">
         <video 
           src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
           autoPlay 
@@ -41,7 +41,8 @@ export function Home() {
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-app-bgDark via-app-bgDark/90 to-transparent"></div>
       </div>
 
-      <header className="relative z-30 pt-6 pb-4 px-4 md:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto w-full flex flex-col md:flex-row justify-center md:justify-between items-center bg-transparent">
+      <div className="flex-1 overflow-y-auto flex flex-col pt-0 relative z-30 w-full">
+        <header className="relative z-30 pt-6 pb-4 px-4 md:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto w-full flex flex-col md:flex-row justify-center md:justify-between items-center bg-transparent">
         <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-center md:text-left">
           <div className="w-24 h-24 md:w-20 md:h-20 shrink-0 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain drop-shadow-lg" />
@@ -54,10 +55,10 @@ export function Home() {
           <Link to="/login" className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-app-cardDark/90 backdrop-blur-md shadow-lg flex items-center justify-center text-white hover:bg-[#5a2800] border border-[#5a2800] transition-all active:scale-95" title="Entrar">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </Link>
-        </div>
-      </header>
+          </div>
+        </header>
 
-      <main className="flex-grow w-full relative flex flex-col justify-center pb-20">
+        <main className="flex-1 w-full relative flex flex-col items-center justify-center pb-20">
         
         {/* Título Hero Section */}
         <div className="px-4 sm:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto mt-[2vh] md:mt-[5vh] mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-30 text-center flex flex-col items-center">
@@ -77,13 +78,13 @@ export function Home() {
             {/* Card Produtor */}
             <Link 
               to="/cadastro?role=PRODUTOR" 
-              className="group relative overflow-hidden rounded-[2rem] bg-app-cardDark/80 backdrop-blur-md border border-[#d36101]/30 p-6 text-left transition-all duration-500 hover:bg-[#703200]/90 hover:border-app-accent hover:shadow-[0_0_30px_rgba(211,97,1,0.4)] hover:-translate-y-2"
+              className="group relative overflow-hidden rounded-[2rem] bg-app-cardDark/80 backdrop-blur-md border-2 border-[#d36101] p-6 text-left transition-all duration-500 hover:bg-[#703200]/90 hover:border-app-accent hover:shadow-[0_0_30px_rgba(211,97,1,0.4)] hover:-translate-y-2"
             >
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
                 <CheeseIcon className="w-32 h-32 text-app-accent" />
               </div>
               <div className="relative z-10">
-                <div className="w-16 h-16 rounded-2xl bg-[#703200] flex items-center justify-center mb-6 border border-[#d36101]/50 group-hover:bg-app-accent group-hover:border-app-accent transition-colors duration-500">
+                <div className="w-16 h-16 rounded-2xl bg-[#703200] flex items-center justify-center mb-6 border-2 border-[#d36101] group-hover:bg-app-accent group-hover:border-app-accent transition-colors duration-500">
                   <CheeseIcon className="w-8 h-8 text-app-accent group-hover:text-app-bgDark transition-colors duration-500" />
                 </div>
                 <h3 className="text-3xl font-bold text-white mb-3">Sou Produtor</h3>
@@ -104,13 +105,13 @@ export function Home() {
             {/* Card Atacadista */}
             <Link 
               to="/cadastro?role=ATACADISTA" 
-              className="group relative overflow-hidden rounded-[2rem] bg-app-cardDark/80 backdrop-blur-md border border-[#d36101]/30 p-6 text-left transition-all duration-500 hover:bg-[#703200]/90 hover:border-app-accent hover:shadow-[0_0_30px_rgba(211,97,1,0.4)] hover:-translate-y-2"
+              className="group relative overflow-hidden rounded-[2rem] bg-app-cardDark/80 backdrop-blur-md border-2 border-[#d36101] p-6 text-left transition-all duration-500 hover:bg-[#703200]/90 hover:border-app-accent hover:shadow-[0_0_30px_rgba(211,97,1,0.4)] hover:-translate-y-2"
             >
               <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
                 <Store className="w-32 h-32 text-app-accent" />
               </div>
               <div className="relative z-10">
-                <div className="w-16 h-16 rounded-2xl bg-[#703200] flex items-center justify-center mb-6 border border-[#d36101]/50 group-hover:bg-app-accent group-hover:border-app-accent transition-colors duration-500">
+                <div className="w-16 h-16 rounded-2xl bg-[#703200] flex items-center justify-center mb-6 border-2 border-[#d36101] group-hover:bg-app-accent group-hover:border-app-accent transition-colors duration-500">
                   <Store className="w-8 h-8 text-app-accent group-hover:text-app-bgDark transition-colors duration-500" />
                 </div>
                 <h3 className="text-3xl font-bold text-white mb-3">Sou Atacadista</h3>
@@ -132,7 +133,10 @@ export function Home() {
 
         </div>
       </main>
-      <Footer />
+      </div>
+      <div className="shrink-0 relative z-50">
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -156,11 +156,13 @@ export function AppLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto bg-[#2b1400] flex flex-col min-h-0 relative">
-        <div className="flex-1 flex flex-col min-h-0">
+      <main className="flex-1 bg-[#2b1400] flex flex-col min-h-0 relative">
+        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           <Outlet />
         </div>
-        <Footer />
+        <div className="shrink-0">
+          <Footer />
+        </div>
       </main>
     </div>
   );

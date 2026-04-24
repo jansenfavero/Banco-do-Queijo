@@ -275,8 +275,8 @@ export function Messages() {
     <div className="p-4 md:p-6 lg:p-8 flex-1 flex flex-col md:flex-row gap-4 md:gap-6 max-w-[1400px] mx-auto w-full min-h-0 relative">
       
       {/* Sidebar List */}
-      <Card className={`bg-[#361500] border-white/5 flex flex-col overflow-hidden w-full md:w-[380px] drop-shadow-lg rounded-[24px] ${activeChatId ? 'hidden md:flex' : 'flex'} flex-1 md:flex-none h-full min-h-[400px] md:min-h-0 max-h-full`}>
-        <div className="p-5 border-b border-white/10 shrink-0">
+      <Card className={`bg-[#361500] border-2 border-[#d36101] flex flex-col overflow-hidden w-full md:w-[380px] drop-shadow-lg rounded-[24px] ${activeChatId ? 'hidden md:flex' : 'flex'} flex-1 md:flex-none h-full min-h-[400px] md:min-h-0 max-h-full`}>
+        <div className="p-5 border-b-2 border-[#d36101] bg-[#361500] shrink-0">
           <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
             <MessageCircle className="w-5 h-5 text-app-accent" />
             Mensagens
@@ -315,8 +315,21 @@ export function Messages() {
                                  participants: [String(user?.uid), targetId],
                                  createdAt: serverTimestamp(),
                                  updatedAt: serverTimestamp(),
-                                 unreadCount: {}
+                                 unreadCount: {
+                                    [targetId]: 1
+                                 },
+                                 lastMessage: "Olá! Gostaria de falar com você.",
+                                 lastMessageTime: serverTimestamp()
                               });
+                              
+                              await addDoc(collection(db, `chats/${newChatRef.id}/messages`), {
+                                 senderId: user?.uid,
+                                 text: "Olá! Gostaria de falar com você.",
+                                 messageType: 'text',
+                                 read: false,
+                                 createdAt: serverTimestamp()
+                              });
+                              
                               setActiveChatId(newChatRef.id);
                               navigate(`/mensagens?c=${newChatRef.id}`, { replace: true });
                               setSearchQuery('');
@@ -411,7 +424,7 @@ export function Messages() {
       </Card>
       
       {/* Active Chat Area */}
-      <Card className={`bg-[#361500] border-white/5 flex flex-col flex-1 overflow-hidden w-full filter drop-shadow-lg rounded-[24px] ${!activeChatId ? 'hidden md:flex' : 'flex'} flex-1 h-full min-h-[400px] md:min-h-0 max-h-full`}>
+      <Card className={`bg-[#361500] border-2 border-[#d36101] flex flex-col flex-1 overflow-hidden w-full filter drop-shadow-lg rounded-[24px] ${!activeChatId ? 'hidden md:flex' : 'flex'} flex-1 h-full min-h-[400px] md:min-h-0 max-h-full`}>
         {!activeChatId ? (
           <div className="flex-1 flex flex-col items-center justify-center text-white/40 p-8 text-center">
             <MessageCircle className="w-16 h-16 mb-4 opacity-50" />
@@ -420,7 +433,7 @@ export function Messages() {
         ) : (
           <>
             {/* Header */}
-            <div className="p-4 border-b border-[#a64b00] bg-[#d36101] flex items-center gap-3 shrink-0">
+            <div className="p-4 border-b-2 border-[#d36101] bg-[#d36101] flex items-center gap-3 shrink-0 rounded-none w-full">
               <button 
                 onClick={() => {
                    setActiveChatId(null);
@@ -493,7 +506,7 @@ export function Messages() {
             </div>
             
             {/* Input Area */}
-            <div className="p-4 border-t border-[#a64b00] bg-[#d36101] shrink-0">
+            <div className="p-4 border-t-2 border-[#d36101] bg-[#d36101] shrink-0 rounded-none w-full">
                <form onSubmit={handleSendMessage} className="flex gap-3">
                  <Input 
                    value={newMessage}

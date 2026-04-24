@@ -53,7 +53,7 @@ export function Orders() {
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-app-cardDark rounded-2xl border border-app-accent/20 shadow-sm shrink-0">
+        <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
           <ShoppingCart className="h-8 w-8 text-app-accent" />
         </div>
         <div>
@@ -69,7 +69,7 @@ export function Orders() {
       {loading ? (
         <div className="flex justify-center py-10 text-white">Carregando pedidos...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-app-cardDark text-white rounded-[24px] border border-[#4a2000] shadow-2xl">
+        <div className="text-center py-20 bg-app-cardDark text-white rounded-[24px] border-2 border-[#d36101] shadow-2xl">
           <h3 className="text-lg font-bold">Nenhum pedido encontrado</h3>
           <p className="text-white/70 mt-1">
             Você ainda não possui histórico de pedidos.
