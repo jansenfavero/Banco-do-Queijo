@@ -42,19 +42,22 @@ export function Demands() {
 
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
-            <Megaphone className="h-8 w-8 text-app-accent" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">Todas as Demandas</h1>
-            <p className="text-white/70 text-sm md:text-base">
-              {profile?.role === 'ATACADISTA' ? 'Publique o que você precisa e receba propostas.' : 'Encontre compradores buscando fornecedores.'}
-            </p>
-          </div>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
+          <Megaphone className="h-8 w-8 text-app-accent" />
         </div>
-        {profile?.role === 'ATACADISTA' && (
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+            Todas as Demandas
+          </h1>
+          <p className="text-white/70 text-sm md:text-base">
+            {profile?.role === 'ATACADISTA' ? 'Publique o que você precisa e receba propostas.' : 'Encontre compradores buscando fornecedores.'}
+          </p>
+        </div>
+      </div>
+
+      {profile?.role === 'ATACADISTA' && (
+        <div className="flex justify-start">
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full">Nova Demanda</Button>
@@ -69,8 +72,8 @@ export function Demands() {
               <AddDemandForm onSuccess={() => setIsAddDialogOpen(false)} />
             </DialogContent>
           </Dialog>
-        )}
-      </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-10 text-white">Carregando demandas...</div>

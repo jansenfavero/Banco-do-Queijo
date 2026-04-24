@@ -336,28 +336,26 @@ export function Catalog() {
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
-            <Store className="h-8 w-8 text-app-accent" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-              Vitrine
-            </h1>
-            <p className="text-white/70 text-sm md:text-base">
-              Explore o catálogo geral de queijos da plataforma.
-            </p>
-          </div>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
+          <Store className="h-8 w-8 text-app-accent" />
         </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="bg-[#d36101]/20 border border-[#d36101]/50 rounded-2xl p-4 max-w-sm shrink-0 animate-pulse-slow shadow-[0_0_15px_rgba(211,97,1,0.15)] flex items-start gap-3 mt-4 md:mt-0">
-            <Info className="w-5 h-5 text-app-accent shrink-0 mt-0.5" />
-            <p className="text-xs text-white/80 leading-relaxed font-medium">
-              <strong className="text-app-accent">Os dados atuais da vitrine são para efeito de demonstração</strong>, os dados reais de Produtores e Atacadistas estarão disponíveis em breve para negociação.
-            </p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+            Vitrine
+          </h1>
+          <p className="text-white/70 text-sm md:text-base">
+            Explore o catálogo geral de queijos da plataforma.
+          </p>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-4">
+        <div className="bg-[#d36101]/20 border border-[#d36101]/50 rounded-2xl p-4 max-w-sm shrink-0 animate-pulse-slow shadow-[0_0_15px_rgba(211,97,1,0.15)] flex items-start gap-3 mt-4 md:mt-0">
+          <Info className="w-5 h-5 text-app-accent shrink-0 mt-0.5" />
+          <p className="text-xs text-white/80 leading-relaxed font-medium">
+            <strong className="text-app-accent">Os dados atuais da vitrine são para efeito de demonstração</strong>, os dados reais de Produtores e Atacadistas estarão disponíveis em breve para negociação.
+          </p>
         </div>
       </div>
 

@@ -276,16 +276,16 @@ export function Messages() {
       
       {/* Sidebar List */}
       <div className={`bg-[#361500] border-2 border-[#d36101] flex flex-col overflow-hidden w-full md:w-[380px] drop-shadow-lg rounded-[24px] ${activeChatId ? 'hidden md:flex' : 'flex'} flex-1 md:flex-none h-full min-h-[400px] md:min-h-0 max-h-full`}>
-        <div className="p-5 border-b-2 border-[#d36101] bg-[#361500] shrink-0">
+        <div className="p-5 border-b-2 border-[#d36101] bg-[#d36101] shrink-0">
           <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
-            <MessageCircle className="w-5 h-5 text-app-accent" />
+            <MessageCircle className="w-5 h-5 text-white" />
             Mensagens
           </h2>
           <Input 
             placeholder={`Buscar por nome ou empresa...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-app-accent border-app-accent text-[#4a2000] placeholder:text-[#4a2000]/70 focus:ring-white focus:border-white rounded-[10px] font-bold"
+            className="w-full bg-[#f4d763] border-[#f4d763] text-[#4a2000] placeholder:text-[#4a2000]/70 focus:ring-white focus:border-white rounded-[10px] font-bold"
           />
         </div>
         

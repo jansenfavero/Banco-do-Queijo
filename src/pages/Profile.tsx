@@ -37,35 +37,42 @@ export function Profile() {
 
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
-            <User className="h-8 w-8 text-app-accent" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-              Meu Perfil
-            </h1>
-            <p className="text-white/70 text-sm md:text-base">
-              Gerencie suas informações pessoais e de comercialização.
-            </p>
-          </div>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
+          <User className="h-8 w-8 text-app-accent" />
         </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+            Meu Perfil
+          </h1>
+          <p className="text-white/70 text-sm md:text-base">
+            Gerencie suas informações pessoais e de comercialização.
+          </p>
+        </div>
+      </div>
 
-        {profile.role !== 'ADMIN' && (
-          <div className="flex items-center gap-4 bg-black/20 p-4 rounded-xl border border-white/10 shrink-0">
-            <div>
-              <p className="text-white font-bold mb-0.5">{isPublic ? 'Ativo na Vitrine' : 'Perfil Oculto'}</p>
-              <p className="text-xs text-white/50 max-w-[200px]">Deixe no modo ativo para seu perfil aparecer na Vitrine, ou Oculte para não aparecer.</p>
+      {profile.role !== 'ADMIN' && (
+        <div className="bg-[#b85200]/20 border border-[#f4d763]/50 p-5 rounded-[20px] shadow-[0_0_15px_rgba(244,215,99,0.1)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex">
+            <div className="flex-shrink-0 mt-0.5">
+              <ShieldCheck className="h-6 w-6 text-[#f4d763]" />
             </div>
+            <div className="ml-4">
+              <h3 className="text-lg font-bold text-[#f4d763] mb-1">{isPublic ? 'Ativo na Vitrine' : 'Perfil Oculto'}</h3>
+              <p className="text-sm text-white/90">
+                Deixe no modo ativo para seu perfil aparecer na Vitrine (somente se seus dados estiverem válidos), ou Oculte para não aparecer de forma alguma.
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 md:ml-4 flex items-center gap-2">
             <Switch 
               checked={isPublic} 
               onCheckedChange={handleTogglePublic} 
-              className="data-[state=checked]:bg-app-accent" 
+              className="data-[state=checked]:bg-app-accent data-[state=unchecked]:bg-black/40"
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
       
       {profile.kycStatus === 'PENDENTE' && profile.role !== 'ADMIN' && (
         <div className="bg-[#b85200]/20 border border-[#f4d763]/50 p-5 rounded-[20px] shadow-[0_0_15px_rgba(244,215,99,0.1)]">
