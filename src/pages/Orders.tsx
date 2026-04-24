@@ -51,14 +51,14 @@ export function Orders() {
   };
 
   return (
-    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
+    <div className="space-y-8 p-6 md:p-10 w-full max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
         <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
           <ShoppingCart className="h-8 w-8 text-app-accent" />
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-            Todos os Pedidos
+            {profile?.role === 'ATACADISTA' ? 'Minhas Compras' : profile?.role === 'PRODUTOR' ? 'Pedidos Recebidos' : 'Todos os Pedidos'}
           </h1>
           <p className="text-white/70 text-sm md:text-base">
             Acompanhe o status e histórico das transações.

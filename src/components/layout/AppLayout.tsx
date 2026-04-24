@@ -75,8 +75,7 @@ export function AppLayout() {
     { name: 'Dashboard', path: '/painel', icon: LayoutDashboard },
     { name: 'Meu Perfil', path: '/perfil', icon: User },
     { name: 'Mensagens', path: '/mensagens', icon: MessageCircle, badge: unreadCount },
-    { name: 'Meus Pedidos', path: '/pedidos', icon: ShoppingCart },
-    { name: 'Minhas Demandas', path: '/demandas', icon: Megaphone },
+    { name: 'Minhas Compras', path: '/pedidos', icon: ShoppingCart },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ];
 
