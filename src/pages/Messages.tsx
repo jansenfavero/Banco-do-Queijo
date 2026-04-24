@@ -272,11 +272,11 @@ export function Messages() {
   };
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 flex-1 flex flex-col md:flex-row gap-4 md:gap-6 max-w-[1400px] mx-auto w-full min-h-0 relative">
+    <div className="p-0 md:p-6 lg:p-8 flex-1 flex flex-col md:flex-row gap-0 md:gap-6 max-w-[1400px] mx-auto w-full min-h-0 relative">
       
       {/* Sidebar List */}
-      <div className={`bg-[#361500] border-2 border-[#d36101] flex flex-col overflow-hidden w-full md:w-[380px] drop-shadow-lg rounded-[24px] ${activeChatId ? 'hidden md:flex' : 'flex'} flex-1 md:flex-none h-full min-h-[400px] md:min-h-0 max-h-full`}>
-        <div className="p-5 border-b-2 border-[#d36101] bg-[#d36101] shrink-0">
+      <div className={`bg-[#361500] border-y-2 md:border-2 border-[#d36101] flex flex-col overflow-hidden w-full md:w-[380px] md:drop-shadow-lg md:rounded-[24px] ${activeChatId ? 'hidden md:flex' : 'flex'} flex-1 md:flex-none h-full min-h-[400px] md:min-h-0 max-h-full`}>
+        <div className="p-5 border-b-2 border-[#d36101] bg-[#d36101] shrink-0 w-full">
           <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
             <MessageCircle className="w-5 h-5 text-white" />
             Mensagens
@@ -424,7 +424,7 @@ export function Messages() {
       </div>
       
       {/* Active Chat Area */}
-      <div className={`bg-[#361500] border-2 border-[#d36101] flex flex-col flex-1 overflow-hidden w-full filter drop-shadow-lg rounded-[24px] ${!activeChatId ? 'hidden md:flex' : 'flex'} flex-1 h-full min-h-[400px] md:min-h-0 max-h-full`}>
+      <div className={`bg-[#361500] border-y-2 md:border-2 border-[#d36101] flex flex-col flex-1 overflow-hidden w-full filter md:drop-shadow-lg md:rounded-[24px] ${!activeChatId ? 'hidden md:flex' : 'flex'} flex-1 h-full min-h-[400px] md:min-h-0 max-h-full`}>
         {!activeChatId ? (
           <div className="flex-1 flex flex-col items-center justify-center text-white/40 p-8 text-center">
             <MessageCircle className="w-16 h-16 mb-4 opacity-50" />

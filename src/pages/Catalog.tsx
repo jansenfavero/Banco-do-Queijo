@@ -10,11 +10,10 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Store, Slice, Info, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X, Gavel, MessageCircle } from 'lucide-react';
+import { Store, Slice, ArrowRight, Star, MapPin, ChevronLeft, ChevronRight, Maximize2, X, Gavel, MessageCircle } from 'lucide-react';
 
 const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
 
-import { MOCK_PRODUCTS, MOCK_WHOLESALERS } from './CatalogPublic';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { CatalogMetrics } from './CatalogMetrics';
@@ -172,8 +171,6 @@ export function Catalog() {
 
   const uniqueLocations = React.useMemo(() => {
     return Array.from(new Set([
-      ...MOCK_PRODUCTS.map(p => p.local),
-      ...MOCK_WHOLESALERS.map(w => w.local),
       ...Object.values(usersInfo).map((u: any) => `${u.city || ''}, ${u.state || ''}`.replace(/^,\s*|,\s*$/g, '').trim()).filter(Boolean)
     ])).sort((a, b) => a.localeCompare(b));
   }, [usersInfo]);
@@ -289,16 +286,6 @@ export function Catalog() {
       return pass;
     });
 
-    // Filter MOCK Products
-    const mockProds = MOCK_PRODUCTS.filter(p => {
-      let pass = true;
-      if (filterText && !containsStr(p.nome, filterText) && !containsStr(p.produtor, filterText)) pass = false;
-      if (filterLoc && !containsStr(p.local, filterLoc)) pass = false;
-      if (cheeseTypeSearch !== 'todos' && !exactStr(p.categoria, normalizeStr(cheeseTypeSearch))) pass = false;
-      // Mocks have no packaging or freight properties, assume they match or skip filtering
-      return pass;
-    });
-    
     // Filter Wholesalers (Real)
     const activeWholesalers = wholesalers.filter(w => {
       const locStr = `${w.city || ''}, ${w.state || ''}`;
@@ -318,18 +305,9 @@ export function Catalog() {
       return pass;
     });
 
-    // Filter MOCK Wholesalers
-    const mockWholesalersFiltered = MOCK_WHOLESALERS.filter(w => {
-      let pass = true;
-      if (filterText && !containsStr(w.empresa, filterText) && !containsStr(w.comprador, filterText)) pass = false;
-      if (filterLoc && !containsStr(w.local, filterLoc)) pass = false;
-      // Mocks lack detailed data
-      return pass;
-    });
-
     return { 
-      filteredProducts: [...activeProducers, ...mockProds], 
-      filteredWholesalers: [...activeWholesalers, ...mockWholesalersFiltered] 
+      filteredProducts: activeProducers, 
+      filteredWholesalers: activeWholesalers 
     };
   }, [products, wholesalers, usersInfo, textSearch, locationSearch, cheeseTypeSearch, packagingSearch, freightSearch]);
 
@@ -350,15 +328,6 @@ export function Catalog() {
         </div>
       </div>
       
-      <div className="flex items-center gap-4">
-        <div className="bg-[#d36101]/20 border border-[#d36101]/50 rounded-2xl p-4 max-w-sm shrink-0 animate-pulse-slow shadow-[0_0_15px_rgba(211,97,1,0.15)] flex items-start gap-3 mt-4 md:mt-0">
-          <Info className="w-5 h-5 text-app-accent shrink-0 mt-0.5" />
-          <p className="text-xs text-white/80 leading-relaxed font-medium">
-            <strong className="text-app-accent">Os dados atuais da vitrine são para efeito de demonstração</strong>, os dados reais de Produtores e Atacadistas estarão disponíveis em breve para negociação.
-          </p>
-        </div>
-      </div>
-
       {(!profile || profile.role === 'ADMIN') && (
         <div className="flex bg-app-cardDark p-1.5 rounded-[24px] border-2 border-[#d36101] w-fit shadow-lg">
           <button

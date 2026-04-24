@@ -87,7 +87,7 @@ export function Demands() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {demands.map((demand) => (
-            <Card key={demand.id} className="p-0 gap-0 shadow-2xl border border-transparent bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
+            <Card key={demand.id} className="p-0 gap-0 shadow-2xl border-2 border-[#d36101] bg-[#703200] text-white rounded-[24px] overflow-hidden flex flex-col">
               <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-left">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl text-white flex items-center gap-2">

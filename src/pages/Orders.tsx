@@ -77,7 +77,7 @@ export function Orders() {
         </div>
       ) : (
         <div className="space-y-4">
-          <Card className="p-0 gap-0 shadow-2xl border border-transparent bg-[#703200] text-white rounded-[24px] overflow-hidden">
+          <Card className="p-0 gap-0 shadow-2xl border-2 border-[#d36101] bg-[#703200] text-white rounded-[24px] overflow-hidden">
             <CardHeader className="rounded-t-[24px] bg-[#d36101] border-b border-white/10 px-6 py-5 text-left">
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />

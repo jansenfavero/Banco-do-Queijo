@@ -1,127 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, ArrowRight, ShieldCheck, Star, ChevronDown } from 'lucide-react';
 import { Footer } from '../components/layout/Footer';
-
-export const MOCK_PRODUCTS = [
-  // Coalho
-  { id: 1, nome: "Queijo Coalho Artesanal", produtor: "Laticínio Nordeste", local: "Quixadá, CE", preco: 45.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.7, mock: true },
-  { id: 2, nome: "Queijo Coalho com Orégano", produtor: "Sítio do Sol", local: "Jaguaribe, CE", preco: 48.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.8, mock: true },
-  { id: 3, nome: "Queijo Coalho Defumado", produtor: "Fazenda Sertão", local: "Morada Nova, CE", preco: 52.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.9, mock: true },
-  { id: 4, nome: "Queijo Coalho Tradicional", produtor: "Laticínio Sertanejo", local: "Iguatu, CE", preco: 43.00, imagem: "https://cdn.folhape.com.br/upload/dn_arquivo/2018/11/queijo.png", categoria: "coalho", avaliacao: 4.6, mock: true },
-
-  // Mussarela
-  { id: 5, nome: "Mussarela Trança", produtor: "Fazenda Leiteira", local: "São Paulo, SP", preco: 55.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.6, mock: true },
-  { id: 6, nome: "Mussarela Bolinha", produtor: "Laticínio Bella", local: "Campinas, SP", preco: 58.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.7, mock: true },
-  { id: 7, nome: "Mussarela Fatiada Premium", produtor: "Queijaria Ouro", local: "Bauru, SP", preco: 49.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.5, mock: true },
-  { id: 8, nome: "Mussarela de Búfala", produtor: "Sítio das Águas", local: "Sorocaba, SP", preco: 75.00, imagem: "https://revistasaboresdosul.com.br/wp-content/uploads/2018/10/queijo-mussarela.jpg", categoria: "mussarela", avaliacao: 4.9, mock: true },
-
-  // Parmesão
-  { id: 9, nome: "Parmesão Curado 12 Meses", produtor: "Queijaria do Vale", local: "Alagoa, MG", preco: 120.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 5.0, mock: true },
-  { id: 10, nome: "Parmesão Capa Preta", produtor: "Fazenda Mantiqueira", local: "Itamonte, MG", preco: 135.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.9, mock: true },
-  { id: 11, nome: "Parmesão Ralado Fresco", produtor: "Laticínio Serrano", local: "Pouso Alto, MG", preco: 95.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.7, mock: true },
-  { id: 12, nome: "Parmesão Meia Cura", produtor: "Sítio Alto da Serra", local: "Cruzília, MG", preco: 105.00, imagem: "https://st4.depositphotos.com/1001759/24712/i/450/depositphotos_247120358-stock-photo-parmesan-cheese-wooden-board.jpg", categoria: "parmesao", avaliacao: 4.8, mock: true },
-
-  // Prato
-  { id: 13, nome: "Queijo Prato Lanche", produtor: "Laticínios Sul", local: "Chapecó, SC", preco: 42.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.5, mock: true },
-  { id: 14, nome: "Queijo Prato Esférico", produtor: "Fazenda do Sul", local: "Lages, SC", preco: 46.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.6, mock: true },
-  { id: 15, nome: "Queijo Prato Cobocó", produtor: "Queijaria Catarinense", local: "Joinville, SC", preco: 44.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.7, mock: true },
-  { id: 16, nome: "Queijo Prato Fatiado", produtor: "Laticínio Vale", local: "Blumenau, SC", preco: 40.00, imagem: "https://images.unsplash.com/photo-1631379578550-7038263db699?q=80&w=800&auto=format&fit=crop", categoria: "prato", avaliacao: 4.4, mock: true },
-
-  // Gorgonzola
-  { id: 17, nome: "Gorgonzola Cremoso", produtor: "Vale dos Queijos", local: "Cruzília, MG", preco: 89.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.9, mock: true },
-  { id: 18, nome: "Gorgonzola Tradicional", produtor: "Fazenda Azul", local: "São Lourenço, MG", preco: 85.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.8, mock: true },
-  { id: 19, nome: "Gorgonzola Premium", produtor: "Queijaria Fina", local: "Tiradentes, MG", preco: 95.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 5.0, mock: true },
-  { id: 20, nome: "Gorgonzola Pedaço", produtor: "Laticínio de Minas", local: "Caxambu, MG", preco: 82.00, imagem: "https://images.unsplash.com/photo-1452195100486-9cc805987862?q=80&w=800&auto=format&fit=crop", categoria: "gorgonzola", avaliacao: 4.7, mock: true },
-
-  // Canastra
-  { id: 21, nome: "Queijo Canastra Tradicional", produtor: "Fazenda São João", local: "São Roque de Minas, MG", preco: 85.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.9, mock: true },
-  { id: 22, nome: "Canastra Meia Cura", produtor: "Sítio do Zé", local: "Medeiros, MG", preco: 78.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.8, mock: true },
-  { id: 23, nome: "Canastra Curado", produtor: "Queijaria da Serra", local: "Vargem Bonita, MG", preco: 95.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 5.0, mock: true },
-  { id: 24, nome: "Canastra Real", produtor: "Fazenda Ouro Branco", local: "Tapiraí, MG", preco: 110.00, imagem: "https://premix.com.br/blog/wp-content/uploads/2022/06/Queijo-canastra-o-melhor-do-mundo-Thumbnail.png", categoria: "canastra", avaliacao: 4.9, mock: true },
-
-  // Minas
-  { id: 25, nome: "Queijo Minas Padrão", produtor: "Sítio das Vaquinhas", local: "Passos, MG", preco: 60.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.8, mock: true },
-  { id: 26, nome: "Minas Frescal", produtor: "Laticínio Bom Dia", local: "Belo Horizonte, MG", preco: 45.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.7, mock: true },
-  { id: 27, nome: "Minas Padrão Curado", produtor: "Fazenda do Leite", local: "Uberlândia, MG", preco: 65.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.9, mock: true },
-  { id: 28, nome: "Minas Frescal Light", produtor: "Queijaria Saudável", local: "Juiz de Fora, MG", preco: 48.00, imagem: "https://i.ytimg.com/vi/2hSd1-ctFxc/maxresdefault.jpg", categoria: "minas", avaliacao: 4.6, mock: true },
-];
-
-export const MOCK_WHOLESALERS = [
-  // São Paulo / SP
-  { id: 101, empresa: "Atacadista Leiteira", comprador: "Carlos Santos", local: "São Paulo, SP", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.9, mock: true },
-  { id: 102, empresa: "Empório Paulista", comprador: "Roberto Almeida", local: "São Paulo, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.8, mock: true },
-  { id: 103, empresa: "Distribuidora Central SP", comprador: "Marcos Silva", local: "São Paulo, SP", quantidade: 1200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.7, mock: true },
-  { id: 104, empresa: "Queijos & Cia Atacado", comprador: "Ana Paula", local: "São Paulo, SP", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "sao_paulo", avaliacao: 4.6, mock: true },
-
-  // Belo Horizonte / MG
-  { id: 105, empresa: "Atacadão do Vale", comprador: "Pedro Alves", local: "Belo Horizonte, MG", quantidade: 1200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 5.0, mock: true },
-  { id: 106, empresa: "Distribuidora Mineira", comprador: "João Pedro", local: "Belo Horizonte, MG", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.8, mock: true },
-  { id: 107, empresa: "Rei do Queijo BH", comprador: "Lucas Martins", local: "Belo Horizonte, MG", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.9, mock: true },
-  { id: 108, empresa: "Central de Laticínios MG", comprador: "Mariana Costa", local: "Belo Horizonte, MG", quantidade: 800, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "belo_horizonte", avaliacao: 4.7, mock: true },
-
-  // Fortaleza / CE
-  { id: 109, empresa: "Distribuidora Nordeste", comprador: "João Silva", local: "Fortaleza, CE", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.8, mock: true },
-  { id: 110, empresa: "Atacadista Cearense", comprador: "Francisco Lima", local: "Fortaleza, CE", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.7, mock: true },
-  { id: 111, empresa: "Armazém do Queijo CE", comprador: "José Santos", local: "Fortaleza, CE", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.6, mock: true },
-  { id: 112, empresa: "Laticínios Fortaleza", comprador: "Maria Clara", local: "Fortaleza, CE", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "fortaleza", avaliacao: 4.9, mock: true },
-
-  // Florianópolis / SC
-  { id: 113, empresa: "Distribuidora Sul", comprador: "Ricardo Gomes", local: "Florianópolis, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.7, mock: true },
-  { id: 114, empresa: "Atacadão Ilha da Magia", comprador: "Fernando Costa", local: "Florianópolis, SC", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.8, mock: true },
-  { id: 115, empresa: "Sul Laticínios", comprador: "Amanda Rocha", local: "Florianópolis, SC", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.6, mock: true },
-  { id: 116, empresa: "Empório Floripa", comprador: "Carlos Eduardo", local: "Florianópolis, SC", quantidade: 150, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "florianopolis", avaliacao: 4.9, mock: true },
-
-  // Campinas / SP
-  { id: 117, empresa: "Distribuidora Bella", comprador: "Ana Costa", local: "Campinas, SP", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.6, mock: true },
-  { id: 118, empresa: "Atacadista Campinas", comprador: "Roberto Justos", local: "Campinas, SP", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.8, mock: true },
-  { id: 119, empresa: "Interior Queijos", comprador: "Paula Fernandes", local: "Campinas, SP", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.7, mock: true },
-  { id: 120, empresa: "Rota do Leite Campinas", comprador: "Marcos Vinícius", local: "Campinas, SP", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "campinas", avaliacao: 4.9, mock: true },
-
-  // Ribeirão Preto / SP
-  { id: 121, empresa: "Distribuidora das Vaquinhas", comprador: "Lucia Mendes", local: "Ribeirão Preto, SP", quantidade: 700, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.7, mock: true },
-  { id: 122, empresa: "Atacadão Ribeirão", comprador: "Carlos Alberto", local: "Ribeirão Preto, SP", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.8, mock: true },
-  { id: 123, empresa: "Queijos do Interior SP", comprador: "Juliana Silva", local: "Ribeirão Preto, SP", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.6, mock: true },
-  { id: 124, empresa: "Laticínios RP", comprador: "Fernando Henrique", local: "Ribeirão Preto, SP", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "ribeirao_preto", avaliacao: 4.9, mock: true },
-
-  // Franca / SP
-  { id: 125, empresa: "Atacadão São João", comprador: "Marcos Paulo", local: "Franca, SP", quantidade: 550, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.8, mock: true },
-  { id: 126, empresa: "Distribuidora Franca", comprador: "Roberto Carlos", local: "Franca, SP", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.7, mock: true },
-  { id: 127, empresa: "Empório do Queijo Franca", comprador: "Ana Luiza", local: "Franca, SP", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.6, mock: true },
-  { id: 128, empresa: "Laticínios Alta Mogiana", comprador: "Pedro Henrique", local: "Franca, SP", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "franca", avaliacao: 4.9, mock: true },
-
-  // Pouso Alegre / MG
-  { id: 129, empresa: "Distribuidora Mantiqueira", comprador: "Fernanda Lima", local: "Pouso Alegre, MG", quantidade: 600, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.8, mock: true },
-  { id: 130, empresa: "Atacadista Sul de Minas", comprador: "João Gabriel", local: "Pouso Alegre, MG", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.7, mock: true },
-  { id: 131, empresa: "Queijos Pouso Alegre", comprador: "Maria Fernanda", local: "Pouso Alegre, MG", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.9, mock: true },
-  { id: 132, empresa: "Armazém Mineiro PA", comprador: "Lucas Silva", local: "Pouso Alegre, MG", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "pouso_alegre", avaliacao: 4.6, mock: true },
-
-  // Juazeiro do Norte / CE
-  { id: 133, empresa: "Atacadão do Sol", comprador: "Maria Oliveira", local: "Juazeiro do Norte, CE", quantidade: 300, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.7, mock: true },
-  { id: 134, empresa: "Distribuidora Cariri", comprador: "Francisco Assis", local: "Juazeiro do Norte, CE", quantidade: 450, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.8, mock: true },
-  { id: 135, empresa: "Queijos Juazeiro", comprador: "Cícero Romão", local: "Juazeiro do Norte, CE", quantidade: 200, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.6, mock: true },
-  { id: 136, empresa: "Laticínios Padre Cícero", comprador: "Ana Maria", local: "Juazeiro do Norte, CE", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "juazeiro", avaliacao: 4.9, mock: true },
-
-  // Joinville / SC
-  { id: 137, empresa: "Atacadista do Sul", comprador: "Juliana Castro", local: "Joinville, SC", quantidade: 350, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.5, mock: true },
-  { id: 138, empresa: "Distribuidora Joinville", comprador: "Ricardo Silva", local: "Joinville, SC", quantidade: 500, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.8, mock: true },
-  { id: 139, empresa: "Empório Norte Catarinense", comprador: "Fernando Souza", local: "Joinville, SC", quantidade: 250, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.7, mock: true },
-  { id: 140, empresa: "Laticínios SC", comprador: "Mariana Lima", local: "Joinville, SC", quantidade: 400, imagem: "https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg", categoria: "joinville", avaliacao: 4.9, mock: true },
-];
-
-export const WHOLESALER_CATEGORIES = [
-  { id: 'todos', title: 'Todos' },
-  { id: 'sao_paulo', title: 'São Paulo / SP' },
-  { id: 'belo_horizonte', title: 'Belo Horizonte / MG' },
-  { id: 'fortaleza', title: 'Fortaleza / CE' },
-  { id: 'florianopolis', title: 'Florianópolis / SC' },
-  { id: 'campinas', title: 'Campinas / SP' },
-  { id: 'ribeirao_preto', title: 'Ribeirão Preto / SP' },
-  { id: 'franca', title: 'Franca / SP' },
-  { id: 'pouso_alegre', title: 'Pouso Alegre / MG' },
-  { id: 'juazeiro', title: 'Juazeiro do Norte / CE' },
-  { id: 'joinville', title: 'Joinville / SC' },
-];
+import { collection, query, onSnapshot, where } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 export const CATEGORIES = [
   { id: 'todos', title: 'Todos' },
@@ -132,14 +14,92 @@ export const CATEGORIES = [
   { id: 'gorgonzola', title: 'Gorgonzola' },
   { id: 'canastra', title: 'Canastra' },
   { id: 'minas', title: 'Minas Frescal/Padrão' },
+  { id: 'colonial', title: 'Colonial' },
+  { id: 'requeijao', title: 'Requeijão' }
 ];
 
 export function CatalogPublic() {
-  const [activeCategory, setActiveCategory] = useState('todos');
   const [catalogType, setCatalogType] = useState<'produtores' | 'atacadistas'>('produtores');
+  const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const [usersInfo, setUsersInfo] = useState<Record<string, any>>({});
+  const [producers, setProducers] = useState<any[]>([]);
+  const [wholesalers, setWholesalers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const unsubscribeUsers = onSnapshot(query(collection(db, 'users'), where('kycStatus', '==', 'VALIDADO')), (snapshot) => {
+      const usersData: Record<string, any> = {};
+      const wholesaleArr: any[] = [];
+      const producerArr: any[] = [];
+      
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        usersData[doc.id] = data;
+        
+        const isProfilePublic = data.isPublic !== false;
+        
+        if (isProfilePublic) {
+          if (data.role === 'ATACADISTA') {
+            wholesaleArr.push({ id: doc.id, ...data });
+          } else if (data.role === 'PRODUTOR') {
+            producerArr.push({ id: doc.id, ...data });
+          }
+        }
+      });
+      setUsersInfo(usersData);
+      setWholesalers(wholesaleArr);
+      setProducers(producerArr);
+    });
+
+    return () => unsubscribeUsers();
+  }, []);
+
+  const activeProducers = useMemo(() => {
+    return producers.flatMap(owner => {
+       return (owner.cheeseTypes || []).map((cheeseType: string) => {
+         const specificCheeseImages = owner.cheeseImages?.[cheeseType] || [];
+         const displayImages = specificCheeseImages.length > 0 
+            ? specificCheeseImages 
+            : (owner.images?.length ? owner.images : ['https://images.unsplash.com/photo-1473401171573-000c010c73ea?auto=format&fit=crop&q=80&w=600']);
+
+         return {
+           id: `${owner.id}-${cheeseType}`,
+           nome: owner.name,
+           produtor: owner.cpfCnpj,
+           local: `${owner.city || ''}, ${owner.state || ''}`,
+           avaliacao: owner.rating || 5.0,
+           imagem: displayImages[0],
+           categoria: cheeseType.toLowerCase().replace('ã', 'a')
+         };
+       });
+    });
+  }, [producers]);
+
+  const activeWholesalers = useMemo(() => {
+    return wholesalers.map(owner => {
+        return {
+           id: owner.id,
+           empresa: owner.name,
+           comprador: owner.cpfCnpj,
+           local: `${owner.city || ''}, ${owner.state || ''}`,
+           avaliacao: owner.rating || 5.0,
+           imagem: owner.images?.length ? owner.images[0] : 'https://i.ibb.co/276Ft1JW/v2-8w8ff-wt3zb.jpg',
+           categoria: `${owner.city || ''}, ${owner.state || ''}`.replace(/^,\s*|,\s*$/g, '').trim() || 'Desconhecida',
+           foco: owner.buyerType || 'Não Informado'
+        };
+    });
+  }, [wholesalers]);
+
+  const wholesalerCategories = useMemo(() => {
+    const locations = Array.from(new Set(activeWholesalers.map(w => w.categoria))).filter(c => c && c !== 'Desconhecida').sort();
+    return [
+      { id: 'todos', title: 'Todos' },
+      ...locations.map(loc => ({ id: loc, title: loc }))
+    ];
+  }, [activeWholesalers]);
 
   const regions = [
     { value: '', label: 'Qualquer Região' },
@@ -159,36 +119,37 @@ export function CatalogPublic() {
   }, []);
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-app-bgDark text-gray-100 overflow-hidden">
+    <div className="h-[100dvh] bg-app-bgDark w-full relative flex flex-col overflow-hidden">
       
-      {/* Hero Background */}
-      <div className="absolute top-0 left-0 w-full h-[70vh] md:h-[90vh] z-0 overflow-hidden pointer-events-none bg-[#2b1400]">
-        <video 
-          src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute inset-0 w-full h-full object-cover object-right md:object-center opacity-70" 
-        />
-        <div className="absolute inset-0 bg-[#3e1c00]/40"></div>
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-app-bgDark via-app-bgDark/90 to-transparent"></div>
-      </div>
+      {/* Scrollable container for main content */}
+      <div className="flex-1 overflow-y-auto flex flex-col pt-0 w-full relative">
+        {/* Background elements */}
+        <div className="absolute top-0 left-0 w-full h-[70vh] md:h-[90vh] z-0 overflow-hidden pointer-events-none bg-[#2b1400]">
+          <video 
+            src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            className="absolute inset-0 w-full h-full object-cover object-right md:object-center opacity-70" 
+          />
+          <div className="absolute inset-0 bg-[#3e1c00]/40"></div>
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-app-bgDark via-app-bgDark/90 to-transparent"></div>
+        </div>
 
-      <div className="flex-1 overflow-y-auto flex flex-col pt-0 w-full">
         <header className="relative z-30 pt-6 pb-4 px-4 md:px-8 max-w-[95%] xl:max-w-[1400px] mx-auto w-full flex justify-between items-center bg-transparent">
-        <Link to="/" className="flex items-center gap-3 md:gap-4 hover:opacity-90 transition-opacity">
-          <div className="w-16 h-16 md:w-20 md:h-20 shrink-0 flex items-center justify-center">
-            <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
-          </div>
-          <div className="flex flex-col justify-center">
-            <h1 className="text-2xl md:text-4xl font-bold text-app-accent tracking-tight leading-none">Banco do Queijo</h1>
-          </div>
-        </Link>
-        <div className="flex">
-          <Link to="/login" className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-app-cardDark/90 backdrop-blur-md shadow-lg flex items-center justify-center text-white hover:bg-[#5a2800] border border-[#5a2800] transition-all active:scale-95" title="Entrar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinelinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <Link to="/" className="flex items-center gap-3 md:gap-4 hover:opacity-90 transition-opacity">
+            <div className="w-16 h-16 md:w-20 md:h-20 shrink-0 flex items-center justify-center">
+              <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h1 className="text-2xl md:text-4xl font-bold text-app-accent tracking-tight leading-none">Banco do Queijo</h1>
+            </div>
           </Link>
+          <div className="flex">
+            <Link to="/login" className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-app-cardDark/90 backdrop-blur-md shadow-lg flex items-center justify-center text-white hover:bg-[#5a2800] border border-[#5a2800] transition-all active:scale-95" title="Entrar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </Link>
           </div>
         </header>
 
@@ -246,7 +207,7 @@ export function CatalogPublic() {
           {/* Categorias (Pílulas) */}
           <div className="max-w-[95%] xl:max-w-[1400px] mx-auto mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100 relative z-30 px-4 sm:px-8 w-full">
           <div className="flex flex-wrap pb-2 gap-2 md:gap-3">
-            {(catalogType === 'produtores' ? CATEGORIES : WHOLESALER_CATEGORIES).map(cat => (
+            {(catalogType === 'produtores' ? CATEGORIES : wholesalerCategories).map(cat => (
               <button 
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
@@ -309,8 +270,8 @@ export function CatalogPublic() {
 
         {/* Container de Produtos */}
         <div className="w-full pb-16 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-          {(catalogType === 'produtores' ? CATEGORIES : WHOLESALER_CATEGORIES).filter(cat => cat.id !== 'todos' && (activeCategory === 'todos' || activeCategory === cat.id)).map((cat, index) => {
-            const currentCatalog = catalogType === 'produtores' ? MOCK_PRODUCTS : MOCK_WHOLESALERS;
+          {(catalogType === 'produtores' ? CATEGORIES : wholesalerCategories).filter(cat => cat.id !== 'todos' && (activeCategory === 'todos' || activeCategory === cat.id)).map((cat, index) => {
+            const currentCatalog = catalogType === 'produtores' ? activeProducers : activeWholesalers;
             const categoryProducts = currentCatalog.filter(p => p.categoria === cat.id);
             if (categoryProducts.length === 0) return null;
 
@@ -375,11 +336,11 @@ export function CatalogPublic() {
                                 </div>
                                 <button
                                     onClick={() => {
-                                        alert("Este é um perfil de demonstração.");
+                                        window.location.href = '/login';
                                     }}
                                     className="h-10 px-4 rounded-full bg-app-accent hover:bg-app-accentHover text-app-bgDark flex items-center justify-center shadow-lg shadow-app-accent/30 transition-transform active:scale-95 shrink-0 font-bold text-sm whitespace-nowrap"
                                 >
-                                     Falar com {catalogType === 'produtores' ? 'Produtor' : 'Comprador'}
+                                     Entrar para Falar
                                 </button>
                             </div>
                         </div>
