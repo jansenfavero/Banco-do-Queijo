@@ -29,7 +29,7 @@ export function getFriendlyErrorMessage(error: any): string {
     case 'auth/operation-not-allowed':
       return 'Este método de login não está habilitado no momento.';
     case 'auth/unauthorized-domain':
-      return 'Este domínio (vercel.app) não está autorizado no Firebase. É necessário usar seu próprio projeto Firebase.';
+      return 'Este domínio não está autorizado no Firebase. Adicione o domínio atual na aba "Domínios autorizados" do Authentication.';
     case 'auth/requires-recent-login':
       return 'Por segurança, você precisa fazer login novamente para realizar esta ação.';
     default:

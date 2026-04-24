@@ -30,7 +30,7 @@ export function Home() {
       {/* Hero Background */}
       <div className="absolute top-0 left-0 w-full h-[100dvh] z-0 overflow-hidden pointer-events-none bg-[#2b1400]">
         <video 
-          src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
+          src="/bg-video.mp4" 
           autoPlay 
           loop 
           muted 
