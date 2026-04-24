@@ -10,7 +10,7 @@ export function Dashboard() {
   if (!profile) return null;
 
   return (
-    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
+    <div className="space-y-8 p-6 md:p-10 w-full max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
         <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
           <LayoutDashboard className="h-8 w-8 text-app-accent" />
