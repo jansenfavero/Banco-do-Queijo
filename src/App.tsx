@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
 import { useAuth } from './hooks/useAuth';
 import { AppLayout } from './components/layout/AppLayout';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -24,11 +23,7 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode,
   const { user, profile, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-app-bgDark">
-        <Loader2 className="w-10 h-10 text-app-accent animate-spin" />
-      </div>
-    );
+    return <div className="flex h-screen items-center justify-center">Carregando...</div>;
   }
 
   if (!user) {
