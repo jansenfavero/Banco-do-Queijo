@@ -8,11 +8,6 @@ This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/62d88655-cf99-430e-938c-39b1fe4a0aaf
 
-## Documentação
-
-Para entender a fundo o conceito, objetivos, stack tecnológica e estrutura da aplicação, consulte o arquivo:
-- [PRD.md](./PRD.md)
-
 ## Run Locally
 
 **Prerequisites:**  Node.js
