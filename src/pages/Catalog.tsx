@@ -314,40 +314,36 @@ export function Catalog() {
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       
-      {/* Header + Tab Switcher */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
-            <Store className="h-8 w-8 text-app-accent" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-              Vitrine
-            </h1>
-            <p className="text-white/70 text-sm md:text-base">
-              Explore o catálogo geral de queijos da plataforma.
-            </p>
-          </div>
+      <div className="flex items-center gap-4">
+        <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
+          <Store className="h-8 w-8 text-app-accent" />
         </div>
-
-        {(!profile || profile.role === 'ADMIN') && (
-          <div className="flex w-full md:w-auto bg-app-cardDark p-1.5 rounded-[24px] border-2 border-[#d36101] shadow-lg">
-            <button
-              onClick={() => setActiveTab('produtores')}
-              className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
-            >
-              Produtores
-            </button>
-            <button
-              onClick={() => setActiveTab('atacadistas')}
-              className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
-            >
-              Atacadistas
-            </button>
-          </div>
-        )}
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
+            Vitrine
+          </h1>
+          <p className="text-white/70 text-sm md:text-base">
+            Explore o catálogo geral de queijos da plataforma.
+          </p>
+        </div>
       </div>
-
+      
+      {(!profile || profile.role === 'ADMIN') && (
+        <div className="flex bg-app-cardDark p-1.5 rounded-[24px] border-2 border-[#d36101] w-fit shadow-lg">
+          <button
+            onClick={() => setActiveTab('produtores')}
+            className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'produtores' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
+          >
+            Produtores
+          </button>
+          <button
+            onClick={() => setActiveTab('atacadistas')}
+            className={`px-6 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all duration-300 ${activeTab === 'atacadistas' ? 'bg-app-accent text-app-bgDark shadow-sm' : 'text-white/50 hover:text-white hover:bg-[#4a2000]/50'}`}
+          >
+            Atacadistas
+          </button>
+        </div>
+      )}
 
       {/* Filtros */}
       <div className="bg-[#703200] p-5 rounded-[24px] border-2 border-[#d36101] shadow-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-5 items-end">

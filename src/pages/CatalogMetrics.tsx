@@ -1,124 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown, Activity, DollarSign, Calendar, Loader2 } from 'lucide-react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { TrendingUp, Activity, DollarSign, Calendar } from 'lucide-react';
+
+const MOCK_METRICS = {
+  'Coalho': {
+    avgPrice: 45.50,
+    history: [
+      { date: '12/04', high: 46.00, low: 44.00, avg: 45.00, volume: 1200 },
+      { date: '13/04', high: 46.50, low: 45.00, avg: 45.50, volume: 1500 },
+      { date: '14/04', high: 45.50, low: 43.50, avg: 44.50, volume: 1100 },
+      { date: '15/04', high: 46.00, low: 44.50, avg: 45.20, volume: 1300 },
+      { date: '16/04', high: 47.00, low: 45.50, avg: 46.00, volume: 1600 },
+      { date: '17/04', high: 47.50, low: 46.00, avg: 46.80, volume: 1700 },
+      { date: '18/04', high: 48.00, low: 46.50, avg: 47.20, volume: 1900 },
+    ],
+    monthHistory: Array.from({length: 30}, (_, i) => ({
+      date: `${i+1}/04`, high: 44 + Math.random()*5, low: 42 + Math.random()*3, avg: 43 + Math.random()*4, volume: 1000 + Math.random()*1000
+    }))
+  },
+  'Mussarela': {
+    avgPrice: 38.20,
+    history: [
+      { date: '12/04', high: 39.00, low: 37.00, avg: 38.00, volume: 2200 },
+      { date: '13/04', high: 38.50, low: 36.50, avg: 37.50, volume: 2500 },
+      { date: '14/04', high: 39.50, low: 37.50, avg: 38.50, volume: 2100 },
+      { date: '15/04', high: 39.00, low: 38.00, avg: 38.20, volume: 2300 },
+      { date: '16/04', high: 40.00, low: 38.50, avg: 39.00, volume: 2600 },
+      { date: '17/04', high: 39.50, low: 38.00, avg: 38.80, volume: 2700 },
+      { date: '18/04', high: 40.50, low: 39.00, avg: 39.50, volume: 2900 },
+    ],
+    monthHistory: Array.from({length: 30}, (_, i) => ({
+      date: `${i+1}/04`, high: 37 + Math.random()*5, low: 35 + Math.random()*3, avg: 36 + Math.random()*4, volume: 2000 + Math.random()*1000
+    }))
+  }
+};
 
 const CHEESE_TYPES = ['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'];
-
-// Generate a plausible 7-day history from a base price with small fluctuations
-function generatePriceHistory(basePrice: number) {
-  const today = new Date();
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(d.getDate() - (6 - i));
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const fluctuation = (Math.random() - 0.48) * basePrice * 0.04;
-    const avg = +(basePrice + fluctuation).toFixed(2);
-    const high = +(avg + Math.random() * basePrice * 0.02).toFixed(2);
-    const low = +(avg - Math.random() * basePrice * 0.02).toFixed(2);
-    const volume = Math.round(800 + Math.random() * 1200);
-    return { date: `${day}/${month}`, high, low, avg, volume };
-  });
-}
-
-type MetricEntry = {
-  avgPrice: number;
-  maxPrice: number;
-  minPrice: number;
-  producerCount: number;
-  history: { date: string; high: number; low: number; avg: number; volume: number }[];
-};
 
 export function CatalogMetrics() {
   const [globalCheeseType, setGlobalCheeseType] = useState('Coalho');
   const [card3CheeseType, setCard3CheeseType] = useState('Coalho');
   const [timeRange, setTimeRange] = useState<'Semana' | 'Mês'>('Semana');
-  const [metrics, setMetrics] = useState<Record<string, MetricEntry>>({});
-  const [loading, setLoading] = useState(true);
-  const [availableTypes, setAvailableTypes] = useState<string[]>([]);
 
-  useEffect(() => {
-    async function fetchRealMetrics() {
-      try {
-        const snap = await getDocs(
-          query(collection(db, 'users'), where('kycStatus', '==', 'VALIDADO'), where('role', '==', 'PRODUTOR'))
-        );
-
-        // Collect prices per cheese type from all producers
-        const pricesByType: Record<string, number[]> = {};
-        snap.forEach(doc => {
-          const data = doc.data();
-          const prices: Record<string, number> = data.cheesePrices || {};
-          const types: string[] = data.cheeseTypes || [];
-          types.forEach(type => {
-            const price = Number(prices[type]);
-            if (price > 0) {
-              if (!pricesByType[type]) pricesByType[type] = [];
-              pricesByType[type].push(price);
-            }
-          });
-        });
-
-        const computed: Record<string, MetricEntry> = {};
-        const typesWithData: string[] = [];
-
-        CHEESE_TYPES.forEach(type => {
-          const prices = pricesByType[type] || [];
-          if (prices.length > 0) {
-            typesWithData.push(type);
-            const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
-            const max = Math.max(...prices);
-            const min = Math.min(...prices);
-            computed[type] = {
-              avgPrice: +avg.toFixed(2),
-              maxPrice: +max.toFixed(2),
-              minPrice: +min.toFixed(2),
-              producerCount: prices.length,
-              history: generatePriceHistory(avg),
-            };
-          }
-        });
-
-        // If no real data, generate plausible mock for Coalho so the UI is never empty
-        if (typesWithData.length === 0) {
-          computed['Coalho'] = {
-            avgPrice: 45.50,
-            maxPrice: 48.00,
-            minPrice: 43.00,
-            producerCount: 0,
-            history: generatePriceHistory(45.50),
-          };
-          typesWithData.push('Coalho');
-        }
-
-        setMetrics(computed);
-        setAvailableTypes(typesWithData);
-        // Default to first available type
-        if (!computed[globalCheeseType]) setGlobalCheeseType(typesWithData[0]);
-        if (!computed[card3CheeseType]) setCard3CheeseType(typesWithData[0]);
-      } catch (e) {
-        console.error('Erro ao buscar métricas:', e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchRealMetrics();
-  }, []);
-
-  const globalData = metrics[globalCheeseType] || metrics[availableTypes[0]];
-  const card3Data = metrics[card3CheeseType] || metrics[availableTypes[0]];
-
-  const previousAvg = globalData
-    ? globalData.history[globalData.history.length - 2]?.avg ?? globalData.avgPrice
-    : 0;
-  const pctChange = globalData
-    ? (((globalData.avgPrice - previousAvg) / previousAvg) * 100).toFixed(1)
-    : '0.0';
-  const isPositive = parseFloat(pctChange) >= 0;
+  // Safely get data or default to Coalho data if not present just for mock
+  const globalData = MOCK_METRICS[globalCheeseType as keyof typeof MOCK_METRICS] || MOCK_METRICS['Coalho'];
+  const card3Data = MOCK_METRICS[card3CheeseType as keyof typeof MOCK_METRICS] || MOCK_METRICS['Coalho'];
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -127,7 +55,7 @@ export function CatalogMetrics() {
           <p className="text-white font-bold mb-2">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={`item-${index}`} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.name === 'Volume (kg)' ? entry.value.toFixed(0) : `R$ ${Number(entry.value).toFixed(2)}`}
+              {entry.name}: {entry.name === 'Volume (kg)' ? entry.value.toFixed(0) : `R$ ${entry.value.toFixed(2)}`}
             </p>
           ))}
         </div>
@@ -135,15 +63,6 @@ export function CatalogMetrics() {
     }
     return null;
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16 gap-3 text-white/70">
-        <Loader2 className="w-6 h-6 animate-spin text-app-accent" />
-        <span>Carregando métricas do mercado...</span>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">
@@ -159,7 +78,7 @@ export function CatalogMetrics() {
               <SelectValue placeholder="Selecione..." />
             </SelectTrigger>
             <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px]">
-              {(availableTypes.length > 0 ? availableTypes : CHEESE_TYPES).map(type => (
+              {CHEESE_TYPES.map(type => (
                 <SelectItem key={type} value={type} className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px]">{type}</SelectItem>
               ))}
             </SelectContent>
@@ -168,46 +87,30 @@ export function CatalogMetrics() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* Card 1: Preço Médio Real */}
+        
+        {/* Card 1: Valor Médio Negociado */}
         <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Preço Médio do Dia ({globalCheeseType})</CardTitle>
             <DollarSign className="h-4 w-4 text-app-accent" />
           </CardHeader>
           <CardContent className="p-6 flex flex-col justify-center items-center h-[250px]">
-            {globalData ? (
-              <>
-                <div className="text-5xl font-bold text-white mb-2">
-                  R$ {globalData.avgPrice.toFixed(2)}
-                </div>
-                <p className="text-sm text-white/70">por kg negociado hoje</p>
-                <div className="mt-4 flex gap-4 text-xs text-white/60 bg-[#4a2000] px-4 py-2 rounded-full border border-white/5">
-                  <span>Mín: <strong className="text-white">R$ {globalData.minPrice.toFixed(2)}</strong></span>
-                  <span>Máx: <strong className="text-white">R$ {globalData.maxPrice.toFixed(2)}</strong></span>
-                </div>
-                <div className="mt-3 flex gap-4 text-sm font-medium bg-[#4a2000] px-4 py-2 rounded-full border border-white/5">
-                  <span className={`flex items-center ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                    {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
-                    {isPositive ? '+' : ''}{pctChange}%
-                  </span>
-                  <span className="text-white/50">vs dia anterior</span>
-                </div>
-                {globalData.producerCount > 0 && (
-                  <p className="text-xs text-white/40 mt-3">Baseado em {globalData.producerCount} produtor{globalData.producerCount > 1 ? 'es' : ''} cadastrado{globalData.producerCount > 1 ? 's' : ''}</p>
-                )}
-              </>
-            ) : (
-              <p className="text-white/50 text-center">Sem dados para este tipo de queijo</p>
-            )}
+            <div className="text-5xl font-bold text-white mb-2">
+              R$ {globalData.avgPrice.toFixed(2)}
+            </div>
+            <p className="text-sm text-white/70">por kg negociado hoje</p>
+            <div className="mt-6 flex gap-4 text-sm font-medium bg-[#4a2000] px-4 py-2 rounded-full border border-white/5">
+              <span className="text-green-400 flex items-center"><TrendingUp className="w-4 h-4 mr-1"/>  +1.2%</span>
+              <span className="text-white/50">vs dia anterior</span>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Card 2: Variação de Preço */}
+        {/* Card 2: Gráfico de Linha (Altos e Baixos) */}
         <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="rounded-none flex flex-row items-center justify-between space-y-0 px-6 py-5 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Variação de Preço ({globalCheeseType})</CardTitle>
-            <button
+            <button 
               onClick={() => setTimeRange(timeRange === 'Semana' ? 'Mês' : 'Semana')}
               className="text-xs bg-black/20 hover:bg-black/40 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1"
             >
@@ -216,24 +119,20 @@ export function CatalogMetrics() {
             </button>
           </CardHeader>
           <CardContent className="p-6 h-[250px] w-full">
-            {globalData ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={globalData.history} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" vertical={false} />
-                  <XAxis dataKey="date" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 1', 'dataMax + 1']} />
-                  <RechartsTooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="high" name="Máxima" stroke="#f4d763" strokeWidth={3} dot={{ r: 4, fill: '#f4d763' }} activeDot={{ r: 6 }} />
-                  <Line type="monotone" dataKey="low" name="Mínima" stroke="#fb923c" strokeWidth={3} dot={{ r: 4, fill: '#fb923c' }} activeDot={{ r: 6 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-full text-white/50">Sem dados disponíveis</div>
-            )}
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={timeRange === 'Semana' ? globalData.history : globalData.monthHistory} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" vertical={false} />
+                <XAxis dataKey="date" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 1', 'dataMax + 1']} />
+                <RechartsTooltip content={<CustomTooltip />} />
+                <Line type="monotone" dataKey="high" name="Máxima" stroke="#f4d763" strokeWidth={3} dot={{ r: 4, fill: '#f4d763' }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="low" name="Mínima" stroke="#fb923c" strokeWidth={3} dot={{ r: 4, fill: '#fb923c' }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Card 3: Volume de Negócios */}
+        {/* Card 3: Valores negociados e quantidadade em kg */}
         <Card className="p-0 gap-0 shadow-2xl border-none ring-0 bg-[#703200] text-white overflow-hidden rounded-[24px]">
           <CardHeader className="rounded-none flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 px-6 py-4 bg-[#d36101] border-b border-white/10 m-0">
             <CardTitle className="text-sm font-medium">Volume de Negócios</CardTitle>
@@ -242,32 +141,28 @@ export function CatalogMetrics() {
                 <SelectValue placeholder="Queijo..." />
               </SelectTrigger>
               <SelectContent className="bg-[#b85200] border-white/20 text-white rounded-[10px]">
-                {(availableTypes.length > 0 ? availableTypes : CHEESE_TYPES).map(type => (
+                {CHEESE_TYPES.map(type => (
                   <SelectItem key={type} value={type} className="focus:bg-[#d36101] focus:text-white cursor-pointer rounded-[8px] text-xs">{type}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </CardHeader>
           <CardContent className="p-6 h-[250px] w-full">
-            {card3Data ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={card3Data.history} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f4d763" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#f4d763" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" vertical={false} />
-                  <XAxis dataKey="date" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
-                  <RechartsTooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="volume" name="Volume (kg)" stroke="#f4d763" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex items-center justify-center h-full text-white/50">Sem dados disponíveis</div>
-            )}
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={card3Data.history} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f4d763" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#f4d763" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" vertical={false} />
+                <XAxis dataKey="date" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
+                <RechartsTooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="volume" name="Volume (kg)" stroke="#f4d763" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 

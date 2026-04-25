@@ -11,7 +11,6 @@ import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Catalog } from './pages/Catalog';
 import { Orders } from './pages/Orders';
-import { Demands } from './pages/Demands';
 import { Messages } from './pages/Messages';
 import { AdminUsers } from './pages/AdminUsers';
 import { Settings } from './pages/Settings';
@@ -78,11 +77,6 @@ export default function App() {
           <Route path="/mensagens" element={
             <ProtectedRoute>
               <Messages />
-            </ProtectedRoute>
-          } />
-          <Route path="/demandas" element={
-            <ProtectedRoute>
-              <Demands />
             </ProtectedRoute>
           } />
           <Route path="/admin/usuarios" element={

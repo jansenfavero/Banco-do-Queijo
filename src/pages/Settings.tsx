@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { auth, db } from '../lib/firebase';
@@ -17,16 +17,8 @@ export function Settings() {
   
   // Profile settings state
   const [name, setName] = useState(profile?.name || '');
-  const [isActive, setIsActive] = useState(profile?.active !== false);
+  const [isActive, setIsActive] = useState(profile?.active !== false); // default true unless explicitly false
   const [savingProfile, setSavingProfile] = useState(false);
-
-  // Sync state whenever profile loads from Firebase (fixes name not showing + status not persisting)
-  useEffect(() => {
-    if (profile) {
-      setName(profile.name || '');
-      setIsActive(profile.active !== false);
-    }
-  }, [profile]);
 
   // Security settings state
   const [currentPassword, setCurrentPassword] = useState('');

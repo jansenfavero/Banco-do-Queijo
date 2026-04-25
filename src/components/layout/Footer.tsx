@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 export function Footer() {
   return (
-    <footer className="w-full py-3 mt-auto bg-black/50 border-t border-white/5 backdrop-blur-md">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/50">
-        <p className="text-center sm:text-left truncate">
-          &copy; 2026 | Todos os Direitos Reservados | Desenvolvido por Gere Tecnologia |{' '}
+    <footer className="w-full py-2 mt-auto bg-black/50 border-t border-white/5 backdrop-blur-md">
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-3 text-[10px] sm:text-[11px] text-white/50">
+        <p className="text-center sm:text-left leading-tight">
+          &copy; 2026 | Todos os Direitos Reservados | Desenvolvido por{' '}
           <a
             href="https://gere.app/"
             target="_blank"
@@ -16,7 +16,7 @@ export function Footer() {
             Gere.App
           </a>
         </p>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Link to="/privacidade" className="hover:text-white transition-colors">
             Política de Privacidade
           </Link>

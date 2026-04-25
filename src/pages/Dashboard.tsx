@@ -53,16 +53,15 @@ export function Dashboard() {
 // ─── ADMIN ──────────────────────────────────────────────────────────────────
 
 function AdminDashboard() {
-  const [stats, setStats] = useState({ users: 0, volume: 0, orders: 0, demands: 0 });
+  const [stats, setStats] = useState({ users: 0, volume: 0, orders: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const [usersSnap, ordersSnap, demandsSnap] = await Promise.all([
+        const [usersSnap, ordersSnap] = await Promise.all([
           getDocs(collection(db, 'users')),
           getDocs(collection(db, 'orders')),
-          getDocs(collection(db, 'demands')),
         ]);
         let volume = 0;
         ordersSnap.forEach(d => { volume += Number(d.data().totalAmount || 0); });
@@ -70,7 +69,6 @@ function AdminDashboard() {
           users: usersSnap.size,
           volume,
           orders: ordersSnap.size,
-          demands: demandsSnap.size,
         });
       } catch (e) {
         console.error(e);
@@ -85,11 +83,10 @@ function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <StatCard title="Total de Usuários" icon={<Users className="h-4 w-4 text-app-accent" />} value={loading ? null : String(stats.users)} sub="Produtores e Atacadistas" />
         <StatCard title="Transações Totais" icon={<DollarSign className="h-4 w-4 text-app-accent" />} value={loading ? null : fmt(stats.volume)} sub="Volume transacionado" />
         <StatCard title="Pedidos Realizados" icon={<ShoppingCart className="h-4 w-4 text-app-accent" />} value={loading ? null : String(stats.orders)} sub="No catálogo geral" />
-        <StatCard title="Demandas Ativas" icon={<TrendingUp className="h-4 w-4 text-app-accent" />} value={loading ? null : String(stats.demands)} sub="Aguardando propostas" />
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 pt-4">
         <Card className="col-span-7 p-0 gap-0 shadow-2xl border-2 border-[#d36101] bg-[#703200] text-white overflow-hidden rounded-[24px]">
@@ -101,7 +98,7 @@ function AdminDashboard() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="text-center py-10 text-white/70 bg-[#4a2000] rounded-[20px] shadow-sm border border-white/10">
-              Você tem acesso total à plataforma. Use o menu lateral para gerenciar o catálogo, demandas e pedidos.
+              Você tem acesso total à plataforma. Use o menu lateral para gerenciar o catálogo e pedidos.
             </div>
           </CardContent>
         </Card>

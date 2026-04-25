@@ -51,14 +51,14 @@ export function Orders() {
   };
 
   return (
-    <div className="space-y-8 p-6 md:p-10 w-full max-w-7xl mx-auto">
+    <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
         <div className="p-3 bg-app-cardDark rounded-2xl border-2 border-[#d36101] shadow-sm shrink-0">
           <ShoppingCart className="h-8 w-8 text-app-accent" />
         </div>
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-            {profile?.role === 'ATACADISTA' ? 'Minhas Compras' : profile?.role === 'PRODUTOR' ? 'Pedidos Recebidos' : 'Todos os Pedidos'}
+            Todos os Pedidos
           </h1>
           <p className="text-white/70 text-sm md:text-base">
             Acompanhe o status e histórico das transações.
@@ -70,11 +70,9 @@ export function Orders() {
         <div className="flex justify-center py-10 text-white">Carregando pedidos...</div>
       ) : orders.length === 0 ? (
         <div className="text-center py-20 bg-app-cardDark text-white rounded-[24px] border-2 border-[#d36101] shadow-2xl">
-          <h3 className="text-lg font-bold">
-            {profile?.role === 'ATACADISTA' ? 'Nenhuma compra encontrada' : 'Nenhum pedido encontrado'}
-          </h3>
+          <h3 className="text-lg font-bold">Nenhum pedido encontrado</h3>
           <p className="text-white/70 mt-1">
-            {profile?.role === 'ATACADISTA' ? 'Você ainda não possui histórico de compras.' : 'Você ainda não possui histórico de pedidos.'}
+            Você ainda não possui histórico de pedidos.
           </p>
         </div>
       ) : (
