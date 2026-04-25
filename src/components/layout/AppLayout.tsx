@@ -80,7 +80,7 @@ export function AppLayout() {
   return (
     <div className="h-[100dvh] bg-app-cardDark flex flex-col md:flex-row overflow-hidden">
       {/* Mobile Header */}
-      <div className="md:hidden flex shrink-0 items-center justify-between p-4 bg-[#d36101] border-b border-[#a64b00] shadow-2xl z-50">
+      <div className={`md:hidden shrink-0 items-center justify-between p-4 bg-[#d36101] border-b border-[#a64b00] shadow-2xl z-50 ${location.pathname.startsWith('/mensagens') ? 'hidden' : 'flex'}`}>
         <div className="flex items-center gap-3 font-bold text-app-accent text-2xl whitespace-nowrap">
           <div className="w-14 h-14 flex items-center justify-center">
             <img src="https://i.ibb.co/jvsrNzd3/Banco-do-Queijo-sem-fundo.png" alt="Banco do Queijo" className="w-full h-full object-contain" />
@@ -157,7 +157,7 @@ export function AppLayout() {
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           <Outlet />
         </div>
-        <div className="shrink-0">
+        <div className={`shrink-0 ${location.pathname === '/mensagens' ? 'hidden md:block' : ''}`}>
           <Footer />
         </div>
       </main>

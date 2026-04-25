@@ -53,7 +53,7 @@ export function CatalogMetrics() {
         snap.forEach(doc => {
           const data = doc.data();
           // if (data.kycStatus !== 'VALIDADO') return; // Uncomment to strict filter
-          const prices: Record<string, number> = data.cheesePrices || {};
+          const prices: Record<string, any> = data.cheesePrices || {};
           const types: string[] = data.cheeseTypes || [];
           types.forEach(type => {
             const rawPrice = prices[type];
