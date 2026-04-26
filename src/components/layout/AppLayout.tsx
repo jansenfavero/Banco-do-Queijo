@@ -19,6 +19,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Footer } from './Footer';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
@@ -102,11 +103,10 @@ export function AppLayout() {
     if (profile && location.pathname !== '/perfil' && profile.role !== 'ADMIN') {
       const isComplete = profile.kycStatus === 'VALIDADO';
       
-      // Store that we've shown it this session so it doesn't pop up on every page navigation
-      const hasSeenPopup = sessionStorage.getItem(`profile_popup_seen_${profile.id}`);
-      
-      if (!isComplete && !hasSeenPopup) {
+      if (!isComplete) {
         setShowCompletionPopup(true);
+      } else {
+        setShowCompletionPopup(false);
       }
     } else {
       setShowCompletionPopup(false);
@@ -114,17 +114,23 @@ export function AppLayout() {
   }, [profile, location.pathname]);
 
   const handleClosePopup = () => {
-    if (profile) {
-      sessionStorage.setItem(`profile_popup_seen_${profile.id}`, 'true');
-    }
     setShowCompletionPopup(false);
-    navigate('/painel');
+    navigate('/');
+    
+    // Custom toast exactly as requested, but we use Sonner's toast
+    // The user will see this on the public homepage
+    setTimeout(() => {
+      toast('Ok. Você só poderá acessar a plataforma depois de concluir o seu perfil.', {
+        action: {
+          label: 'Concluir agora',
+          onClick: () => navigate('/perfil')
+        },
+        duration: 8000,
+      });
+    }, 100);
   };
 
   const handleCompleteNow = () => {
-    if (profile) {
-      sessionStorage.setItem(`profile_popup_seen_${profile.id}`, 'true');
-    }
     setShowCompletionPopup(false);
     navigate('/perfil');
   };
