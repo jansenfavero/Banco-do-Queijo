@@ -15,12 +15,59 @@ import {
   Settings,
   User,
   Slice,
-  MessageCircle
+  MessageCircle,
+  AlertCircle
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Footer } from './Footer';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+
+function ProfileCompletionPopup({ role, onClose, onComplete }: { role: string; onClose: () => void; onComplete: () => void }) {
+  const isProducer = role === 'PRODUTOR';
+  
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-[#4a2000] border-2 border-[#d36101] rounded-[24px] shadow-2xl max-w-md w-full overflow-hidden text-center p-8 animate-in zoom-in-95 duration-300">
+        <div className="w-16 h-16 bg-app-accent/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner border border-app-accent/30">
+          <AlertCircle className="w-8 h-8 text-app-accent" />
+        </div>
+        
+        <h2 className="text-2xl font-bold text-white mb-2">Complete seu Perfil</h2>
+        
+        <div className="text-white/80 space-y-4 mb-8 text-sm leading-relaxed">
+          {isProducer ? (
+            <p>
+              Produtor, para que seus produtos sejam exibidos na vitrine e você possa receber propostas, precisamos de mais alguns dados sobre a sua queijaria e seus produtos.
+            </p>
+          ) : (
+            <p>
+              Atacadista, para garantir a segurança das negociações na plataforma, precisamos que você complete os dados do seu cadastro antes de realizar compras.
+            </p>
+          )}
+          <p className="font-medium text-app-accent">
+            Leva menos de 2 minutos!
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <Button 
+            onClick={onComplete}
+            className="w-full bg-app-accent hover:bg-app-accentHover text-app-bgDark font-bold rounded-full py-6 shadow-[0_0_15px_rgba(244,215,99,0.3)] transition-all active:scale-95"
+          >
+            Completar seu perfil agora
+          </Button>
+          <button 
+            onClick={onClose}
+            className="text-white/50 hover:text-white text-sm font-medium transition-colors py-2"
+          >
+            deixar para depois
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function AppLayout() {
   const { profile, user } = useAuth();
@@ -28,6 +75,7 @@ export function AppLayout() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showCompletionPopup, setShowCompletionPopup] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -47,6 +95,39 @@ export function AppLayout() {
     });
     return () => unsubscribe();
   }, [user]);
+
+  // Show profile completion popup if incomplete
+  useEffect(() => {
+    // Only check if profile is loaded and the user is NOT already on the profile page
+    if (profile && location.pathname !== '/perfil' && profile.role !== 'ADMIN') {
+      const isComplete = profile.kycStatus === 'VALIDADO';
+      
+      // Store that we've shown it this session so it doesn't pop up on every page navigation
+      const hasSeenPopup = sessionStorage.getItem(`profile_popup_seen_${profile.id}`);
+      
+      if (!isComplete && !hasSeenPopup) {
+        setShowCompletionPopup(true);
+      }
+    } else {
+      setShowCompletionPopup(false);
+    }
+  }, [profile, location.pathname]);
+
+  const handleClosePopup = () => {
+    if (profile) {
+      sessionStorage.setItem(`profile_popup_seen_${profile.id}`, 'true');
+    }
+    setShowCompletionPopup(false);
+    navigate('/painel');
+  };
+
+  const handleCompleteNow = () => {
+    if (profile) {
+      sessionStorage.setItem(`profile_popup_seen_${profile.id}`, 'true');
+    }
+    setShowCompletionPopup(false);
+    navigate('/perfil');
+  };
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -79,6 +160,14 @@ export function AppLayout() {
 
   return (
     <div className="h-[100dvh] bg-app-cardDark flex flex-col md:flex-row overflow-hidden">
+      {showCompletionPopup && profile && (
+        <ProfileCompletionPopup 
+          role={profile.role} 
+          onClose={handleClosePopup}
+          onComplete={handleCompleteNow}
+        />
+      )}
+
       {/* Mobile Header */}
       <div className={`md:hidden shrink-0 items-center justify-between p-4 bg-[#d36101] border-b border-[#a64b00] shadow-2xl z-50 ${location.pathname.startsWith('/mensagens') ? 'hidden' : 'flex'}`}>
         <div className="flex items-center gap-3 font-bold text-app-accent text-2xl whitespace-nowrap">
