@@ -41,24 +41,27 @@ export function Register() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
-    const checkState = async () => {
-      const currentUser = auth.currentUser;
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
-        const docRef = doc(db, 'users', currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          navigate('/painel');
-        } else {
-          setGoogleUser(currentUser);
-          setFormData(prev => ({
-            ...prev,
-            email: currentUser.email || prev.email,
-            name: currentUser.displayName || prev.name
-          }));
+        try {
+          const docRef = doc(db, 'users', currentUser.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            navigate('/painel');
+          } else {
+            setGoogleUser(currentUser);
+            setFormData(prev => ({
+              ...prev,
+              email: currentUser.email || prev.email,
+              name: currentUser.displayName || prev.name
+            }));
+          }
+        } catch (error) {
+          console.error("Error fetching user doc during auth check", error);
         }
       }
-    };
-    checkState();
+    });
+    return () => unsubscribe();
   }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,8 +132,8 @@ export function Register() {
     }
     
     setLoading(true);
+    const provider = new GoogleAuthProvider();
     try {
-      const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       
       const docRef = doc(db, 'users', userCredential.user.uid);
@@ -148,11 +151,22 @@ export function Register() {
         }));
         toast.info('Para continuar, precisamos apenas do seu WhatsApp.');
       }
+      setLoading(false);
     } catch (error: any) {
       console.error(error);
-      toast.error(getFriendlyErrorMessage(error));
-    } finally {
-      setLoading(false);
+      if (error.code === 'auth/popup-closed-by-user' || error.message.includes('opener')) {
+        toast.info('Iniciando redirecionamento seguro para o Google...');
+        import('firebase/auth').then(({ signInWithRedirect }) => {
+          signInWithRedirect(auth, provider).catch(err => {
+            console.error(err);
+            toast.error(getFriendlyErrorMessage(err));
+            setLoading(false);
+          });
+        });
+      } else {
+        toast.error(getFriendlyErrorMessage(error));
+        setLoading(false);
+      }
     }
   };
 

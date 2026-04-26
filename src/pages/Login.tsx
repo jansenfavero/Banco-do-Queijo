@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../lib/firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
@@ -18,6 +18,15 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      if (currentUser) {
+        await checkRegistration(currentUser);
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
   const checkRegistration = async (user: any) => {
     const docRef = doc(db, 'users', user.uid);
@@ -76,19 +85,30 @@ export function Login() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
+    const provider = new GoogleAuthProvider();
     try {
-      const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       
       const isHandled = await checkRegistration(userCredential.user);
       if (!isHandled) {
         navigate('/cadastro');
       }
+      setLoading(false);
     } catch (error: any) {
       console.error(error);
-      toast.error(getFriendlyErrorMessage(error));
-    } finally {
-      setLoading(false);
+      if (error.code === 'auth/popup-closed-by-user' || error.message.includes('opener')) {
+        toast.info('Iniciando redirecionamento seguro para o Google...');
+        import('firebase/auth').then(({ signInWithRedirect }) => {
+          signInWithRedirect(auth, provider).catch(err => {
+            console.error(err);
+            toast.error(getFriendlyErrorMessage(err));
+            setLoading(false);
+          });
+        });
+      } else {
+        toast.error(getFriendlyErrorMessage(error));
+        setLoading(false);
+      }
     }
   };
 
