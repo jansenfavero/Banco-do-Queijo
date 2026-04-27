@@ -152,11 +152,11 @@ export function Home() {
             <h1 className="text-3xl md:text-4xl font-bold text-app-accent tracking-tight leading-none drop-shadow-md">Banco do Queijo</h1>
           </div>
         </div>
-        <div className="hidden md:flex gap-4 items-center">
+        <div className="flex gap-4 items-center mt-4 md:mt-0">
           {!loading ? (
             profile ? (
               <Link 
-                to={profile.role === 'ADMIN' ? '/admin' : '/dashboard'} 
+                to={profile.role === 'ADMIN' ? '/admin/usuarios' : '/painel'} 
                 className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#2b1400]/80 backdrop-blur-md shadow-[0_0_15px_rgba(211,97,1,0.3)] border border-[#d36101]/50 hover:bg-[#d36101]/20 transition-all active:scale-95 group"
                 title="Acessar Plataforma"
               >

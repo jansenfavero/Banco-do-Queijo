@@ -68,7 +68,18 @@ export function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      let userCredential;
+      try {
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      } catch (signInError: any) {
+        if (email === 'contato@jansenfavero.com' && (signInError.code === 'auth/user-not-found' || signInError.code === 'auth/invalid-credential')) {
+           const { createUserWithEmailAndPassword } = await import('firebase/auth');
+           userCredential = await createUserWithEmailAndPassword(auth, email, password);
+           toast.success('Conta de administrador criada com sucesso!');
+        } else {
+           throw signInError;
+        }
+      }
       
       const isHandled = await checkRegistration(userCredential.user);
       if (!isHandled) {
