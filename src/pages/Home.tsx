@@ -29,7 +29,7 @@ const FaqItem: React.FC<{ question: string; answer: string }> = ({ question, ans
     <div className="border-2 border-[#d36101] rounded-[20px] overflow-hidden bg-[#2b1400]/40 hover:bg-[#2b1400]/60 transition-colors mb-3">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left px-6 py-5 flex items-center justify-between font-bold text-white group"
+        className="w-full text-left px-6 py-5 flex items-center justify-between font-bold text-app-accent group"
       >
         <span className="text-lg pr-4">{question}</span>
         <ChevronDown className={`w-5 h-5 shrink-0 text-app-accent transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
@@ -50,7 +50,7 @@ const faqsProdutor = [
   },
   {
     question: "Como os atacadistas entram em contato comigo?",
-    answer: "Os atacadistas interessados nos seus queijos iniciam uma conversa direta com você pelo WhatsApp, clicando em um botão no seu perfil."
+    answer: "Para garantir a segurança das operações de compra e venda, os atacadistas interessados nos seus queijos iniciam uma conversa diretamente com você por meio da sua Tela de Mensagens na Plataforma, clicando em um botão no seu perfil, não se preocupe, você será sempre notificado quando um comprador lhe enviar uma mensagem."
   },
   {
     question: "Preciso ter CNPJ para vender?",
@@ -73,7 +73,7 @@ const faqsAtacadista = [
   },
   {
     question: "O pagamento é feito pelo site?",
-    answer: "Não. A negociação, a forma de pagamento e as condições (incluindo o frete) são combinadas entre você e o produtor de queijo diretamente pelo WhatsApp."
+    answer: "Não. A negociação, a forma de pagamento e as condições (incluindo o frete) são combinadas entre você e o produtor de queijo diretamente e de forma privada pela sua Tela de Mensagens."
   },
   {
     question: "Posso encontrar produtores da minha região?",
