@@ -531,7 +531,9 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                   {isProdutor ? 'Tipos de Queijo Produzidos e Preço (R$/kg)' : 'Tipos de Queijo que Compra'}
                 </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'].map((type) => (
+                  {['Coalho', 'Mussarela', 'Prato', 'Provolone', 'Parmesão', 'Colonial', 'Requeijão'].map((type) => {
+                    const currentImages = cheeseImages[type] || [];
+                    return (
                     <div key={type} className="flex flex-col space-y-2 p-3 bg-black/20 border border-white/10 rounded-xl">
                       <div className="flex items-center space-x-2">
                         <Checkbox 
@@ -543,7 +545,7 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                         <Label htmlFor={`edit-${type}`} className="text-sm font-bold text-white/90">{type}</Label>
                       </div>
                       {formData.cheeseTypes.includes(type) && isProdutor && (
-                         <div className="pt-1">
+                         <div className="pt-1 space-y-3">
                            <Input
                              type="text"
                              placeholder="Preço R$/kg"
@@ -551,10 +553,58 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                              onChange={(e) => handlePriceChange(type, formatCurrency(e.target.value))}
                              className="bg-black/40 border-white/20 text-white placeholder:text-white/40 focus:ring-amber-500 rounded-md h-9 text-sm px-3"
                            />
+                           
+                           <div className="space-y-2 pt-1 border-t border-white/10">
+                             <div className="flex items-center justify-between">
+                               <Label className="text-xs text-white/70">Fotos do Produto</Label>
+                               <span className="text-[10px] text-white/50">({currentImages.length}/3)</span>
+                             </div>
+                             <div className="grid grid-cols-2 gap-2">
+                               {currentImages.map((img, index) => (
+                                 <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-black/40 border border-white/20">
+                                   <img src={img} alt={`Upload ${type} ${index + 1}`} className="w-full h-full object-cover" />
+                                   <button
+                                     type="button"
+                                     onClick={() => {
+                                       const newMap = { ...cheeseImages };
+                                       newMap[type].splice(index, 1);
+                                       setCheeseImages(newMap);
+                                     }}
+                                     className="absolute top-1 right-1 p-0.5 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
+                                   >
+                                     <X className="w-3 h-3" />
+                                   </button>
+                                 </div>
+                               ))}
+                               {currentImages.length < 3 && (
+                                 <button
+                                   type="button"
+                                   onClick={() => {
+                                     fileInputRef.current!.dataset.type = type;
+                                     fileInputRef.current?.click();
+                                   }}
+                                   disabled={uploading}
+                                   className="relative aspect-square rounded-lg border border-dashed border-white/30 flex flex-col items-center justify-center text-white/50 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-80 overflow-hidden"
+                                 >
+                                   {uploading && fileInputRef.current?.dataset.type === type ? (
+                                     <div className="flex flex-col items-center justify-center z-10 w-full px-2">
+                                       <span className="text-[10px] font-bold text-app-accent mb-1">{Math.round(uploadProgress)}%</span>
+                                       <div className="w-full h-1 bg-black/40 rounded-full overflow-hidden">
+                                         <div className="h-full bg-app-accent transition-all duration-300 rounded-full" style={{ width: `${uploadProgress}%` }} />
+                                       </div>
+                                     </div>
+                                   ) : (
+                                     <Upload className="w-4 h-4" />
+                                   )}
+                                 </button>
+                               )}
+                             </div>
+                           </div>
+
                          </div>
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
 
@@ -685,18 +735,18 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                 </div>
               )}
 
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-white text-lg font-semibold flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5 text-[#f4d763]" />
-                    {isProdutor ? 'Fotos dos Seus Queijos' : 'Fotos do Seu Comércio'}
-                  </Label>
-                  <p className="text-white/70 text-sm mt-1">
-                    {isProdutor ? 'Adicione fotos correspondentes aos queijos que você produz. (Até 3 por tipo)' : 'Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.'}
-                  </p>
-                </div>
+              {!isProdutor && (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-white text-lg font-semibold flex items-center gap-2">
+                      <ImageIcon className="w-5 h-5 text-[#f4d763]" />
+                      Fotos do Seu Comércio
+                    </Label>
+                    <p className="text-white/70 text-sm mt-1">
+                      Adicione até 3 fotos do seu comércio (ex: faixada, áreas internas). Pelo menos 1 foto é obrigatória.
+                    </p>
+                  </div>
 
-                {!isProdutor && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {images.map((img, index) => (
                       <div key={index} className="relative aspect-square rounded-[20px] overflow-hidden bg-black/20 border border-white/20">
@@ -740,65 +790,10 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                       </button>
                     )}
                   </div>
-                )}
+                </div>
+              )}
 
-                {isProdutor && formData.cheeseTypes.map(cheese => {
-                  const currentImages = cheeseImages[cheese] || [];
-                  return (
-                    <div key={cheese} className="mt-4 p-4 border border-white/10 rounded-[20px] bg-black/10">
-                      <Label className="text-white font-semibold flex items-center gap-2 mb-3">
-                        <span className="capitalize">{cheese}</span>
-                        <span className="text-xs text-white/50 font-normal">({currentImages.length}/3 fotos)</span>
-                      </Label>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {currentImages.map((img, index) => (
-                          <div key={index} className="relative aspect-square rounded-[20px] overflow-hidden bg-black/20 border border-white/20">
-                            <img src={img} alt={`Upload ${cheese} ${index + 1}`} className="w-full h-full object-cover" />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newMap = { ...cheeseImages };
-                                newMap[cheese].splice(index, 1);
-                                setCheeseImages(newMap);
-                              }}
-                              className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
-                        {currentImages.length < 3 && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              fileInputRef.current!.dataset.type = cheese;
-                              fileInputRef.current?.click();
-                            }}
-                            disabled={uploading}
-                            className="relative aspect-square rounded-[20px] border-2 border-dashed border-white/30 flex flex-col items-center justify-center text-white/70 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors disabled:opacity-80 overflow-hidden"
-                          >
-                            {uploading && fileInputRef.current?.dataset.type === cheese ? (
-                              <div className="flex flex-col items-center justify-center z-10 w-full px-4">
-                                <span className="text-sm font-bold text-app-accent mb-2">{Math.round(uploadProgress)}%</span>
-                                <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden">
-                                  <div className="h-full bg-app-accent transition-all duration-300 rounded-full" style={{ width: `${uploadProgress}%` }} />
-                                </div>
-                                <span className="text-xs text-white/90 mt-2 font-medium">Enviando...</span>
-                              </div>
-                            ) : (
-                              <>
-                                <Upload className="w-6 h-6 mb-2 relative z-10" />
-                                <span className="text-sm font-medium relative z-10 text-center px-2">Adicionar Foto</span>
-                              </>
-                            )}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                <input
+              <input
                   type="file"
                   accept="image/*"
                   multiple
@@ -806,7 +801,6 @@ function ProfileDetailsCard({ profile }: { profile: any }) {
                   ref={fileInputRef}
                   onChange={(e) => handleImageUpload(e, fileInputRef.current?.dataset.type || 'general')}
                 />
-              </div>
 
               <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-white/10">
                 <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-white hover:bg-white/10 font-medium">
