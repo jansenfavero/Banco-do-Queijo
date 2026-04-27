@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Store, ArrowRight, CheckCircle2, TrendingUp, ShieldCheck, MapPin, BarChart3, LineChart, ChevronDown } from 'lucide-react';
+import { Star, Store, ArrowRight, CheckCircle2, TrendingUp, ShieldCheck, MapPin, BarChart3, LineChart, ChevronDown, User } from 'lucide-react';
 import { Footer } from '../components/layout/Footer';
+import { useAuth } from '../hooks/useAuth';
 
 const CheeseIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -122,6 +123,8 @@ const FaqSection = () => {
 };
 
 export function Home() {
+  const { profile, loading } = useAuth();
+
   return (
     <div className="h-[100dvh] flex flex-col bg-app-bgDark text-gray-100 overflow-hidden">
       
@@ -150,10 +153,40 @@ export function Home() {
           </div>
         </div>
         <div className="hidden md:flex gap-4 items-center">
-          <Link to="/login" className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-app-cardDark/90 backdrop-blur-md shadow-lg flex items-center justify-center text-white hover:bg-[#5a2800] border border-[#5a2800] transition-all active:scale-95" title="Entrar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </Link>
-          </div>
+          {!loading ? (
+            profile ? (
+              <Link 
+                to={profile.role === 'ADMIN' ? '/admin' : '/dashboard'} 
+                className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#2b1400]/80 backdrop-blur-md shadow-[0_0_15px_rgba(211,97,1,0.3)] border border-[#d36101]/50 hover:bg-[#d36101]/20 transition-all active:scale-95 group"
+                title="Acessar Plataforma"
+              >
+                <div className="flex flex-col text-right">
+                  <span className="text-sm font-bold text-white group-hover:text-[#d36101] transition-colors">{profile.name}</span>
+                  <div className="flex items-center justify-end gap-2 mt-0.5">
+                    <span className="text-[10px] text-white/50">{profile.email}</span>
+                    <span className="text-[9px] font-bold text-white bg-[#d36101] px-1.5 py-0.5 rounded-[4px] uppercase tracking-wide">
+                      {profile.role.toLowerCase()}
+                    </span>
+                  </div>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0 group-hover:bg-[#d36101] transition-colors">
+                  <User className="w-5 h-5" />
+                </div>
+              </Link>
+            ) : (
+              <Link 
+                to="/login" 
+                className="px-6 py-2.5 rounded-full bg-[#d36101] shadow-lg flex items-center gap-2 text-white hover:bg-[#b04f00] font-bold transition-all active:scale-95" 
+                title="Entrar"
+              >
+                <User className="w-5 h-5 text-white" />
+                <span>Entrar</span>
+              </Link>
+            )
+          ) : (
+             <div className="w-32 h-12 rounded-full bg-white/5 animate-pulse"></div>
+          )}
+        </div>
         </header>
 
         <main className="flex-1 w-full relative flex flex-col items-center justify-start pb-0">
@@ -343,23 +376,23 @@ export function Home() {
           <FaqSection />
 
           {/* Call To Action Banner */}
-          <div className="w-full py-16 md:py-20 px-4 md:px-8 relative overflow-hidden">
+          <div className="w-full py-16 md:py-20 px-4 md:px-8 relative overflow-hidden z-20">
              <video 
                 src="https://video.wixstatic.com/video/6acedd_b8aa7ae2be2f4d0fb1c8dd81ac1e15bf/720p/mp4/file.mp4" 
                 autoPlay 
                 loop 
                 muted 
                 playsInline 
-                className="absolute inset-0 w-full h-full object-cover object-center" 
+                className="absolute inset-0 w-full h-full object-cover object-center z-0" 
              />
-             <div className="absolute inset-0 bg-[#4a2000]/60 backdrop-blur-[2px]"></div>
+             <div className="absolute inset-0 bg-[#4a2000]/60 backdrop-blur-[2px] z-0"></div>
              
              <div className="max-w-4xl mx-auto text-center relative z-10">
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 drop-shadow-md">
-                   Pronto para transformar sua maneira de fazer negócios?
+                   Pronto para Comprar e Vender Sem Atravessadores?
                 </h2>
                 <p className="text-white/90 text-lg md:text-xl font-medium mb-10 max-w-2xl mx-auto drop-shadow">
-                   O Banco do Queijo é cem por cento gratuito para cadastro. Escolha seu perfil e junte-se à revolução do mercado.
+                   O Banco do Queijo é 100% Gratuito para se cadastrar e exibir seu perfil. Escolha seu perfil e junte-se à revolução do Mercado do Queijo.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link 
@@ -380,9 +413,9 @@ export function Home() {
 
         </section>
       </main>
-      </div>
-      <div className="shrink-0 relative z-50">
+      <div className="shrink-0 relative z-50 mt-auto">
         <Footer />
+      </div>
       </div>
     </div>
   );
